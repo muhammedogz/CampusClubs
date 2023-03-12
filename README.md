@@ -5,3 +5,7 @@ Our Student Club Management Software is a web-based application designed to help
 ## Client
 
 Client is a React application that is built using Vite.
+
+## Server
+
+Server is a .Net Core application that is built using the .Net Core CLI.
