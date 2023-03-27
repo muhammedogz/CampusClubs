@@ -4,7 +4,7 @@ Our Student Club Management Software is a web-based application designed to help
 
 ## Client
 
-Client is a React application that is built using Vite.
+Client is a Nextjs application. It is going to be used as a Static Deploy to University Server.
 
 ## Server
 
