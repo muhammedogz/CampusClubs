@@ -1,0 +1,26 @@
+@model Category
+
+<form method="post" asp-action="Delete">
+    <input type="hidden" asp-for="Id" /> @* hidden id, when we post we will get id in CategoryController *@
+    <div class="border p-3 mt-4">
+        <div class="row pb-2"> 
+            <h2 class="text-primary">Delete Category</h2>
+            <hr/>
+        </div>
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" disabled class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="DisplayOrder"></label>
+            <input asp-for="DisplayOrder" disabled  class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+        <a asp-asp-controller="Category" asp-action="Index" class="btn btn-secondary" style="width:150px">Cancel</a>
+
+    </div>
+
+
+</form>
