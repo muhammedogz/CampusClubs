@@ -1,4 +1,3 @@
-import Copyright from '@/components/common/Copyright';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -32,9 +31,13 @@ export const SignUp = () => {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
+        {/* <img
+          src="public/icons/logo.svg"
+          alt="logo"
+          style={{
+            width: '400px',
+          }}
+        /> */}
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
@@ -106,7 +109,7 @@ export const SignUp = () => {
           </Grid>
         </Box>
       </Box>
-      <Copyright />
+      {/* <Copyright /> */}
     </Container>
   );
 };
