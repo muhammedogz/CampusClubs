@@ -1,4 +1,3 @@
-import Copyright from '@/components/common/Copyright';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Stack } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -8,7 +7,7 @@ import Container from '@mui/material/Container';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 export const SignIn = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -29,9 +28,13 @@ export const SignIn = () => {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
+        {/* <img
+          src="public/icons/logo.svg"
+          alt="logo"
+          style={{
+            width: '400px',
+          }}
+        /> */}
         <Typography component="h1" variant="h5">
           Giriş Yap
         </Typography>
@@ -74,12 +77,12 @@ export const SignIn = () => {
             Giriş Yap
           </Button>
           <Stack gap="4px">
-            <Link href="#">Şifremi unuttum</Link>
-            <Link href="#">Dont have an account? Sign Up</Link>
+            <Link to="#">Şifremi unuttum</Link>
+            <Link to="../signup">Dont have an account? Sign Up</Link>
           </Stack>
         </Stack>
       </Stack>
-      <Copyright />
+      {/* <Copyright /> */}
     </Container>
   );
 };
