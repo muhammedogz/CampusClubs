@@ -52,7 +52,6 @@ const router = createBrowserRouter(
     ...rest,
     // @ts-ignore
     element: <Element />,
-
     errorElement: <ErrorTest />,
   }))
 );
