@@ -1,26 +1,11 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import { Link } from 'react-router-dom';
+import { Layout } from '../components/layout/Layout';
 
 const Home = () => {
   return (
-    <Stack flexDirection="row">
-      <Sidebar>
-        <Menu>
-          <SubMenu label="Charts">
-            <MenuItem> Pie charts </MenuItem>
-            <MenuItem> Line charts </MenuItem>
-          </SubMenu>
-          <MenuItem> Documentation </MenuItem>
-          <MenuItem> Calendar </MenuItem>
-        </Menu>
-      </Sidebar>
-      <Stack
-        p="20px 20px"
-        sx={{
-          border: '2px solid red',
-        }}
-      >
+    <Layout>
+      <Stack p="20px 20px">
         <Box sx={{ my: 4, textAlign: 'center' }}>
           {/* <img
           src="public/icons/logo.svg"
@@ -42,7 +27,7 @@ const Home = () => {
           </Stack>
         </Box>
       </Stack>
-    </Stack>
+    </Layout>
   );
 };
 
