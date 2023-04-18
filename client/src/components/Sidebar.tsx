@@ -1,4 +1,9 @@
-import { Menu, MenuItem, Sidebar as ProSidebar, SubMenu } from 'react-pro-sidebar';
+import {
+  Menu,
+  MenuItem,
+  Sidebar as ProSidebar,
+  SubMenu,
+} from 'react-pro-sidebar';
 
 export const Sidebar = () => {
   return (
