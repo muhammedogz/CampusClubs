@@ -1,5 +1,5 @@
 import { Stack, StackProps } from '@mui/material';
-import { Playground } from './Test';
+import { Sidebar } from './Test';
 
 type LayoutProps = StackProps & {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ type LayoutProps = StackProps & {
 export const Layout = ({ children, ...rest }: LayoutProps) => {
   return (
     <Stack flexDirection="row" {...rest}>
-      <Playground />
+      <Sidebar />
       <Stack component="main">{children}</Stack>
     </Stack>
   );

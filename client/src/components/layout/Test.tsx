@@ -1,58 +1,86 @@
 import { BarChart, CalendarMonth } from '@mui/icons-material';
-import { Badge, Typography } from '@mui/material';
-import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
+import { Badge, Stack, Typography } from '@mui/material';
+import {
+  Menu,
+  MenuItem,
+  Sidebar as ProSidebar,
+  SubMenu,
+} from 'react-pro-sidebar';
+import { Link } from 'react-router-dom';
 
-export const Playground = () => {
+const SidebarHeader = () => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100%',
-      }}
-    >
-      <Sidebar
+    <Stack justifyContent="center" alignItems="center">
+      <Link to={'/'}>
+        <img
+          src="icons/logo.svg"
+          alt="logo"
+          style={{
+            width: '200px',
+          }}
+        />
+      </Link>
+    </Stack>
+  );
+};
+
+type SidebarMenuProps = {
+  children: React.ReactNode | React.ReactNode[];
+  title: string;
+};
+
+const SidebarMenu = ({ children, title }: SidebarMenuProps) => {
+  return (
+    <Stack>
+      <Stack sx={{ padding: '0 24px', marginBottom: '8px' }}>
+        <Typography
+          variant="body2"
+          fontWeight={600}
+          style={{ letterSpacing: '0.5px' }}
+        >
+          {title}
+        </Typography>
+      </Stack>
+      <Menu
+        menuItemStyles={{
+          root: {
+            fontSize: '13px',
+            fontWeight: 400,
+          },
+          SubMenuExpandIcon: {
+            color: '#b6b7b9',
+          },
+          subMenuContent: () => ({
+            backgroundColor: '#082440',
+          }),
+          button: {
+            '&:hover': {
+              backgroundColor: '#00458b',
+              color: '#b6c8d9',
+            },
+          },
+        }}
+      >
+        {children}
+      </Menu>
+    </Stack>
+  );
+};
+
+export const Sidebar = () => {
+  return (
+    <Stack>
+      <ProSidebar
         breakPoint="lg"
         backgroundColor="#0b2948"
         rootStyles={{
           color: '#8ba1b7',
         }}
       >
-        {/* <SidebarHeader style={{ marginBottom: '24px', marginTop: '16px' }} /> */}
-        <div style={{ flex: 1, marginBottom: '32px' }}>
-          <div style={{ padding: '0 24px', marginBottom: '8px' }}>
-            <Typography
-              variant="body2"
-              fontWeight={600}
-              style={{ letterSpacing: '0.5px' }}
-            >
-              General
-            </Typography>
-          </div>
-          <Menu
-            menuItemStyles={{
-              root: {
-                fontSize: '13px',
-                fontWeight: 400,
-              },
-              SubMenuExpandIcon: {
-                color: '#b6b7b9',
-              },
-              subMenuContent: () => ({
-                backgroundColor: '#082440',
-              }),
-              button: {
-                '&:hover': {
-                  backgroundColor: '#00458b',
-                  color: '#b6c8d9',
-                },
-              },
-            }}
-          >
-            <SubMenu
-              label="Charts"
-              icon={<BarChart />}
-              suffix={<Badge variant="dot">6</Badge>}
-            >
+        <Stack>
+          <SidebarHeader />
+          <SidebarMenu title="General">
+            <SubMenu label="Charts" icon={<BarChart />}>
               <MenuItem> Pie charts</MenuItem>
               <MenuItem> Line charts</MenuItem>
               <MenuItem> Bar charts</MenuItem>
@@ -82,40 +110,8 @@ export const Playground = () => {
               <MenuItem> Orders</MenuItem>
               <MenuItem> Credit card</MenuItem>
             </SubMenu>
-          </Menu>
-
-          <div
-            style={{
-              padding: '0 24px',
-              marginBottom: '8px',
-              marginTop: '32px',
-            }}
-          >
-            <Typography variant="body2" fontWeight={600}>
-              Extra
-            </Typography>
-          </div>
-
-          <Menu
-            menuItemStyles={{
-              root: {
-                fontSize: '13px',
-                fontWeight: 400,
-              },
-              SubMenuExpandIcon: {
-                color: '#b6b7b9',
-              },
-              subMenuContent: () => ({
-                backgroundColor: '#082440',
-              }),
-              button: {
-                '&:hover': {
-                  backgroundColor: '#00458b',
-                  color: '#b6c8d9',
-                },
-              },
-            }}
-          >
+          </SidebarMenu>
+          <SidebarMenu title="Applications">
             <MenuItem
               icon={<CalendarMonth />}
               suffix={<Badge variant="dot">New</Badge>}
@@ -126,10 +122,10 @@ export const Playground = () => {
             <MenuItem disabled icon={<CalendarMonth />}>
               Examples
             </MenuItem>
-          </Menu>
-        </div>
-        {/* <SidebarFooter collapsed={collapsed} /> */}
-      </Sidebar>
-    </div>
+          </SidebarMenu>
+        </Stack>
+        {/* <ProSidebarFooter collapsed={collapsed} /> */}
+      </ProSidebar>
+    </Stack>
   );
 };
