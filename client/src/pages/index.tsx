@@ -7,13 +7,13 @@ const Home = () => {
     <Layout>
       <Stack p="20px 20px">
         <Box sx={{ my: 4, textAlign: 'center' }}>
-          {/* <img
-          src="public/icons/logo.svg"
-          alt="logo"
-          style={{
-            width: '400px',
-          }}
-        /> */}
+          <img
+            src="/icons/logo-white.svg"
+            alt="logo"
+            style={{
+              width: '300px',
+            }}
+          />
           <Typography variant="h4" component="h1" gutterBottom>
             CampusClubs'a hoş geldiniz
           </Typography>

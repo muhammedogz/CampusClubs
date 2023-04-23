@@ -1,12 +1,10 @@
-import {
-  PersonPinCircleTwoTone,
-  SettingsApplications,
-} from '@mui/icons-material';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
-import { Stack, Typography } from '@mui/material';
+import PersonPinIcon from '@mui/icons-material/PersonPin';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import {
   Menu,
   MenuItem,
@@ -17,11 +15,13 @@ import { Routes } from '../data/routes';
 import { Link } from './common/Link';
 
 const SidebarHeader = () => {
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
+
   return (
     <Stack justifyContent="center" alignItems="center">
       <Link to="/">
         <img
-          src="/icons/logo.svg"
+          src={isMobile ? '/icons/logo-mobile.svg' : '/icons/logo.svg'}
           alt="logo"
           style={{
             width: '200px',
@@ -40,10 +40,11 @@ type SidebarMenuProps = {
 const SidebarMenu = ({ children, title }: SidebarMenuProps) => {
   return (
     <Stack>
-      <Stack sx={{ padding: '0 24px', marginBottom: '8px' }}>
+      <Stack sx={{ px: { xs: '6px', md: '20px' }, marginBottom: '8px' }}>
         <Typography
           variant="body2"
           fontWeight={600}
+          textAlign="center"
           sx={{ letterSpacing: '0.5px', color: '#dadbdc' }}
         >
           {title}
@@ -55,6 +56,7 @@ const SidebarMenu = ({ children, title }: SidebarMenuProps) => {
             fontSize: '13px',
             fontWeight: 400,
           },
+
           label: {
             color: '#b0bcd4',
           },
@@ -82,14 +84,17 @@ const SidebarMenu = ({ children, title }: SidebarMenuProps) => {
 };
 
 export const Sidebar = () => {
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
+
   return (
-    <Stack>
+    <Stack key="sidebar-stack">
       <ProSidebar
-        customBreakPoint="900px"
+        key="sidebar"
+        defaultCollapsed={isMobile}
         backgroundColor="#0b2948"
         rootStyles={{
           color: '#8ba1b7',
-          minHeight: '100vh',
+          minHeight: '100dvh',
         }}
       >
         <Stack>
@@ -109,14 +114,14 @@ export const Sidebar = () => {
                 <MenuItem>Tüm Etkinlikler</MenuItem>
               </SubMenu>
             </SidebarMenu>
-            <SidebarMenu title="Ben">
+            <SidebarMenu title="Kullanıcı">
               <MenuItem
-                icon={<PersonPinCircleTwoTone />}
+                icon={<PersonPinIcon />}
                 // suffix={<Badge variant="dot">New</Badge>}
               >
                 Profilim
               </MenuItem>
-              <MenuItem icon={<SettingsApplications />}>Ayarlar</MenuItem>
+              <MenuItem icon={<SettingsIcon />}>Ayarlar</MenuItem>
               <MenuItem icon={<LogoutIcon />}>Çıkış Yap</MenuItem>
             </SidebarMenu>
           </Stack>
