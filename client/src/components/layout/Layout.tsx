@@ -1,5 +1,5 @@
 import { Stack, StackProps } from '@mui/material';
-import { Sidebar } from 'src/components/Sidebar';
+import { Sidebar } from 'src/components/layout/Sidebar';
 
 type LayoutProps = StackProps & {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ export const Layout = ({ children, ...rest }: LayoutProps) => {
       <Sidebar />
       <Stack
         component="main"
-        mb={4}
+        mb={2}
         sx={{
           border: '2px solid red',
         }}
