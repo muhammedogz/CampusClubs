@@ -37,11 +37,27 @@ const SidebarFooter = () => {
     <Stack px={{ xs: 'initial', md: '20px' }}>
       <Typography
         variant="body2"
-        fontWeight={600}
+        fontWeight={400}
         textAlign="center"
         fontSize={{ xs: '10px', md: '16px' }}
       >
-        Tüm Hakları Saklıdır. @{currentYear}
+        Tüm Hakları Saklıdır.{' '}
+        <Typography
+          sx={{
+            display: { xs: 'none', md: 'inline' },
+            fontWeight: 600,
+          }}
+        >
+          CampusClubs@{currentYear}
+        </Typography>
+        <Typography
+          sx={{
+            display: { xs: 'inline', md: 'none' },
+            fontWeight: 600,
+          }}
+        >
+          @{currentYear}
+        </Typography>
       </Typography>
     </Stack>
   );
