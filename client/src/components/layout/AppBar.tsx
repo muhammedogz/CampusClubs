@@ -23,6 +23,7 @@ function ResponsiveAppBar() {
         position: 'fixed',
         top: 10,
         right: 10,
+        zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
       <Tooltip title="Giriş Yap">

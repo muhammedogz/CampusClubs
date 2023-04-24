@@ -13,7 +13,7 @@ export const Layout = ({ children, ...rest }: LayoutProps) => {
       <Stack flexDirection="row" gap={{ xs: '0px', md: '10px' }} {...rest}>
         <Sidebar />
         <Stack
-          component="main"
+          component="main"  
           mb={2}
           sx={{
             border: '2px solid red',

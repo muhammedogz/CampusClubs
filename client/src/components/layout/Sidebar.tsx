@@ -119,14 +119,18 @@ export const Sidebar = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
 
   return (
-    <Stack key="sidebar-stack" position="relative" pr="80px">
+    <Stack
+      key="sidebar-stack"
+      position="relative"
+      pr={{ xs: '80px', md: '250px' }}
+    >
       <ProSidebar
         key="sidebar"
         defaultCollapsed={isMobile}
         backgroundColor="#0b2948"
         rootStyles={{
           color: '#8ba1b7',
-          position: isMobile ? 'absolute' : 'initial',
+          position: 'fixed',
           minHeight: '100dvh',
           zIndex: 999,
           top: 0,
