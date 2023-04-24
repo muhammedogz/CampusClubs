@@ -156,7 +156,6 @@ const Kulup = () => {
   return (
     <Layout>
       <Stack
-        px="20px"
         gap="20px"
       >
         <Stack

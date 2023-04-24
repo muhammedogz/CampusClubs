@@ -16,29 +16,29 @@ const Home = () => {
       >
         <Stack>
           <Stack justifyContent="center" alignItems="center">
-            <Image src="/icons/logo-white.svg" alt="logo" width="200px" />
+            <Image src="/icons/logo-white.svg" alt="logo" width="300px" />
           </Stack>
           <Stack maxWidth="550px">
             <Typography variant="h4" component="h1" gutterBottom>
               CampusClubs'a hoş geldiniz
             </Typography>
             <Typography variant="body1">
-              CampusClubs, üniversite öğrencilerinin birbirleriyle etkileşim
-              kurmalarını sağlayan bir platformdur.
+              CampusClubs ile kulüpleri inceleybilir, etkinliklere katılabilir
+              ve üniversite hayatınızı daha keyifli hale getirebilirsiniz.
             </Typography>
           </Stack>
         </Stack>
         <Stack id="butonlar" flexDirection="row" gap="20px">
           <Link to={Routes.KULUP}>
             <Button variant="contained" color="secondary">
-              <Typography variant="h6" component="h2" gutterBottom>
+              <Typography component="h2" gutterBottom>
                 Tüm kulüpler
               </Typography>
             </Button>
           </Link>
           <Link to={Routes.KULUP}>
             <Button variant="contained" color="secondary">
-              <Typography variant="h6" component="h2" gutterBottom>
+              <Typography component="h2" gutterBottom>
                 Tüm Etkinlikler
               </Typography>
             </Button>
