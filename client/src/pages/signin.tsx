@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Image from 'src/components/common/Image';
 import { Link } from '../components/common/Link';
 import { Layout } from '../components/layout/Layout';
 import { Routes } from '../data/routes';
@@ -29,13 +30,7 @@ export const SignIn = () => {
             alignItems: 'center',
           }}
         >
-          {/* <img
-          src="public/icons/logo.svg"
-          alt="logo"
-          style={{
-            width: '400px',
-          }}
-        /> */}
+          <Image src="/icons/logo-white.svg" alt="logo" width="250px" />
           <Typography component="h1" variant="h5">
             Giriş Yap
           </Typography>

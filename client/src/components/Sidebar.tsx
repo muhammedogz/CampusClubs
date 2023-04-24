@@ -11,8 +11,9 @@ import {
   Sidebar as ProSidebar,
   SubMenu,
 } from 'react-pro-sidebar';
-import { Routes } from '../data/routes';
-import { Link } from './common/Link';
+import Image from 'src/components/common/Image';
+import { Link } from 'src/components/common/Link';
+import { Routes } from 'src/data/routes';
 
 const SidebarHeader = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -20,12 +21,10 @@ const SidebarHeader = () => {
   return (
     <Stack justifyContent="center" alignItems="center">
       <Link to="/">
-        <img
+        <Image
           src={isMobile ? '/icons/logo-mobile.svg' : '/icons/logo.svg'}
           alt="logo"
-          style={{
-            width: '200px',
-          }}
+          width="200px"
         />
       </Link>
     </Stack>
@@ -83,6 +82,15 @@ const SidebarMenu = ({ children, title }: SidebarMenuProps) => {
   );
 };
 
+type SidebarMenuItemProps = {
+  children: React.ReactNode | React.ReactNode[];
+  icon?: React.ReactNode;
+};
+
+const SidebarMenuItem = ({ ...rest }: SidebarMenuItemProps) => {
+  return <MenuItem component="div" {...rest} />;
+};
+
 export const Sidebar = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
 
@@ -102,27 +110,29 @@ export const Sidebar = () => {
           <Stack gap="12px">
             <SidebarMenu title="Kulüp Yönetim">
               <Link to={Routes.HOME}>
-                <MenuItem icon={<HomeIcon />}>Anasayfa</MenuItem>
+                <SidebarMenuItem icon={<HomeIcon />}>Anasayfa</SidebarMenuItem>
               </Link>
             </SidebarMenu>
             <SidebarMenu title="Genel">
               <SubMenu label="Kulüpler" icon={<PeopleIcon />}>
-                <MenuItem>Tüm Kulüpler</MenuItem>
-                <MenuItem>Kulüp Yöneticileri</MenuItem>
+                <Link to={Routes.KULUP}>
+                  <SidebarMenuItem>Tüm Kulüpler</SidebarMenuItem>
+                </Link>
+                <SidebarMenuItem>Kulüp Yöneticileri</SidebarMenuItem>
               </SubMenu>
               <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
-                <MenuItem>Tüm Etkinlikler</MenuItem>
+                <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
               </SubMenu>
             </SidebarMenu>
             <SidebarMenu title="Kullanıcı">
-              <MenuItem
+              <SidebarMenuItem
                 icon={<PersonPinIcon />}
                 // suffix={<Badge variant="dot">New</Badge>}
               >
                 Profilim
-              </MenuItem>
-              <MenuItem icon={<SettingsIcon />}>Ayarlar</MenuItem>
-              <MenuItem icon={<LogoutIcon />}>Çıkış Yap</MenuItem>
+              </SidebarMenuItem>
+              <SidebarMenuItem icon={<SettingsIcon />}>Ayarlar</SidebarMenuItem>
+              <SidebarMenuItem icon={<LogoutIcon />}>Çıkış Yap</SidebarMenuItem>
             </SidebarMenu>
           </Stack>
         </Stack>

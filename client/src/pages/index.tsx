@@ -1,19 +1,14 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Layout } from '../components/layout/Layout';
+import Image from 'src/components/common/Image';
+import { Layout } from 'src/components/layout/Layout';
 
 const Home = () => {
   return (
     <Layout>
       <Stack p="20px 20px">
         <Box sx={{ my: 4, textAlign: 'center' }}>
-          <img
-            src="/icons/logo-white.svg"
-            alt="logo"
-            style={{
-              width: '300px',
-            }}
-          />
+          <Image src="/icons/logo-white.svg" alt="logo" width="200px" />
           <Typography variant="h4" component="h1" gutterBottom>
             CampusClubs'a hoş geldiniz
           </Typography>
