@@ -10,15 +10,9 @@ export const Layout = ({ children, ...rest }: LayoutProps) => {
   return (
     <Stack>
       <ResponsiveAppBar />
-      <Stack flexDirection="row" gap={{ xs: '0px', md: '10px' }} {...rest}>
+      <Stack flexDirection="row" {...rest}>
         <Sidebar />
-        <Stack
-          component="main"  
-          mb={2}
-          sx={{
-            border: '2px solid red',
-          }}
-        >
+        <Stack component="main" mb={2} sx={{}}>
           {children}
         </Stack>
       </Stack>
