@@ -12,7 +12,11 @@ export const Layout = ({ children, ...rest }: LayoutProps) => {
       <ResponsiveAppBar />
       <Stack flexDirection="row" {...rest}>
         <Sidebar />
-        <Stack component="main" mb={2} sx={{}}>
+        <Stack
+          width={{ xs: 'calc(100vw - 90px)', md: 'calc(100vw - 260px)' }}
+          component="main"
+          mb={2}
+        >
           {children}
         </Stack>
       </Stack>

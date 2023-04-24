@@ -1,11 +1,11 @@
 export const kulupler = [
   {
     id: 1,
-    name: 'Kulüp 1',
+    name: 'GTU Bilgisayar Topluluğu',
     color: '#0b2948',
-    logo: 'https://picsum.photos/600/300',
-    username: 'kulup1',
-    description: 'Kulüp 1 açıklaması',
+    logo: 'https://pbs.twimg.com/profile_images/1372959978651279361/kRLnF1yt_400x400.jpg',
+    username: 'gtubt',
+    description: 'Bilgisayar Geeklerinin Buluşma Noktası!',
     link: 'https://www.google.com',
   },
   {
