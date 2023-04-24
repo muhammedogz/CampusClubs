@@ -5,7 +5,7 @@ type ImageProps = AvatarProps & {
   height?: string;
 };
 
-const Image = ({ src, width, height, ...rest }: ImageProps) => {
+const Image = ({ src, width, height, sx, ...rest }: ImageProps) => {
   const publicPath = import.meta.env.VITE_PUBLIC_PATH;
 
   console.log('publicPath', `${publicPath}${src}`);
@@ -16,6 +16,8 @@ const Image = ({ src, width, height, ...rest }: ImageProps) => {
       sx={{
         width: width ?? '100%',
         height: height ?? 'initial',
+
+        ...sx,
       }}
       {...rest}
     />
