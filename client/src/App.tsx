@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
-  createBrowserRouter,
-  RouterProvider,
-  LoaderFunction,
   ActionFunction,
-  useLocation,
+  LoaderFunction,
+  RouterProvider,
+  createBrowserRouter,
 } from 'react-router-dom';
 import ErrorTest from './ErrorTest';
 
@@ -48,11 +47,11 @@ for (const path of Object.keys(pages)) {
 }
 
 const router = createBrowserRouter(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   routes.map(({ Element, ErrorBoundary, ...rest }) => ({
     ...rest,
     // @ts-ignore
     element: <Element />,
-
     errorElement: <ErrorTest />,
   }))
 );
