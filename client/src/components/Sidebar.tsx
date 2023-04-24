@@ -95,14 +95,19 @@ export const Sidebar = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
 
   return (
-    <Stack key="sidebar-stack">
+    <Stack key="sidebar-stack" position="relative" pr="80px">
       <ProSidebar
         key="sidebar"
         defaultCollapsed={isMobile}
         backgroundColor="#0b2948"
         rootStyles={{
           color: '#8ba1b7',
+          position: isMobile ? 'absolute' : 'initial',
           minHeight: '100dvh',
+          zIndex: 999,
+          top: 0,
+          left: 0,
+          bottom: 0,
         }}
       >
         <Stack>
@@ -118,7 +123,9 @@ export const Sidebar = () => {
                 <Link to={Routes.KULUP}>
                   <SidebarMenuItem>Tüm Kulüpler</SidebarMenuItem>
                 </Link>
-                <SidebarMenuItem>Kulüp Yöneticileri</SidebarMenuItem>
+                <Link to={Routes.KULUP}>
+                  <SidebarMenuItem>Kulüp Yöneticileri</SidebarMenuItem>
+                </Link>
               </SubMenu>
               <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
                 <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
