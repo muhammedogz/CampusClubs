@@ -34,7 +34,7 @@ const SidebarHeader = () => {
 const SidebarFooter = () => {
   const currentYear = new Date().getFullYear();
   return (
-    <Stack>
+    <Stack px={{ xs: 'initial', md: '20px' }}>
       <Typography
         variant="body2"
         fontWeight={600}
