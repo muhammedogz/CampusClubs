@@ -8,6 +8,7 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
+import { getLocalImage } from 'src/utils/imageUtils';
 
 export const SignIn = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +29,7 @@ export const SignIn = () => {
           alignItems: 'center',
         }}
       >
-        <Image src="/icons/logo-white.svg" alt="logo" width="250px" />
+        <Image src={getLocalImage("/icons/logo-white.svg")}  alt="logo" width="250px" />
         <Typography component="h1" variant="h5">
           Giriş Yap
         </Typography>

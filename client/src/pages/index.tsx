@@ -3,6 +3,7 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
+import { getLocalImage } from 'src/utils/imageUtils';
 
 const Home = () => {
   return (
@@ -16,7 +17,11 @@ const Home = () => {
       >
         <Stack>
           <Stack justifyContent="center" alignItems="center">
-            <Image src="/icons/logo-white.svg" alt="logo" width="300px" />
+            <Image
+              src={getLocalImage('/icons/logo-white.svg')}
+              alt="logo"
+              width="300px"
+            />
           </Stack>
           <Stack maxWidth="550px">
             <Typography variant="h4" component="h1" gutterBottom>

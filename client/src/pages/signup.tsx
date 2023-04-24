@@ -11,6 +11,7 @@ import Image from 'src/components/common/Image';
 import { Link } from '../components/common/Link';
 import { Layout } from '../components/layout/Layout';
 import { Routes } from '../data/routes';
+import { getLocalImage } from 'src/utils/imageUtils';
 
 export const SignUp = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +34,7 @@ export const SignUp = () => {
             alignItems: 'center',
           }}
         >
-          <Image src="/icons/logo-white.svg" alt="logo" width="250px" />
+          <Image src={getLocalImage("/icons/logo-white.svg")}  alt="logo" width="250px" />
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>

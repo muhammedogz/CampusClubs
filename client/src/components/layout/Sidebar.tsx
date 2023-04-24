@@ -14,6 +14,7 @@ import {
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Routes } from 'src/data/routes';
+import { getLocalImage } from 'src/utils/imageUtils';
 
 const SidebarHeader = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -22,7 +23,7 @@ const SidebarHeader = () => {
     <Stack justifyContent="center" alignItems="center">
       <Link to="/">
         <Image
-          src={isMobile ? '/icons/logo-mobile.svg' : '/icons/logo.svg'}
+          src={isMobile ? getLocalImage('/icons/logo-mobile.svg') : getLocalImage('/icons/logo.svg')}
           alt="logo"
           width="200px"
         />

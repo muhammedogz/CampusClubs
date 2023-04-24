@@ -1,4 +1,10 @@
-import { Divider, Stack, Typography } from '@mui/material';
+import {
+  Divider,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
@@ -6,6 +12,8 @@ import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
 
 const KulupCard = ({ kulup }: any) => {
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
+
   return (
     <Link to={`${Routes.KULUP}/${kulup.username}`}>
       <Stack
@@ -35,7 +43,7 @@ const KulupCard = ({ kulup }: any) => {
           boxShadow:
             'rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px',
           borderRadius: '10px',
-          width: '350px',
+          width: { xs: '250px', md: '350px' },
         }}
       >
         <Stack gap="30px">
@@ -43,8 +51,8 @@ const KulupCard = ({ kulup }: any) => {
             <Image
               src={kulup.logo}
               alt={kulup.name}
-              width="200px"
-              height="150px"
+              width={isMobile ? '150px' : '200px'}
+              height={isMobile ? '100px' : '150px'}
               sx={{
                 boxShadow:
                   'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
@@ -82,12 +90,19 @@ const KulupCard = ({ kulup }: any) => {
 const index = () => {
   return (
     <Layout>
-      <Stack px="20px" gap="20px">
+      <Stack gap="20px" pt="60px">
         <Stack>
-          <Typography variant="h2">Tüm Kulüpler</Typography>
+          <Typography variant="h3" color="primary" textAlign="center">
+            Tüm Kulüpler
+          </Typography>
         </Stack>
 
-        <Stack flexDirection="row" gap="30px" flexWrap="wrap">
+        <Stack
+          flexDirection="row"
+          gap="30px"
+          flexWrap="wrap"
+          justifyContent="center"
+        >
           {kulupler.map((kulup) => (
             <KulupCard kulup={kulup} />
           ))}

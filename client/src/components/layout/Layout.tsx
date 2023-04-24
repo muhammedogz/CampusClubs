@@ -14,7 +14,7 @@ export const Layout = ({ children, ...rest }: LayoutProps) => {
         <Sidebar />
         <Stack
           width={{ xs: 'calc(100vw - 90px)', md: 'calc(100vw - 260px)' }}
-          px="20px"
+          px={{ xs: '10px', md: '20px' }}
           component="main"
           mb={2}
         >
