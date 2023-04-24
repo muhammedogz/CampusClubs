@@ -31,6 +31,22 @@ const SidebarHeader = () => {
   );
 };
 
+const SidebarFooter = () => {
+  const currentYear = new Date().getFullYear();
+  return (
+    <Stack position="absolute" bottom="8px" left={{ xs: '0px', md: '12px' }}>
+      <Typography
+        variant="body2"
+        fontWeight={600}
+        textAlign="center"
+        fontSize={{ xs: '10px', md: '16px' }}
+      >
+        Tüm Hakları Saklıdır. @{currentYear}
+      </Typography>
+    </Stack>
+  );
+};
+
 type SidebarMenuProps = {
   children: React.ReactNode | React.ReactNode[];
   title: string;
@@ -110,7 +126,7 @@ export const Sidebar = () => {
           bottom: 0,
         }}
       >
-        <Stack>
+        <Stack flex={1} border={1} minHeight="100vh" position="relative">
           <SidebarHeader />
           <Stack gap="12px">
             <SidebarMenu title="Kulüp Yönetim">
@@ -142,8 +158,8 @@ export const Sidebar = () => {
               <SidebarMenuItem icon={<LogoutIcon />}>Çıkış Yap</SidebarMenuItem>
             </SidebarMenu>
           </Stack>
+          <SidebarFooter />
         </Stack>
-        {/* <ProSidebarFooter collapsed={collapsed} /> */}
       </ProSidebar>
     </Stack>
   );
