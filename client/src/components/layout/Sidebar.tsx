@@ -34,7 +34,7 @@ const SidebarHeader = () => {
 const SidebarFooter = () => {
   const currentYear = new Date().getFullYear();
   return (
-    <Stack position="absolute" bottom="8px" left={{ xs: '0px', md: '12px' }}>
+    <Stack>
       <Typography
         variant="body2"
         fontWeight={600}
@@ -104,7 +104,15 @@ type SidebarMenuItemProps = {
 };
 
 const SidebarMenuItem = ({ ...rest }: SidebarMenuItemProps) => {
-  return <MenuItem component="div" {...rest} />;
+  return (
+    <MenuItem
+      component="div"
+      style={{
+        padding: '0px 24px',
+      }}
+      {...rest}
+    />
+  );
 };
 
 export const Sidebar = () => {
@@ -126,37 +134,49 @@ export const Sidebar = () => {
           bottom: 0,
         }}
       >
-        <Stack flex={1} border={1} minHeight="100vh" position="relative">
-          <SidebarHeader />
-          <Stack gap="12px">
-            <SidebarMenu title="Kulüp Yönetim">
-              <Link to={Routes.HOME}>
-                <SidebarMenuItem icon={<HomeIcon />}>Anasayfa</SidebarMenuItem>
-              </Link>
-            </SidebarMenu>
-            <SidebarMenu title="Genel">
-              <SubMenu label="Kulüpler" icon={<PeopleIcon />}>
-                <Link to={Routes.KULUP}>
-                  <SidebarMenuItem>Tüm Kulüpler</SidebarMenuItem>
+        <Stack
+          minHeight="100vh"
+          justifyContent="space-between"
+          pb={{ xs: '10px', md: '20px' }}
+        >
+          <Stack>
+            <SidebarHeader />
+            <Stack gap="12px">
+              <SidebarMenu title="Kulüp Yönetim">
+                <Link to={Routes.HOME}>
+                  <SidebarMenuItem icon={<HomeIcon />}>
+                    Anasayfa
+                  </SidebarMenuItem>
                 </Link>
-                <Link to={Routes.KULUP}>
-                  <SidebarMenuItem>Kulüp Yöneticileri</SidebarMenuItem>
-                </Link>
-              </SubMenu>
-              <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
-                <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
-              </SubMenu>
-            </SidebarMenu>
-            <SidebarMenu title="Kullanıcı">
-              <SidebarMenuItem
-                icon={<PersonPinIcon />}
-                // suffix={<Badge variant="dot">New</Badge>}
-              >
-                Profilim
-              </SidebarMenuItem>
-              <SidebarMenuItem icon={<SettingsIcon />}>Ayarlar</SidebarMenuItem>
-              <SidebarMenuItem icon={<LogoutIcon />}>Çıkış Yap</SidebarMenuItem>
-            </SidebarMenu>
+              </SidebarMenu>
+              <SidebarMenu title="Genel">
+                <SubMenu label="Kulüpler" icon={<PeopleIcon />}>
+                  <Link to={Routes.KULUP}>
+                    <SidebarMenuItem>Tüm Kulüpler</SidebarMenuItem>
+                  </Link>
+                  <Link to={Routes.KULUP}>
+                    <SidebarMenuItem>Kulüp Yöneticileri</SidebarMenuItem>
+                  </Link>
+                </SubMenu>
+                <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
+                  <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
+                </SubMenu>
+              </SidebarMenu>
+              <SidebarMenu title="Kullanıcı">
+                <SidebarMenuItem
+                  icon={<PersonPinIcon />}
+                  // suffix={<Badge variant="dot">New</Badge>}
+                >
+                  Profilim
+                </SidebarMenuItem>
+                <SidebarMenuItem icon={<SettingsIcon />}>
+                  Ayarlar
+                </SidebarMenuItem>
+                <SidebarMenuItem icon={<LogoutIcon />}>
+                  Çıkış Yap
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </Stack>
           </Stack>
           <SidebarFooter />
         </Stack>
