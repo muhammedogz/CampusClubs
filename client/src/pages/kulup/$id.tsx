@@ -1,20 +1,11 @@
-import {
-  Divider,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
+import Table, { Column } from 'src/components/common/Table';
 import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
+import { EtkinlikWithoutKulupType, UyeWithoutKulupType } from 'src/types/types';
 import { Layout } from '../../components/layout/Layout';
 
 type KulupContentProps = {
@@ -104,46 +95,225 @@ const KulupContent = ({ kulup }: KulupContentProps) => {
   );
 };
 
-const KulupEtkinlikleri = () => {
-  return (
-    <Stack id="kulup-etkinlikleri">
-      <Typography variant="h4" fontWeight={600} color="main">
-        Etkinlikler
-      </Typography>
-      <Divider />
-      <Stack
-        sx={{
-          maxWidth: { xs: 250, sm: 500 },
-        }}
-      >
-        <TableContainer component={Paper}>
-          <Table size="small" aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Etkinlik Adı</TableCell>
-                <TableCell align="right">Tarih</TableCell>
-                <TableCell align="right">Yer</TableCell>
-                <TableCell align="right">Tür</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  Geekday 2021
-                </TableCell>
-                <TableCell align="right">Mayıs 2021</TableCell>
-                <TableCell align="right">Online -Youtube- </TableCell>
-                <TableCell align="right">Workshop</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Stack>
-    </Stack>
-  );
-};
+const events: EtkinlikWithoutKulupType[] = [
+  {
+    name: 'Geekday 2021',
+    date: 'Mayıs 2021',
+    location: 'Online Youtube',
+    type: 'Workshop',
+    description: 'Geekday 2021',
+    id: 1,
+    image: 'https://abl.gtu.edu.tr/resimler/104/t_10416.jpg?',
+    slug: 'geekday-2021',
+  },
+  {
+    name: 'Startup Weekend Istanbul',
+    date: 'June 2023',
+    location: 'Istanbul, Turkey',
+    type: 'Hackathon',
+    description:
+      'An event where entrepreneurs come together to pitch ideas, form teams, and build prototypes over the course of a weekend.',
+    id: 2,
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/08/05/26/startup-1807545_960_720.jpg',
+    slug: 'startup-weekend-istanbul',
+  },
+  {
+    name: 'Women in Tech Conference',
+    date: 'September 2023',
+    location: 'San Francisco, USA',
+    type: 'Conference',
+    description:
+      'A conference that brings together women in technology to network, learn, and share ideas.',
+    id: 3,
+    image:
+      'https://cdn.pixabay.com/photo/2018/08/08/14/10/conference-3593087_960_720.jpg',
+    slug: 'women-in-tech-conference',
+  },
+  {
+    name: 'CodeCamp',
+    date: 'July 2023',
+    location: 'Boston, USA',
+    type: 'Workshop',
+    description:
+      'A workshop where participants learn to code and build projects in a collaborative environment.',
+    id: 4,
+    image:
+      'https://cdn.pixabay.com/photo/2017/07/31/11/46/laptop-2557586_960_720.jpg',
+    slug: 'codecamp',
+  },
+  {
+    name: 'DevOpsDays London',
+    date: 'October 2023',
+    location: 'London, UK',
+    type: 'Conference',
+    description:
+      'A conference focused on DevOps practices, tools, and culture.',
+    id: 5,
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/19/22/32/data-1845504_960_720.jpg',
+    slug: 'devopsdays-london',
+  },
+  {
+    name: 'Artificial Intelligence Summit',
+    date: 'August 2023',
+    location: 'Tokyo, Japan',
+    type: 'Summit',
+    description:
+      'A summit exploring the latest trends and innovations in artificial intelligence.',
+    id: 6,
+    image:
+      'https://cdn.pixabay.com/photo/2018/05/28/14/19/ai-3436190_960_720.jpg',
+    slug: 'artificial-intelligence-summit',
+  },
+  {
+    name: 'Data Science Bootcamp',
+    date: 'May 2023',
+    location: 'Toronto, Canada',
+    type: 'Bootcamp',
+    description:
+      'A bootcamp designed to teach participants the fundamentals of data science and machine learning.',
+    id: 7,
+    image:
+      'https://cdn.pixabay.com/photo/2017/08/06/11/16/code-2588852_960_720.jpg',
+    slug: 'data-science-bootcamp',
+  },
+];
+
+const etkinlikColumns: Column<EtkinlikWithoutKulupType>[] = [
+  { header: ' ', accessor: 'image', align: 'center' },
+  { header: 'Etkinlik Adı', accessor: 'name' },
+  { header: 'Tarih', accessor: 'date', align: 'center' },
+  { header: 'Yer', accessor: 'location', align: 'center' },
+];
+
+const uyeler: UyeWithoutKulupType[] = [
+  {
+    id: 1,
+    name: 'Muhammed Oğuz',
+    image:
+      'https://cdn.pixabay.com/photo/2021/08/25/15/21/man-6576565_960_720.png',
+    slug: 'muhammed-oguz',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 2,
+    name: 'Ayşe Kaya',
+    image:
+      'https://cdn.pixabay.com/photo/2015/03/04/22/35/head-659652_960_720.png',
+    slug: 'ayse-kaya',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 3,
+    name: 'Kadir Demir',
+    image:
+      'https://cdn.pixabay.com/photo/2016/03/31/20/27/avatar-1295773_960_720.png',
+    slug: 'kadir-demir',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 4,
+    name: 'Fatma Yılmaz',
+    image:
+      'https://cdn.pixabay.com/photo/2017/01/31/19/07/avatar-2026510_960_720.png',
+    slug: 'fatma-yilmaz',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 5,
+    name: 'Emre Şahin',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_960_720.png',
+    slug: 'emre-sahin',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 6,
+    name: 'Suleyman Golbol',
+    image:
+      'https://cdn.pixabay.com/photo/2021/08/25/15/21/man-6576565_960_720.png',
+    slug: 'suleyman-golbol',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 7,
+    name: 'Dilara Özdemir',
+    image:
+      'https://cdn.pixabay.com/photo/2014/03/24/17/19/teacher-295387_960_720.png',
+    slug: 'dilara-ozdemir',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 8,
+    name: 'Ali İhsan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/03/31/20/27/avatar-1295772_960_720.png',
+    slug: 'ali-ihsan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 9,
+    name: 'Gamze Arslan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
+    slug: 'gamze-arslan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 9,
+    name: 'Gamze Arslan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
+    slug: 'gamze-arslan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 9,
+    name: 'Gamze Arslan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
+    slug: 'gamze-arslan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 9,
+    name: 'Gamze Arslan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
+    slug: 'gamze-arslan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 9,
+    name: 'Gamze Arslan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
+    slug: 'gamze-arslan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 9,
+    name: 'Gamze Arslan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
+    slug: 'gamze-arslan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: 9,
+    name: 'Gamze Arslan',
+    image:
+      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
+    slug: 'gamze-arslan',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+];
+
+const uyeColumns: Column<UyeWithoutKulupType>[] = [
+  { header: ' ', accessor: 'image', align: 'center' },
+  { header: 'Üye Adı', accessor: 'name' },
+];
 
 const Kulup = () => {
   const { id } = useParams();
@@ -173,16 +343,21 @@ const Kulup = () => {
             height: '200px',
           }}
         />
-        <KulupContent kulup={desiredKulup} />
-        <Stack
-          id="kulup-etkinlikleri-uyeleri"
-          flexDirection={{ xs: 'column', md: 'row' }}
-          justifyContent="space-between"
-          alignItems="center"
-          gap="40px"
-        >
-          <KulupEtkinlikleri />
-          <KulupEtkinlikleri />
+        <Stack gap="50px">
+          <KulupContent kulup={desiredKulup} />
+          <Stack
+            id="kulup-etkinlikleri-uyeleri"
+            flexDirection={{ xs: 'column', md: 'row' }}
+            justifyContent="space-evenly"
+            gap="40px"
+          >
+            <Table
+              title="Etkinlikler"
+              data={events}
+              columns={etkinlikColumns}
+            />
+            <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
+          </Stack>
         </Stack>
       </Stack>
     </Layout>
