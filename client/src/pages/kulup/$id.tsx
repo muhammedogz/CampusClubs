@@ -113,7 +113,7 @@ const KulupEtkinlikleri = () => {
       <Divider />
       <Stack
         sx={{
-          maxWidth: 500,
+          maxWidth: { xs: 250, sm: 500 },
         }}
       >
         <TableContainer component={Paper}>
@@ -155,9 +155,7 @@ const Kulup = () => {
 
   return (
     <Layout>
-      <Stack
-        gap="20px"
-      >
+      <Stack gap="20px">
         <Stack
           id="upper-background"
           sx={{
