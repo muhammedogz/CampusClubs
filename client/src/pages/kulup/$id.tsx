@@ -17,8 +17,6 @@ const KulupContent = ({ kulup }: KulupContentProps) => {
   return (
     <Stack
       id="kulup-bilgileri"
-      flex={1}
-      mt="160px"
       zIndex={2}
       flexDirection={{ xs: 'column', md: 'row' }}
       justifyContent="space-between"
@@ -366,7 +364,6 @@ const Kulup = () => {
             position: 'absolute',
             left: 0,
             right: 0,
-            width: '100%',
             backgroundImage: `url(${desiredKulup.logo})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -376,7 +373,7 @@ const Kulup = () => {
             height: '200px',
           }}
         />
-        <Stack gap="50px">
+        <Stack gap="50px" mt="160px">
           <KulupContent kulup={desiredKulup} />
           <Stack gap="10px">
             <Stack

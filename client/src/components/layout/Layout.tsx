@@ -13,7 +13,7 @@ export const Layout = ({ children, ...rest }: LayoutProps) => {
       <Stack flexDirection="row" {...rest}>
         <Sidebar />
         <Stack
-          width={{ xs: 'calc(100vw - 90px)', md: 'calc(100vw - 260px)' }}
+          width={{ xs: 'calc(100vw - 80px)', md: 'calc(100vw - 260px)' }}
           px={{ xs: '10px', md: '20px' }}
           component="main"
           mb={2}
