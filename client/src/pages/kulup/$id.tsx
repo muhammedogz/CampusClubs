@@ -1,4 +1,5 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack, Tab, Tabs, Typography } from '@mui/material';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
@@ -315,8 +316,40 @@ const uyeColumns: Column<UyeWithoutKulupType>[] = [
   { header: 'Üye Adı', accessor: 'name' },
 ];
 
+type DuyuruType = {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+};
+
+const duyurular: DuyuruType[] = [
+  {
+    id: 1,
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc.',
+    date: '2021-09-01',
+  },
+  {
+    id: 2,
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc.',
+    date: '2021-09-01',
+  },
+];
+
+const duyuruColumns: Column<DuyuruType>[] = [
+  { header: 'Duyuru Başlığı', accessor: 'title' },
+  { header: 'Duyuru Açıklaması', accessor: 'description' },
+  { header: 'Duyuru Tarihi', accessor: 'date' },
+];
+
 const Kulup = () => {
   const { id } = useParams();
+
+  const [index, setIndex] = useState(0);
 
   const tumKulupler = kulupler;
   const desiredKulup = tumKulupler.find((kulup) => kulup.username === id);
@@ -345,18 +378,37 @@ const Kulup = () => {
         />
         <Stack gap="50px">
           <KulupContent kulup={desiredKulup} />
-          <Stack
-            id="kulup-etkinlikleri-uyeleri"
-            flexDirection={{ xs: 'column', md: 'row' }}
-            justifyContent="space-evenly"
-            gap="40px"
-          >
-            <Table
-              title="Etkinlikler"
-              data={events}
-              columns={etkinlikColumns}
-            />
-            <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
+          <Stack gap="10px">
+            <Stack
+              id="kulup-etkinlikleri-uyeleri"
+              flexDirection={{ xs: 'column', md: 'row' }}
+              justifyContent="space-evenly"
+              gap="40px"
+            >
+              <Stack>
+                <Stack alignItems="center">
+                  <Tabs value={index} onChange={(e, value) => setIndex(value)}>
+                    <Tab label="Etkinlikler" value={0} />
+                    <Tab label="Duyurular" value={1} />
+                  </Tabs>
+                </Stack>
+                {index === 0 && (
+                  <Table
+                    title="Etkinlikler"
+                    data={events}
+                    columns={etkinlikColumns}
+                  />
+                )}
+                {index === 1 && (
+                  <Table
+                    title="Duyurular"
+                    data={duyurular}
+                    columns={duyuruColumns}
+                  />
+                )}
+              </Stack>
+              <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
+            </Stack>
           </Stack>
         </Stack>
       </Stack>

@@ -23,7 +23,11 @@ const SidebarHeader = () => {
     <Stack justifyContent="center" alignItems="center">
       <Link to="/">
         <Image
-          src={isMobile ? getLocalImage('/icons/logo-mobile.svg') : getLocalImage('/icons/logo.svg')}
+          src={
+            isMobile
+              ? getLocalImage('/icons/logo-mobile.svg')
+              : getLocalImage('/icons/logo.svg')
+          }
           alt="logo"
           width="200px"
         />
@@ -180,7 +184,9 @@ export const Sidebar = () => {
                   </Link>
                 </SubMenu>
                 <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
-                  <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
+                  <Link to={Routes.ETKINLIK}>
+                    <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
+                  </Link>
                 </SubMenu>
               </SidebarMenu>
               <SidebarMenu title="Kullanıcı">

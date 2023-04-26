@@ -13,6 +13,7 @@ type CampusClubCardProps = {
   title: string;
   description: string;
   link: string;
+  topLeftText?: string;
 };
 
 const CampusClubCard = ({
@@ -20,6 +21,7 @@ const CampusClubCard = ({
   description,
   image,
   link,
+  topLeftText,
 }: CampusClubCardProps) => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
 
@@ -55,6 +57,24 @@ const CampusClubCard = ({
           width: { xs: '250px', md: '350px' },
         }}
       >
+        {topLeftText && (
+          <Stack
+            id="top-left-text"
+            sx={{
+              zIndex: 2,
+              position: 'absolute',
+              top: '4px',
+              left: '4px',
+
+              backgroundColor: '#00AF8E',
+              borderRadius: '20px',
+              p: '6px',
+              color: '#ffffff',
+            }}
+          >
+            TopLeft
+          </Stack>
+        )}
         <Stack gap="30px">
           <Stack justifyContent="center" alignItems="center">
             <Image
