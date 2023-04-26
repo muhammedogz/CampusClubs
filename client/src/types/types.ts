@@ -6,7 +6,7 @@ export type KulupType = {
   image: string;
   uye: UyeType[];
   etkinlik: EtkinlikType[];
-  danisman: DanismanType;
+  danisman?: DanismanType;
 };
 
 export type DanismanType = {

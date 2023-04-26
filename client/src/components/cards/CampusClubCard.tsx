@@ -14,6 +14,8 @@ type CampusClubCardProps = {
   description: string;
   link: string;
   topLeftText?: string;
+  topRightText?: string;
+  rightDownElement?: React.ReactNode;
 };
 
 const CampusClubCard = ({
@@ -22,6 +24,8 @@ const CampusClubCard = ({
   image,
   link,
   topLeftText,
+  topRightText,
+  rightDownElement,
 }: CampusClubCardProps) => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
 
@@ -60,6 +64,8 @@ const CampusClubCard = ({
         {topLeftText && (
           <Stack
             id="top-left-text"
+            justifyContent="center"
+            alignItems="center"
             sx={{
               zIndex: 2,
               position: 'absolute',
@@ -72,9 +78,30 @@ const CampusClubCard = ({
               color: '#ffffff',
             }}
           >
-            TopLeft
+            <Typography variant="caption">{topLeftText}</Typography>
           </Stack>
         )}
+        {topRightText && (
+          <Stack
+            id="top-left-text"
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              zIndex: 2,
+              position: 'absolute',
+              top: '4px',
+              right: '4px',
+
+              backgroundColor: '#00AF8E',
+              borderRadius: '20px',
+              p: '6px',
+              color: '#ffffff',
+            }}
+          >
+            <Typography variant="caption">{topRightText}</Typography>
+          </Stack>
+        )}
+
         <Stack gap="30px">
           <Stack justifyContent="center" alignItems="center">
             <Image
@@ -98,16 +125,33 @@ const CampusClubCard = ({
             }}
           >
             <Divider color="#d9d9d9" />
-            <Stack px="14px">
-              <Typography>{title}</Typography>
-              <Typography
-                fontWeight={300}
-                sx={{
-                  opacity: 0.8,
-                }}
-              >
-                {description}
-              </Typography>
+            <Stack
+              px="14px"
+              flexDirection="row"
+              justifyContent="space-between"
+              gap="6px"
+            >
+              <Stack>
+                <Typography>{title}</Typography>
+                <Typography
+                  fontWeight={300}
+                  sx={{
+                    opacity: 0.8,
+                  }}
+                >
+                  {description}
+                </Typography>
+              </Stack>
+              {rightDownElement && (
+                <Stack
+                  id="right-down-element"
+                  justifyContent="center"
+                  alignItems="center"
+                  zIndex={3}
+                >
+                  {rightDownElement}
+                </Stack>
+              )}
             </Stack>
           </Stack>
         </Stack>
