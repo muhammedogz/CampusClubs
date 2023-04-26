@@ -48,6 +48,7 @@ const SidebarFooter = () => {
       >
         Tüm Hakları Saklıdır.{' '}
         <Typography
+          component="span"
           sx={{
             display: { xs: 'none', md: 'inline' },
             fontWeight: 600,
@@ -56,6 +57,7 @@ const SidebarFooter = () => {
           CampusClubs@{currentYear}
         </Typography>
         <Typography
+          component="span"
           sx={{
             display: { xs: 'inline', md: 'none' },
             fontWeight: 600,

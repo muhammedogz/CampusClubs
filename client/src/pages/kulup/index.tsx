@@ -22,6 +22,7 @@ const index = () => {
         >
           {kulupler.map((kulup) => (
             <CampusClubCard
+              key={kulup.name + kulup.description}
               link={`${Routes.KULUP}/${kulup.username}`}
               image={kulup.logo}
               title={kulup.name}
@@ -30,6 +31,7 @@ const index = () => {
           ))}
           {kulupler.map((kulup) => (
             <CampusClubCard
+              key={kulup.name + kulup.description}
               link={`${Routes.KULUP}/${kulup.username}`}
               image={kulup.logo}
               title={kulup.name}
