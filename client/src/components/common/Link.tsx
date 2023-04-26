@@ -8,5 +8,14 @@ type LinkProps = ReactRouterLinkProps;
 export const Link = ({ to, ...rest }: LinkProps) => {
   const basePath = import.meta.env.VITE_BASE_PATH;
 
-  return <ReactRouterLink to={`/${basePath}${to}`} {...rest} />;
+  return (
+    <ReactRouterLink
+      style={{
+        textDecoration: 'none',
+        color: 'inherit',
+      }}
+      to={`/${basePath}${to}`}
+      {...rest}
+    />
+  );
 };

@@ -5,17 +5,15 @@ type ImageProps = AvatarProps & {
   height?: string;
 };
 
-const Image = ({ src, width, height, ...rest }: ImageProps) => {
-  const publicPath = import.meta.env.VITE_PUBLIC_PATH;
-
-  console.log('publicPath', `${publicPath}${src}`);
+const Image = ({ width, height, sx, ...rest }: ImageProps) => {
   return (
     <Avatar
       variant="rounded"
-      src={`${publicPath}${src}`}
       sx={{
         width: width ?? '100%',
         height: height ?? 'initial',
+
+        ...sx,
       }}
       {...rest}
     />
