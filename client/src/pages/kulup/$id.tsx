@@ -382,8 +382,8 @@ const Kulup = () => {
               justifyContent="space-evenly"
               gap="40px"
             >
-              <Stack>
-                <Stack alignItems="center">
+              <Stack gap={6}>
+                <Stack alignItems="center" alignSelf="flex-start">
                   <Tabs value={index} onChange={(e, value) => setIndex(value)}>
                     <Tab label="Etkinlikler" value={0} />
                     <Tab label="Duyurular" value={1} />
@@ -391,6 +391,7 @@ const Kulup = () => {
                 </Stack>
                 {index === 0 && (
                   <Table
+                    fullWidth
                     title="Etkinlikler"
                     data={events}
                     columns={etkinlikColumns}
@@ -398,13 +399,16 @@ const Kulup = () => {
                 )}
                 {index === 1 && (
                   <Table
+                    fullWidth
                     title="Duyurular"
                     data={duyurular}
                     columns={duyuruColumns}
                   />
                 )}
               </Stack>
-              <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
+              <Stack>
+                <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
+              </Stack>
             </Stack>
           </Stack>
         </Stack>

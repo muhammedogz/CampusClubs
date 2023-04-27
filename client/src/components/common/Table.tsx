@@ -78,9 +78,16 @@ const TableContent = <T,>({ data, columns }: TableContentProps<T>) => {
 type TableProps<T> = TableContentProps<T> & {
   title: string;
   tableDivSx?: SxProps;
+  fullWidth?: boolean;
 };
 
-const Table = <T,>({ data, columns, title, tableDivSx }: TableProps<T>) => {
+const Table = <T,>({
+  data,
+  columns,
+  title,
+  tableDivSx,
+  fullWidth,
+}: TableProps<T>) => {
   return (
     <Stack id="table-wrapper">
       <Typography variant="h4" fontWeight={600} color="main">
@@ -94,6 +101,9 @@ const Table = <T,>({ data, columns, title, tableDivSx }: TableProps<T>) => {
             xs: `calc(100vw - 100px)`,
             md: `calc(54vw - 200px)`,
           },
+          width: fullWidth
+            ? { xs: 'calc(100vw - 100px)', md: 'calc(54vw - 200px)' }
+            : undefined,
           ...tableDivSx,
         }}
       >
