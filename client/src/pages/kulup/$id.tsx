@@ -6,6 +6,7 @@ import { Link } from 'src/components/common/Link';
 import Table, { Column } from 'src/components/common/Table';
 import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
+import Slides from 'src/slides/Slides';
 import { EtkinlikWithoutKulupType, UyeWithoutKulupType } from 'src/types/types';
 import { Layout } from '../../components/layout/Layout';
 
@@ -389,22 +390,20 @@ const Kulup = () => {
                     <Tab label="Duyurular" value={1} />
                   </Tabs>
                 </Stack>
-                {index === 0 && (
+                <Slides index={index}>
                   <Table
                     fullWidth
                     title="Etkinlikler"
                     data={events}
                     columns={etkinlikColumns}
                   />
-                )}
-                {index === 1 && (
                   <Table
                     fullWidth
                     title="Duyurular"
                     data={duyurular}
                     columns={duyuruColumns}
                   />
-                )}
+                </Slides>
               </Stack>
               <Stack>
                 <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
