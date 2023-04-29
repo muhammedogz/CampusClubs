@@ -22,51 +22,103 @@ public class UserController : ControllerBase
     public IActionResult GetAll()
     {   // Return all user info
         try{
-            IEnumerable<User> objCategoryList = _db.Users;
-            return Ok(objCategoryList);
+            IEnumerable<User> userList = _db.Users;
+            return Ok(new ApiResponse(true, "User request is successful", userList));
         }
         catch (Exception e){
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "User request is unsuccessful", e.Message));
         }
     }
 
     [HttpGet("id")]
-    public string GetUserName(int id)
+    public IActionResult GetUserById(int id)
     {   
-        // Get the underlying SqlConnection object
-        SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
+        /*** only returns username ***/
+        // // Get the underlying SqlConnection object
+        // SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
-        // get sql connection from appsettings.json
-        var sql = "SELECT * FROM Users WHERE userId = @Id";
-        var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Id", id);
+        // // get sql connection from appsettings.json
+        // var sql = "SELECT * FROM Users WHERE userId = @Id";
+        // var cmd = new SqlCommand(sql, sqlConnection);
+        // cmd.Parameters.AddWithValue("@Id", id);
 
-        sqlConnection.Open();
-        var reader = cmd.ExecuteReader();
-        if (reader.Read())
+        // sqlConnection.Open();
+        // var reader = cmd.ExecuteReader();
+        // if (reader.Read())
+        // {
+        //     var name = reader.GetString(1);
+        //     return name;
+        // }
+
+        /*** returns all info ***/
+        User? user = _db.Users.SingleOrDefault(u => u.UserId == id);
+
+        if (user != null)
         {
-            var name = reader.GetString(1);
-            return name;
+            return Ok(new ApiResponse(true, "User request is successfull", user));
         }
 
-        return "User not found";
+        return NotFound(new ApiResponse(false, "User request is unsuccessful since user couldn't be found", null));
+    }
+
+    [HttpGet("username")]
+    public IActionResult GetUserByUsername(string username)
+    {   
+        /*** only returns username ***/
+        // // Get the underlying SqlConnection object
+        // SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
+
+        // // get sql connection from appsettings.json
+        // var sql = "SELECT * FROM Users WHERE username = @username";
+        // var cmd = new SqlCommand(sql, sqlConnection);
+        // cmd.Parameters.AddWithValue("@username", username);
+
+        // sqlConnection.Open();
+        // var reader = cmd.ExecuteReader();
+        // if (reader.Read())
+        // {
+        //     User user = new User
+        //     {
+        //         UserId = reader.GetInt32(0),
+        //         Username = reader.GetString(1),
+        //         Name = reader.GetString(2),
+        //         Email = reader.GetString(3),
+        //         Password = reader.GetString(4),
+        //         CreatedDate = reader.GetDateTime(5),
+        //         DeletedDate = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+        //     };
+
+        //     return Ok(user);
+        // }
+
+        // return NotFound("User not found");
+        
+        /*** returns all info ***/
+        User? user = _db.Users.SingleOrDefault(u => u.Username == username);
+
+        if (user != null)
+        {
+            return Ok(new ApiResponse(true, "User request is successful", user));
+        }
+
+        return NotFound(new ApiResponse(false, "User not found", null));
     }
 
     [HttpPost]
-    public IActionResult Create(User objCategory)
+    public IActionResult Create(User user)
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
         var sql = "INSERT INTO Users (userId, username, name, email, password, createdDate, deletedDate) VALUES (@Id, @Username, @Name, @Email, @Password, @CreatedDate, @DeletedDate)";
         var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Id", objCategory.UserId);
-        cmd.Parameters.AddWithValue("@Username", objCategory.Username);
-        cmd.Parameters.AddWithValue("@Name", objCategory.Name);
-        cmd.Parameters.AddWithValue("@Email", objCategory.Email);
-        cmd.Parameters.AddWithValue("@Password", objCategory.Password);
-        cmd.Parameters.AddWithValue("@CreatedDate", objCategory.CreatedDate ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@DeletedDate", objCategory.DeletedDate ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@Id", user.UserId);
+        cmd.Parameters.AddWithValue("@Username", user.Username);
+        cmd.Parameters.AddWithValue("@Name", user.Name);
+        cmd.Parameters.AddWithValue("@Email", user.Email);
+        cmd.Parameters.AddWithValue("@Password", user.Password);
+        cmd.Parameters.AddWithValue("@CreatedDate", user.CreatedDate ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@DeletedDate", user.DeletedDate ?? (object)DBNull.Value);
         /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
 
         sqlConnection.Open();
@@ -75,11 +127,11 @@ public class UserController : ControllerBase
 
         if (rowsAffected > 0)
         {
-            return Ok("User created successfully.");
+            return Ok(new ApiResponse(true, "User created successfully.", user));
         }
         else
         {
-            return BadRequest("BadRequest: Unable to create the user.");
+            return BadRequest(new ApiResponse(false, "BadRequest: Unable to create the user.", null));
         }
     }
 
@@ -99,11 +151,11 @@ public class UserController : ControllerBase
 
         if (rowsAffected > 0)
         {
-            return Ok("User deleted successfully.");
+            return Ok(new ApiResponse(true, "User deleted successfully.", userId));
         }
         else
         {
-            return NotFound("User not found.");
+            return NotFound(new ApiResponse(false, "User not found.", null));
         }
     }
 
@@ -129,11 +181,11 @@ public class UserController : ControllerBase
 
         if (rowsAffected > 0)
         {
-            return Ok("User updated successfully.");
+            return Ok(new ApiResponse(true, "User request is successful", updatedUser));
         }
         else
         {
-            return NotFound("User not found.");
+            return NotFound(new ApiResponse(false, "User not found.", null));
         }
     }
 
