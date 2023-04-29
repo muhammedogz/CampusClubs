@@ -107,40 +107,45 @@ public class UserController : ControllerBase
     [HttpPost]
     public IActionResult Create(User user)
     {
-        // Get the underlying SqlConnection object
-        SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
+        try{
+            // Get the underlying SqlConnection object
+            SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
-        var sql = "INSERT INTO Users (userId, username, name, email, password, createdDate, deletedDate) VALUES (@Id, @Username, @Name, @Email, @Password, @CreatedDate, @DeletedDate)";
-        var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Id", user.UserId);
-        cmd.Parameters.AddWithValue("@Username", user.Username);
-        cmd.Parameters.AddWithValue("@Name", user.Name);
-        cmd.Parameters.AddWithValue("@Email", user.Email);
-        cmd.Parameters.AddWithValue("@Password", user.Password);
-        cmd.Parameters.AddWithValue("@CreatedDate", user.CreatedDate ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@DeletedDate", user.DeletedDate ?? (object)DBNull.Value);
-        /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
+            var sql = "INSERT INTO Users (userId, username, name, email, password, createdDate, deletedDate) VALUES (@Id, @Username, @Name, @Email, @Password, @CreatedDate, @DeletedDate)";
+            var cmd = new SqlCommand(sql, sqlConnection);
+            cmd.Parameters.AddWithValue("@Id", user.UserId);
+            cmd.Parameters.AddWithValue("@Username", user.Username);
+            cmd.Parameters.AddWithValue("@Name", user.Name);
+            cmd.Parameters.AddWithValue("@Email", user.Email);
+            cmd.Parameters.AddWithValue("@Password", user.Password);
+            cmd.Parameters.AddWithValue("@CreatedDate", user.CreatedDate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@DeletedDate", user.DeletedDate ?? (object)DBNull.Value);
+            /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
 
-        sqlConnection.Open();
-        int rowsAffected = cmd.ExecuteNonQuery();
-        sqlConnection.Close();
+            sqlConnection.Open();
+            int rowsAffected = cmd.ExecuteNonQuery();
+            sqlConnection.Close();
 
-        if (rowsAffected > 0)
-        {
-            return Ok(new ApiResponse(true, "User created successfully.", user));
+            if (rowsAffected > 0)
+            {
+                return Ok(new ApiResponse(true, "User created successfully.", user));
+            }
+            else
+            {
+                return BadRequest(new ApiResponse(false, "BadRequest: Unable to create the user.", null));
+            }
         }
-        else
-        {
-            return BadRequest(new ApiResponse(false, "BadRequest: Unable to create the user.", null));
+        catch (Exception e){
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Unable to create the user. Duplicate user info are not allowed.", e.Message));
         }
     }
 
-    [HttpDelete("{userId}")]
-    public IActionResult Delete(int userId)
+    [HttpDelete("userById/{userId}")]
+    public IActionResult DeleteWithId(int userId)
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
+        User? user = _db.Users.FirstOrDefault(u => u.UserId == userId);
         var sql = "DELETE FROM Users WHERE userId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Id", userId);
@@ -151,7 +156,31 @@ public class UserController : ControllerBase
 
         if (rowsAffected > 0)
         {
-            return Ok(new ApiResponse(true, "User deleted successfully.", userId));
+            return Ok(new ApiResponse(true, "User deleted successfully.", user));
+        }
+        else
+        {
+            return NotFound(new ApiResponse(false, "User not found.", null));
+        }
+    }
+
+    [HttpDelete("userByUsername/{username}")]
+    public IActionResult DeleteWithUsername(string username)
+    {
+        // Get the underlying SqlConnection object
+        SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
+
+        var sql = "DELETE FROM Users WHERE username = @username";
+        var cmd = new SqlCommand(sql, sqlConnection);
+        cmd.Parameters.AddWithValue("@username", username);
+
+        sqlConnection.Open();
+        int rowsAffected = cmd.ExecuteNonQuery();
+        sqlConnection.Close();
+
+        if (rowsAffected > 0)
+        {
+            return Ok(new ApiResponse(true, "User deleted successfully.", username));
         }
         else
         {
