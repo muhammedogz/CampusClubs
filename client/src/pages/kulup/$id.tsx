@@ -196,6 +196,7 @@ const uyeler: UyeWithoutKulupType[] = [
       'https://cdn.pixabay.com/photo/2021/08/25/15/21/man-6576565_960_720.png',
     slug: 'muhammed-oguz',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    bolum: 'Bilgisayar Mühendisliği',
   },
   {
     id: 2,
@@ -204,6 +205,7 @@ const uyeler: UyeWithoutKulupType[] = [
       'https://cdn.pixabay.com/photo/2015/03/04/22/35/head-659652_960_720.png',
     slug: 'ayse-kaya',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    bolum: 'Endüstri Mühendisliği',
   },
   {
     id: 3,
@@ -212,6 +214,7 @@ const uyeler: UyeWithoutKulupType[] = [
       'https://cdn.pixabay.com/photo/2016/03/31/20/27/avatar-1295773_960_720.png',
     slug: 'kadir-demir',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    bolum: 'Makine Mühendisliği',
   },
   {
     id: 4,
@@ -220,6 +223,7 @@ const uyeler: UyeWithoutKulupType[] = [
       'https://cdn.pixabay.com/photo/2017/01/31/19/07/avatar-2026510_960_720.png',
     slug: 'fatma-yilmaz',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    bolum: 'İnşaat Mühendisliği',
   },
   {
     id: 5,
@@ -228,6 +232,7 @@ const uyeler: UyeWithoutKulupType[] = [
       'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_960_720.png',
     slug: 'emre-sahin',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    bolum: 'Elektrik Elektronik Mühendisliği',
   },
   {
     id: 6,
@@ -236,84 +241,14 @@ const uyeler: UyeWithoutKulupType[] = [
       'https://cdn.pixabay.com/photo/2021/08/25/15/21/man-6576565_960_720.png',
     slug: 'suleyman-golbol',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 7,
-    name: 'Dilara Özdemir',
-    image:
-      'https://cdn.pixabay.com/photo/2014/03/24/17/19/teacher-295387_960_720.png',
-    slug: 'dilara-ozdemir',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 8,
-    name: 'Ali İhsan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/03/31/20/27/avatar-1295772_960_720.png',
-    slug: 'ali-ihsan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 9,
-    name: 'Gamze Arslan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
-    slug: 'gamze-arslan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 9,
-    name: 'Gamze Arslan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
-    slug: 'gamze-arslan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 9,
-    name: 'Gamze Arslan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
-    slug: 'gamze-arslan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 9,
-    name: 'Gamze Arslan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
-    slug: 'gamze-arslan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 9,
-    name: 'Gamze Arslan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
-    slug: 'gamze-arslan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 9,
-    name: 'Gamze Arslan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
-    slug: 'gamze-arslan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  },
-  {
-    id: 9,
-    name: 'Gamze Arslan',
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/18/23/38/woman-1837376_960_720.png',
-    slug: 'gamze-arslan',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    bolum: 'Bilgisayar Mühendisliği',
   },
 ];
 
 const uyeColumns: Column<UyeWithoutKulupType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Üye Adı', accessor: 'name' },
+  { header: 'Bölüm', accessor: 'bolum' },
 ];
 
 type DuyuruType = {
@@ -438,7 +373,7 @@ const Kulup = () => {
           </Stack>
         }
         middleLeft={
-          <Stack id="middle-content-left" gap={6}>
+          <Stack id="middle-content-left" gap={2}>
             <Stack alignItems="center" alignSelf="flex-start">
               <Tabs value={index} onChange={(e, value) => setIndex(value)}>
                 <Tab label="Etkinlikler" value={0} />

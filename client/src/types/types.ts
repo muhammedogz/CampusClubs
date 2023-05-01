@@ -38,6 +38,7 @@ export type UyeType = {
   description: string;
   image: string;
   kulup: KulupType;
+  bolum: string;
 };
 
 export type UyeWithoutKulupType = Omit<UyeType, "kulup">;
