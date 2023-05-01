@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import Table, { Column } from 'src/components/common/Table';
+import ContentLayout from 'src/components/layout/ContentLayout';
 import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
 import Slides from 'src/slides/Slides';
@@ -17,7 +18,7 @@ type KulupContentProps = {
 const KulupContent = ({ kulup }: KulupContentProps) => {
   return (
     <Stack
-      id="kulup-bilgileri"
+      id="upper-content"
       zIndex={2}
       flexDirection={{ xs: 'column', md: 'row' }}
       justifyContent="space-between"
@@ -357,61 +358,115 @@ const Kulup = () => {
 
   return (
     <Layout>
-      <Stack gap="20px">
-        <Stack
-          id="upper-background"
-          sx={{
-            zIndex: -1,
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            backgroundImage: `url(${desiredKulup.logo})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            filter: 'blur(20px)',
-
-            height: '200px',
-          }}
-        />
-        <Stack gap="50px" mt="160px">
-          <KulupContent kulup={desiredKulup} />
-          <Stack gap="10px">
-            <Stack
-              id="kulup-etkinlikleri-uyeleri"
-              flexDirection={{ xs: 'column', md: 'row' }}
-              justifyContent="space-evenly"
-              gap="40px"
-            >
-              <Stack gap={6}>
-                <Stack alignItems="center" alignSelf="flex-start">
-                  <Tabs value={index} onChange={(e, value) => setIndex(value)}>
-                    <Tab label="Etkinlikler" value={0} />
-                    <Tab label="Duyurular" value={1} />
-                  </Tabs>
-                </Stack>
-                <Slides index={index}>
-                  <Table
-                    fullWidth
-                    title="Etkinlikler"
-                    data={events}
-                    columns={etkinlikColumns}
-                  />
-                  <Table
-                    fullWidth
-                    title="Duyurular"
-                    data={duyurular}
-                    columns={duyuruColumns}
-                  />
-                </Slides>
-              </Stack>
-              <Stack>
-                <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
-              </Stack>
+      <ContentLayout
+        upperBackgroundImage={desiredKulup.logo}
+        upperLeft={
+          <Stack
+            id="upper-content-left"
+            justifyContent="center"
+            alignItems="center"
+            flexDirection={{ xs: 'column', sm: 'row' }}
+            gap="30px"
+          >
+            <Image
+              width="150px"
+              height="150px"
+              src={desiredKulup.logo}
+              sx={{
+                borderRadius: '20px',
+                boxShadow:
+                  'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
+              }}
+            />
+            <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
+              <Typography
+                variant="h4"
+                fontSize={30}
+                color="main"
+                fontWeight={600}
+              >
+                {desiredKulup.name}
+              </Typography>
+              <Typography variant="h6" color="secondary">
+                @{desiredKulup.username}
+              </Typography>
+              <Typography variant="h6">{desiredKulup.description}</Typography>
             </Stack>
           </Stack>
-        </Stack>
-      </Stack>
+        }
+        upperRight={
+          <Stack
+            id="upper-content-right"
+            justifyContent="center"
+            gap="6px"
+            sx={{
+              backgroundColor: '#00AF8E',
+              opacity: 0.8,
+              borderRadius: '20px',
+              p: '20px',
+              color: '#ffffff',
+            }}
+          >
+            <Link to={`${Routes.DANISMAN}/yusufsinanakgul`}>
+              <Stack
+                flexDirection="row"
+                gap="10px"
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                  textAlign: 'center',
+                  backgroundColor: '#6F7788',
+                  p: '4px',
+                  borderRadius: '20px',
+                }}
+              >
+                <Typography fontWeight={600}>
+                  Danışman: Yusuf Sinan Akgül
+                </Typography>
+                <Image
+                  variant="circular"
+                  src="https://abl.gtu.edu.tr/resimler/104/t_10416.jpg?"
+                  width="30px"
+                  height="30px"
+                />
+              </Stack>
+            </Link>
+            <Typography fontWeight={600}>
+              Kulüp Türü: Teknoloji, Yazılım, Bilgisayar
+            </Typography>
+            <Typography fontWeight={600}>Üye sayısı: 200+</Typography>
+          </Stack>
+        }
+        middleLeft={
+          <Stack id="middle-content-left" gap={6}>
+            <Stack alignItems="center" alignSelf="flex-start">
+              <Tabs value={index} onChange={(e, value) => setIndex(value)}>
+                <Tab label="Etkinlikler" value={0} />
+                <Tab label="Duyurular" value={1} />
+              </Tabs>
+            </Stack>
+            <Slides index={index}>
+              <Table
+                fullWidth
+                title="Etkinlikler"
+                data={events}
+                columns={etkinlikColumns}
+              />
+              <Table
+                fullWidth
+                title="Duyurular"
+                data={duyurular}
+                columns={duyuruColumns}
+              />
+            </Slides>
+          </Stack>
+        }
+        middleRight={
+          <Stack id="middle-content-right">
+            <Table title="Üyeler" data={uyeler} columns={uyeColumns} />
+          </Stack>
+        }
+      />
     </Layout>
   );
 };
