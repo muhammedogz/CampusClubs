@@ -16,8 +16,8 @@ export type DanismanType = {
   id: number;
   slug: string;
   name: string;
-  description: string;
   image: string;
+  depertman: string;
 };
 
 export type EtkinlikType = {

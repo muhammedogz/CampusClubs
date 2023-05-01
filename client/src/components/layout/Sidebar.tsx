@@ -5,6 +5,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SupervisedUserCircleSharpIcon from '@mui/icons-material/SupervisedUserCircleSharp';
 import { Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import {
   Menu,
@@ -196,14 +197,21 @@ export const Sidebar = () => {
                     <SidebarMenuItem>Tüm Kullanicilar</SidebarMenuItem>
                   </Link>
                 </SubMenu>
+                <SubMenu
+                  label="Danismanlar"
+                  icon={<SupervisedUserCircleSharpIcon />}
+                >
+                  <Link to={Routes.DANISMAN}>
+                    <SidebarMenuItem>Tüm Danışmanlar</SidebarMenuItem>
+                  </Link>
+                </SubMenu>
               </SidebarMenu>
               <SidebarMenu title="Kullanıcı">
-                <SidebarMenuItem
-                  icon={<PersonPinIcon />}
-                  // suffix={<Badge variant="dot">New</Badge>}
-                >
-                  Profilim
-                </SidebarMenuItem>
+                <Link to={'/kullanici/muhammed-oguz'}>
+                  <SidebarMenuItem icon={<PersonPinIcon />}>
+                    Profilim
+                  </SidebarMenuItem>
+                </Link>
                 <SidebarMenuItem icon={<SettingsIcon />}>
                   Ayarlar
                 </SidebarMenuItem>
