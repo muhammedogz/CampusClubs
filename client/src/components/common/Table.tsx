@@ -1,3 +1,4 @@
+import ZoomOutSharpIcon from '@mui/icons-material/ZoomOutSharp';
 import {
   Divider,
   Table as MuiTable,
@@ -105,6 +106,24 @@ const TableContent = <T,>({ data, columns }: TableContentProps<T>) => {
   );
 };
 
+const EmptyTable = () => {
+  return (
+    <Stack alignContent="center" justifyContent="center" p="50px" gap="20px">
+      <Typography variant="h6" fontWeight={600} color="main" textAlign="center">
+        Henüz bir data bulunmamaktadır.
+      </Typography>
+      <ZoomOutSharpIcon
+        color="primary"
+        sx={{
+          width: '100px',
+          height: '100px',
+          alignSelf: 'center',
+        }}
+      />
+    </Stack>
+  );
+};
+
 type TableProps<T> = TableContentProps<T> & {
   title: string;
   tableDivSx?: SxProps;
@@ -137,7 +156,11 @@ const Table = <T,>({
           ...tableDivSx,
         }}
       >
-        <TableContent data={data} columns={columns} />
+        {data.length === 0 ? (
+          <EmptyTable />
+        ) : (
+          <TableContent data={data} columns={columns} />
+        )}
       </Stack>
     </Stack>
   );

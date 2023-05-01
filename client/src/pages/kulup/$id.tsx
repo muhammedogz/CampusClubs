@@ -153,7 +153,7 @@ const KulupEtkinlikDuyuru = ({
 };
 
 type KulupUyelerType = {
-  uyeler: any[];
+  uyeler: UyeType[];
 };
 
 const KulupUyeler = ({ uyeler }: KulupUyelerType) => {
