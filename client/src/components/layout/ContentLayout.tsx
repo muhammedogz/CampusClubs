@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+import CircularLoading from 'src/Loading/CircularLoading';
 import { getLocalImage } from 'src/utils/imageUtils';
 
 type ContentLayoutProps = {
@@ -7,6 +8,10 @@ type ContentLayoutProps = {
   middleLeft: React.ReactNode;
   middleRight: React.ReactNode;
   upperBackgroundImage?: string;
+  loadingUpperLeft?: boolean;
+  loadingUpperRight?: boolean;
+  loadingMiddleLeft?: boolean;
+  loadingMiddleRight?: boolean;
 };
 
 const ContentLayout = ({
@@ -15,6 +20,10 @@ const ContentLayout = ({
   upperLeft,
   upperRight,
   upperBackgroundImage,
+  loadingUpperLeft,
+  loadingUpperRight,
+  loadingMiddleLeft,
+  loadingMiddleRight,
 }: ContentLayoutProps) => {
   return (
     <Stack gap="20px">
@@ -47,18 +56,19 @@ const ContentLayout = ({
           gap="20px"
           textAlign={{ xs: 'center', md: 'initial' }}
         >
-          {upperLeft}
-          {upperRight}
+          {loadingUpperLeft ? <CircularLoading /> : upperLeft}
+          {loadingUpperRight ? <CircularLoading /> : upperRight}
         </Stack>
         <Stack gap="10px">
           <Stack
             id="middle-content"
             flexDirection={{ xs: 'column', md: 'row' }}
+            alignItems={{ xs: 'center', md: 'initial' }}
             justifyContent="space-evenly"
             gap="40px"
           >
-            {middleLeft}
-            {middleRight}
+            {loadingMiddleLeft ? <CircularLoading /> : middleLeft}
+            {loadingMiddleRight ? <CircularLoading /> : middleRight}
           </Stack>
         </Stack>
       </Stack>

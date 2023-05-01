@@ -6,6 +6,8 @@ export type KulupType = {
   description: string;
   image: string;
   uye: UyeType[];
+  uyeCount?: number;
+  faaliyetAlanlari?: string[];
   etkinlik: EtkinlikType[];
   danisman?: DanismanType;
 };
@@ -23,14 +25,12 @@ export type EtkinlikType = {
   slug: string;
   name: string;
   description: string;
-    image: string;
+  image: string;
   location: string;
   type: string;
   date: string;
   kulup: KulupType;
 };
-
-export type EtkinlikWithoutKulupType = Omit<EtkinlikType, "kulup">;
 
 export type UyeType = {
   id: number;
@@ -41,5 +41,3 @@ export type UyeType = {
   kulup: KulupType;
   bolum: string;
 };
-
-export type UyeWithoutKulupType = Omit<UyeType, "kulup">;

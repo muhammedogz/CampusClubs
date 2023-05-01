@@ -11,6 +11,8 @@ export const kulupler: KulupType[] = [
     slug: 'gtu-bilgisayar-toplulugu',
     etkinlik: [],
     uye: [],
+    uyeCount: 200,
+    faaliyetAlanlari: ['Yapay Zeka', 'Makine Öğrenmesi', 'Veri Bilimi'],
   },
   {
     id: 2,
