@@ -41,3 +41,10 @@ export type UyeType = {
   kulup: KulupType;
   bolum: string;
 };
+
+export type DuyuruType = {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+};

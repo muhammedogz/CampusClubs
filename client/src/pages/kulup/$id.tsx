@@ -5,12 +5,13 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { duyurular } from 'src/data/duyurular';
 import { events } from 'src/data/etkinlikler';
 import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
 import { uyeler } from 'src/data/uyeler';
 import Slides from 'src/slides/Slides';
-import { EtkinlikType, KulupType, UyeType } from 'src/types/types';
+import { DuyuruType, EtkinlikType, KulupType, UyeType } from 'src/types/types';
 import { Layout } from '../../components/layout/Layout';
 
 const etkinlikColumns: Column<EtkinlikType>[] = [
@@ -24,30 +25,6 @@ const uyeColumns: Column<UyeType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Üye Adı', accessor: 'name' },
   { header: 'Bölüm', accessor: 'bolum' },
-];
-
-type DuyuruType = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-};
-
-const duyurular: DuyuruType[] = [
-  {
-    id: 1,
-    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc.',
-    date: '2021-09-01',
-  },
-  {
-    id: 2,
-    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc. Sed euismod, nunc ut aliquam aliquam, nunc nunc aliquam elit, nec ultricies nunc nunc vel nunc.',
-    date: '2021-09-01',
-  },
 ];
 
 const duyuruColumns: Column<DuyuruType>[] = [
@@ -184,11 +161,11 @@ const KulupUyeler = ({ uyeler }: KulupUyelerType) => {
     <Stack id="middle-content-right">
       <Table
         title="Üyeler"
+        columns={uyeColumns}
         data={uyeler.map((uye) => ({
           ...uye,
           slug: `${Routes.KULLANICI}/${uye.slug}`,
         }))}
-        columns={uyeColumns}
       />
     </Stack>
   );
