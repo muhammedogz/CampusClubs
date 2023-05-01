@@ -2,6 +2,7 @@ export type KulupType = {
   id: number;
   slug: string;
   name: string;
+  shortName?: string;
   description: string;
   image: string;
   uye: UyeType[];
@@ -22,7 +23,7 @@ export type EtkinlikType = {
   slug: string;
   name: string;
   description: string;
-  image: string;
+    image: string;
   location: string;
   type: string;
   date: string;

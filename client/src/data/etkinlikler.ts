@@ -9,7 +9,7 @@ export const events: EtkinlikType[] = [
     type: 'Workshop',
     description: 'Geekday 2021',
     id: 1,
-    image: 'https://abl.gtu.edu.tr/resimler/104/t_10416.jpg?',
+    image: 'https://picsum.photos/200/800',
     slug: 'geekday-2021',
     kulup: kulupler[0],
   },
@@ -21,10 +21,9 @@ export const events: EtkinlikType[] = [
     description:
       'An event where entrepreneurs come together to pitch ideas, form teams, and build prototypes over the course of a weekend.',
     id: 2,
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/08/05/26/startup-1807545_960_720.jpg',
+    image: 'https://picsum.photos/200/350',
     slug: 'startup-weekend-istanbul',
-    kulup: kulupler[1],
+    kulup: kulupler[0],
   },
   {
     name: 'Women in Tech Conference',
@@ -34,8 +33,7 @@ export const events: EtkinlikType[] = [
     description:
       'A conference that brings together women in technology to network, learn, and share ideas.',
     id: 3,
-    image:
-      'https://cdn.pixabay.com/photo/2018/08/08/14/10/conference-3593087_960_720.jpg',
+    image: 'https://picsum.photos/205/300',
     slug: 'women-in-tech-conference',
     kulup: kulupler[2],
   },
@@ -47,8 +45,7 @@ export const events: EtkinlikType[] = [
     description:
       'A workshop where participants learn to code and build projects in a collaborative environment.',
     id: 4,
-    image:
-      'https://cdn.pixabay.com/photo/2017/07/31/11/46/laptop-2557586_960_720.jpg',
+    image: 'https://picsum.photos/200/700',
     slug: 'codecamp',
     kulup: kulupler[2],
   },
@@ -60,8 +57,7 @@ export const events: EtkinlikType[] = [
     description:
       'A conference focused on DevOps practices, tools, and culture.',
     id: 5,
-    image:
-      'https://cdn.pixabay.com/photo/2016/11/19/22/32/data-1845504_960_720.jpg',
+    image: 'https://picsum.photos/250/300',
     slug: 'devopsdays-london',
     kulup: kulupler[2],
   },
@@ -73,10 +69,9 @@ export const events: EtkinlikType[] = [
     description:
       'A summit exploring the latest trends and innovations in artificial intelligence.',
     id: 6,
-    image:
-      'https://cdn.pixabay.com/photo/2018/05/28/14/19/ai-3436190_960_720.jpg',
+    image: 'https://picsum.photos/200/310',
     slug: 'artificial-intelligence-summit',
-    kulup: kulupler[2],
+    kulup: kulupler[0],
   },
   {
     name: 'Data Science Bootcamp',
@@ -86,8 +81,7 @@ export const events: EtkinlikType[] = [
     description:
       'A bootcamp designed to teach participants the fundamentals of data science and machine learning.',
     id: 7,
-    image:
-      'https://cdn.pixabay.com/photo/2017/08/06/11/16/code-2588852_960_720.jpg',
+    image: 'https://picsum.photos/255/300',
     slug: 'data-science-bootcamp',
     kulup: kulupler[2],
   },

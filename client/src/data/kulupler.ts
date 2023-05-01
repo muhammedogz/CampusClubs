@@ -4,6 +4,7 @@ export const kulupler: KulupType[] = [
   {
     id: 1,
     name: 'GTU Bilgisayar Topluluğu',
+    shortName: 'GTU BT',
     description: 'Bilgisayar Geeklerinin Buluşma Noktası!',
     image:
       'https://pbs.twimg.com/profile_images/1372959978651279361/kRLnF1yt_400x400.jpg',
@@ -14,6 +15,7 @@ export const kulupler: KulupType[] = [
   {
     id: 2,
     name: 'Kulüp 2',
+    shortName: 'KLP 2',
     description: 'Kulüp 2 açıklaması',
     image: 'https://picsum.photos/200/400',
     slug: 'kulup-2',
@@ -23,6 +25,7 @@ export const kulupler: KulupType[] = [
   {
     id: 3,
     name: 'Kulüp 3',
+    shortName: 'KLP 3',
     description: 'Kulüp 3 açıklaması',
     image: 'https://picsum.photos/600/300',
     slug: 'kulup-3',

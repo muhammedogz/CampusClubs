@@ -102,7 +102,7 @@ const CampusClubCard = ({
           </Stack>
         )}
 
-        <Stack gap="30px">
+        <Stack gap="30px" flex={1}>
           <Stack justifyContent="center" alignItems="center">
             <Image
               src={image}
@@ -115,32 +115,30 @@ const CampusClubCard = ({
               }}
             />
           </Stack>
-          <Stack
-            gap="8px"
-            pb="20px"
-            sx={{
-              backgroundColor: '#1c070769',
-              borderBottomRightRadius: '10px',
-              borderBottomLeftRadius: '10px',
-            }}
-          >
+          <Stack id="test" flex={1}>
             <Divider color="#d9d9d9" />
             <Stack
               px="14px"
               flexDirection="row"
               justifyContent="space-between"
               gap="6px"
+              flex={1}
+              py="10px"
+              sx={{
+                backgroundColor: '#1c070769',
+                borderBottomRightRadius: '10px',
+                borderBottomLeftRadius: '10px',
+              }}
             >
-              <Stack>
-                <Typography>{title}</Typography>
-                <Typography
-                  fontWeight={300}
-                  sx={{
-                    opacity: 0.8,
-                  }}
-                >
-                  {description}
-                </Typography>
+              <Stack
+                sx={{
+                  maxHeight: '100px',
+                  maxWidth: rightDownElement ? '250px' : 'initial',
+                  overflow: 'hidden',
+                }}
+              >
+                <Typography fontWeight={600}>{title}</Typography>
+                <Typography fontWeight={300}>{description}</Typography>
               </Stack>
               {rightDownElement && (
                 <Stack
@@ -148,6 +146,9 @@ const CampusClubCard = ({
                   justifyContent="center"
                   alignItems="center"
                   zIndex={3}
+                  sx={{
+                    maxHeight: '100px',
+                  }}
                 >
                   {rightDownElement}
                 </Stack>
