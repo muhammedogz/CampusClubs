@@ -167,7 +167,6 @@ const Kulup = () => {
             gap="6px"
             sx={{
               backgroundColor: '#00AF8E',
-              opacity: 0.8,
               borderRadius: '20px',
               p: '20px',
               color: '#ffffff',
