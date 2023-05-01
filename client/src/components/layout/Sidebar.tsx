@@ -1,3 +1,4 @@
+import ContactsSharpIcon from '@mui/icons-material/ContactsSharp';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -188,6 +189,11 @@ export const Sidebar = () => {
                 <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
                   <Link to={Routes.ETKINLIK}>
                     <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
+                  </Link>
+                </SubMenu>
+                <SubMenu label="Kullanicilar" icon={<ContactsSharpIcon />}>
+                  <Link to={Routes.KULLANICI}>
+                    <SidebarMenuItem>Tüm Kullanicilar</SidebarMenuItem>
                   </Link>
                 </SubMenu>
               </SidebarMenu>
