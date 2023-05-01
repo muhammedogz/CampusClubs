@@ -1,12 +1,13 @@
-import { Stack, StackProps } from '@mui/material';
+import { CircularProgress, Stack, StackProps } from '@mui/material';
 import ResponsiveAppBar from 'src/components/layout/AppBar';
 import { Sidebar } from 'src/components/layout/Sidebar';
 
 type LayoutProps = StackProps & {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  loading?: boolean;
 };
 
-export const Layout = ({ children, ...rest }: LayoutProps) => {
+export const Layout = ({ children, loading, ...rest }: LayoutProps) => {
   return (
     <Stack>
       <ResponsiveAppBar />
@@ -18,7 +19,20 @@ export const Layout = ({ children, ...rest }: LayoutProps) => {
           component="main"
           mb={2}
         >
-          {children}
+          {loading ? (
+            <Stack
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '60%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              <CircularProgress />
+            </Stack>
+          ) : (
+            children
+          )}
         </Stack>
       </Stack>
     </Stack>
