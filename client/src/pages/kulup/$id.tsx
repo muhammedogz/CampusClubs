@@ -214,7 +214,10 @@ const Kulup = () => {
               <Table
                 fullWidth
                 title="Etkinlikler"
-                data={events}
+                data={events.map((event) => ({
+                  ...event,
+                  slug: `${Routes.ETKINLIK}/${event.slug}`,
+                }))}
                 columns={etkinlikColumns}
               />
               <Table

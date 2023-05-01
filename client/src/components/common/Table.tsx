@@ -13,11 +13,52 @@ import {
 } from '@mui/material';
 import React from 'react';
 import Image from 'src/components/common/Image';
+import { Link } from 'src/components/common/Link';
 
 export type Column<T> = {
   header: string;
   align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
   accessor: keyof T | ((data: T) => React.ReactNode);
+  slug?: string;
+};
+
+type TableContentColumnContentProps<T> = {
+  column: Column<T>;
+  data: T;
+};
+
+const TableContentColumnContent = <T,>({
+  column,
+  data,
+}: TableContentColumnContentProps<T>) => {
+  const Content = () => {
+    return (
+      <>
+        {column.accessor === 'image' ? (
+          <Image
+            src={data[column.accessor] as string}
+            width="30px"
+            height="30px"
+            variant="circular"
+          />
+        ) : typeof column.accessor === 'function' ? (
+          (column.accessor(data) as React.ReactNode)
+        ) : (
+          (data[column.accessor] as React.ReactNode)
+        )}
+      </>
+    );
+  };
+
+  const slug = (data as any)?.slug;
+
+  return slug ? (
+    <Link to={slug}>
+      <Content />
+    </Link>
+  ) : (
+    <Content />
+  );
 };
 
 type TableContentProps<T> = {
@@ -53,18 +94,7 @@ const TableContent = <T,>({ data, columns }: TableContentProps<T>) => {
                   component={colIndex === 0 ? 'th' : undefined}
                   scope={colIndex === 0 ? 'row' : undefined}
                 >
-                  {column.accessor === 'image' ? (
-                    <Image
-                      src={row[column.accessor] as string}
-                      width="30px"
-                      height="30px"
-                      variant="circular"
-                    />
-                  ) : typeof column.accessor === 'function' ? (
-                    (column.accessor(row) as React.ReactNode)
-                  ) : (
-                    (row[column.accessor] as React.ReactNode)
-                  )}
+                  <TableContentColumnContent column={column} data={row} />
                 </TableCell>
               ))}
             </TableRow>
