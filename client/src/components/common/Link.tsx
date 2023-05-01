@@ -13,6 +13,7 @@ export const Link = ({ to, ...rest }: LinkProps) => {
       style={{
         textDecoration: 'none',
         color: 'inherit',
+        display: 'flex',
       }}
       to={`/${basePath}${to}`}
       {...rest}

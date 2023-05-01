@@ -1,7 +1,9 @@
 import { Stack, Typography } from '@mui/material';
 import CampusClubCard from 'src/components/cards/CampusClubCard';
+import Image from 'src/components/common/Image';
+import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
-import { kulupler } from 'src/data/kulupler';
+import { events } from 'src/data/etkinlikler';
 import { Routes } from 'src/data/routes';
 
 const index = () => {
@@ -10,7 +12,7 @@ const index = () => {
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
-            Tüm Kulüpler
+            Tüm Etkinlikler
           </Typography>
         </Stack>
 
@@ -19,21 +21,44 @@ const index = () => {
           gap="30px"
           flexWrap="wrap"
           justifyContent="center"
+          alignItems="stretch"
         >
-          {kulupler.map((kulup) => (
+          {events.map((event) => (
             <CampusClubCard
-              link={`${Routes.KULUP}/${kulup.username}`}
-              image={kulup.logo}
-              title={kulup.name}
-              description={kulup.description}
-            />
-          ))}
-          {kulupler.map((kulup) => (
-            <CampusClubCard
-              link={`${Routes.KULUP}/${kulup.username}`}
-              image={kulup.logo}
-              title={kulup.name}
-              description={kulup.description}
+              key={event.name + event.description}
+              link={`${Routes.ETKINLIK}/${event.slug}`}
+              image={event.image}
+              topLeftText={event.type}
+              title={event.name}
+              description={event.description}
+              topRightText={event.date}
+              rightDownElement={
+                <Link to={`${Routes.KULUP}/${event.kulup.slug}`}>
+                  <Stack
+                    id="organizer-kulup"
+                    justifyContent="center"
+                    alignItems="center"
+                    gap="2px"
+                    sx={{
+                      backgroundColor: '#00AF8E',
+                      borderRadius: '20px',
+                      p: '6px',
+                      color: '#ffffff',
+                    }}
+                  >
+                    <Image
+                      src={event.kulup.image}
+                      alt={event.kulup.name}
+                      width="50px"
+                      height="50px"
+                      variant="circular"
+                    />
+                    <Typography textAlign="center" variant="body2">
+                      {event.kulup.shortName}
+                    </Typography>
+                  </Stack>
+                </Link>
+              }
             />
           ))}
         </Stack>

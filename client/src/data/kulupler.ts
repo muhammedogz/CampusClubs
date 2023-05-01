@@ -1,29 +1,37 @@
-export const kulupler = [
+import { KulupType } from 'src/types/types';
+
+export const kulupler: KulupType[] = [
   {
     id: 1,
     name: 'GTU Bilgisayar Topluluğu',
-    color: '#0b2948',
-    logo: 'https://pbs.twimg.com/profile_images/1372959978651279361/kRLnF1yt_400x400.jpg',
-    username: 'gtubt',
+    shortName: 'GTU BT',
     description: 'Bilgisayar Geeklerinin Buluşma Noktası!',
-    link: 'https://www.google.com',
+    image:
+      'https://pbs.twimg.com/profile_images/1372959978651279361/kRLnF1yt_400x400.jpg',
+    slug: 'gtu-bilgisayar-toplulugu',
+    etkinlik: [],
+    uye: [],
+    uyeCount: 200,
+    faaliyetAlanlari: ['Yapay Zeka', 'Makine Öğrenmesi', 'Veri Bilimi'],
   },
   {
     id: 2,
     name: 'Kulüp 2',
-    color: '#19857b',
-    logo: 'https://picsum.photos/700/500',
-    username: 'kulup2',
+    shortName: 'KLP 2',
     description: 'Kulüp 2 açıklaması',
-    link: 'https://www.google.com',
+    image: 'https://picsum.photos/200/400',
+    slug: 'kulup-2',
+    etkinlik: [],
+    uye: [],
   },
   {
     id: 3,
     name: 'Kulüp 3',
-    color: '#ff0000',
-    logo: 'https://picsum.photos/500/300',
-    username: 'kulup3',
+    shortName: 'KLP 3',
     description: 'Kulüp 3 açıklaması',
-    link: 'https://www.google.com',
+    image: 'https://picsum.photos/600/300',
+    slug: 'kulup-3',
+    etkinlik: [],
+    uye: [],
   },
 ];

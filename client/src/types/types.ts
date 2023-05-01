@@ -2,19 +2,22 @@ export type KulupType = {
   id: number;
   slug: string;
   name: string;
+  shortName?: string;
   description: string;
   image: string;
   uye: UyeType[];
+  uyeCount?: number;
+  faaliyetAlanlari?: string[];
   etkinlik: EtkinlikType[];
-  danisman: DanismanType;
+  danisman?: DanismanType;
 };
 
 export type DanismanType = {
   id: number;
   slug: string;
   name: string;
-  description: string;
   image: string;
+  depertman: string;
 };
 
 export type EtkinlikType = {
@@ -29,8 +32,6 @@ export type EtkinlikType = {
   kulup: KulupType;
 };
 
-export type EtkinlikWithoutKulupType = Omit<EtkinlikType, "kulup">;
-
 export type UyeType = {
   id: number;
   slug: string;
@@ -38,6 +39,12 @@ export type UyeType = {
   description: string;
   image: string;
   kulup: KulupType;
+  bolum: string;
 };
 
-export type UyeWithoutKulupType = Omit<UyeType, "kulup">;
+export type DuyuruType = {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+};

@@ -5,4 +5,5 @@ export enum Routes {
   KULUP = '/kulup',
   ETKINLIK = '/etkinlik',
   DANISMAN = '/danisman',
+  KULLANICI = '/kullanici',
 }

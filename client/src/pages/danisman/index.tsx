@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import CampusClubCard from 'src/components/cards/CampusClubCard';
 import { Layout } from 'src/components/layout/Layout';
-import { kulupler } from 'src/data/kulupler';
+import { danismanlar } from 'src/data/danismanlar';
 import { Routes } from 'src/data/routes';
 
 const index = () => {
@@ -10,7 +10,7 @@ const index = () => {
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
-            Tüm Kulüpler
+            Tüm Danışmanlar
           </Typography>
         </Stack>
 
@@ -20,22 +20,13 @@ const index = () => {
           flexWrap="wrap"
           justifyContent="center"
         >
-          {kulupler.map((kulup) => (
+          {danismanlar.map((danisman) => (
             <CampusClubCard
-              key={kulup.name + kulup.description}
-              link={`${Routes.KULUP}/${kulup.slug}`}
-              image={kulup.image}
-              title={kulup.name}
-              description={kulup.description}
-            />
-          ))}
-          {kulupler.map((kulup) => (
-            <CampusClubCard
-              key={kulup.name + kulup.description}
-              link={`${Routes.KULUP}/${kulup.slug}`}
-              image={kulup.image}
-              title={kulup.name}
-              description={kulup.description}
+              key={danisman.name}
+              link={`${Routes.DANISMAN}/${danisman.slug}`}
+              image={danisman.image}
+              title={danisman.name}
+              description={danisman.depertman}
             />
           ))}
         </Stack>

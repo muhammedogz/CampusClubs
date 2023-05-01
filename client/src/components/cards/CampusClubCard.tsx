@@ -14,6 +14,8 @@ type CampusClubCardProps = {
   description: string;
   link: string;
   topLeftText?: string;
+  topRightText?: string;
+  rightDownElement?: React.ReactNode;
 };
 
 const CampusClubCard = ({
@@ -22,6 +24,8 @@ const CampusClubCard = ({
   image,
   link,
   topLeftText,
+  topRightText,
+  rightDownElement,
 }: CampusClubCardProps) => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
 
@@ -60,6 +64,8 @@ const CampusClubCard = ({
         {topLeftText && (
           <Stack
             id="top-left-text"
+            justifyContent="center"
+            alignItems="center"
             sx={{
               zIndex: 2,
               position: 'absolute',
@@ -72,10 +78,31 @@ const CampusClubCard = ({
               color: '#ffffff',
             }}
           >
-            TopLeft
+            <Typography variant="caption">{topLeftText}</Typography>
           </Stack>
         )}
-        <Stack gap="30px">
+        {topRightText && (
+          <Stack
+            id="top-left-text"
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              zIndex: 2,
+              position: 'absolute',
+              top: '4px',
+              right: '4px',
+
+              backgroundColor: '#00AF8E',
+              borderRadius: '20px',
+              p: '6px',
+              color: '#ffffff',
+            }}
+          >
+            <Typography variant="caption">{topRightText}</Typography>
+          </Stack>
+        )}
+
+        <Stack gap="30px" flex={1}>
           <Stack justifyContent="center" alignItems="center">
             <Image
               src={image}
@@ -88,26 +115,44 @@ const CampusClubCard = ({
               }}
             />
           </Stack>
-          <Stack
-            gap="8px"
-            pb="20px"
-            sx={{
-              backgroundColor: '#1c070769',
-              borderBottomRightRadius: '10px',
-              borderBottomLeftRadius: '10px',
-            }}
-          >
+          <Stack id="test" flex={1}>
             <Divider color="#d9d9d9" />
-            <Stack px="14px">
-              <Typography>{title}</Typography>
-              <Typography
-                fontWeight={300}
+            <Stack
+              px="14px"
+              flexDirection="row"
+              justifyContent="space-between"
+              gap="6px"
+              flex={1}
+              py="10px"
+              sx={{
+                backgroundColor: '#1c070769',
+                borderBottomRightRadius: '10px',
+                borderBottomLeftRadius: '10px',
+              }}
+            >
+              <Stack
                 sx={{
-                  opacity: 0.8,
+                  maxHeight: '100px',
+                  maxWidth: rightDownElement ? '250px' : 'initial',
+                  overflow: 'hidden',
                 }}
               >
-                {description}
-              </Typography>
+                <Typography fontWeight={600}>{title}</Typography>
+                <Typography fontWeight={300}>{description}</Typography>
+              </Stack>
+              {rightDownElement && (
+                <Stack
+                  id="right-down-element"
+                  justifyContent="center"
+                  alignItems="center"
+                  zIndex={3}
+                  sx={{
+                    maxHeight: '100px',
+                  }}
+                >
+                  {rightDownElement}
+                </Stack>
+              )}
             </Stack>
           </Stack>
         </Stack>
