@@ -5,6 +5,7 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { danismanlar } from 'src/data/danismanlar';
 import { duyurular } from 'src/data/duyurular';
 import { events } from 'src/data/etkinlikler';
 import { kulupler } from 'src/data/kulupler';
@@ -70,6 +71,8 @@ const KulupInfo = ({ kulup }: CommonProps) => {
 };
 
 const KulupOtherInfo = ({ kulup }: CommonProps) => {
+  const danisman = danismanlar[0];
+
   return (
     <Stack
       id="upper-content-right"
@@ -82,7 +85,7 @@ const KulupOtherInfo = ({ kulup }: CommonProps) => {
         color: '#ffffff',
       }}
     >
-      <Link to={`${Routes.DANISMAN}/yusufsinanakgul`}>
+      <Link to={`${Routes.DANISMAN}/${danisman.slug}`}>
         <Stack
           flexDirection="row"
           gap="10px"
@@ -95,10 +98,13 @@ const KulupOtherInfo = ({ kulup }: CommonProps) => {
             borderRadius: '20px',
           }}
         >
-          <Typography fontWeight={600}>Danışman: Yusuf Sinan Akgül</Typography>
+          <Typography fontWeight={600}>
+            Danışman:
+            {danisman.name}
+          </Typography>
           <Image
             variant="circular"
-            src="https://abl.gtu.edu.tr/resimler/104/t_10416.jpg?"
+            src={danisman.image}
             width="30px"
             height="30px"
           />
