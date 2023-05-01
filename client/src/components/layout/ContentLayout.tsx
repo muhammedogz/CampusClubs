@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+import { getLocalImage } from 'src/utils/imageUtils';
 
 type ContentLayoutProps = {
   upperLeft: React.ReactNode;
@@ -24,11 +25,14 @@ const ContentLayout = ({
           position: 'absolute',
           left: 0,
           right: 0,
-          backgroundImage: `url(${upperBackgroundImage})`,
+          backgroundImage: `url(${
+            upperBackgroundImage ?? getLocalImage('/images/gtu-1.jpg')
+          })`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          filter: 'blur(20px)',
+
+          filter: 'brightness(0.5)',
 
           height: '200px',
         }}
