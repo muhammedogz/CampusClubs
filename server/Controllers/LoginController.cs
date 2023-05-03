@@ -58,44 +58,14 @@ public class LoginController : ControllerBase
         return Unauthorized();
     }
 
-    [HttpGet, Authorize]
-    public IEnumerable<WeatherForecast> Get()
-    {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55)
-        })
-        .ToArray();
-    }
-
-    // public IActionResult Index()
-    // {
-    //     return Ok("You are authorized");
-    // }
-
-    [HttpGet, Authorize]
-    [Route("token/Get3")]
-    public IActionResult LoginProfiles()
-    {
-        return Ok("You are authorized - Login Profile.");
-    }
-
-    // [HttpGet]
-    // public IEnumerable<int> Get()
-    // {
-    //     return new int[] { 1, 2, 3, 4, 5 };
-    // }
-
     [HttpGet]
-    [Route("token/Get2")]
+    [Route("SetToken")]
     public string GenerateToken(){
         string userName = "sglbl";
-        string password = "sglbl123";
+        // string password = "sglbl123";
         string audience = "Audience"; // Set the desired audience value
         string issuer = "Issuer"; // Set the desired issuer value
         string signingKey = "your_signing_key"; // Set your secret signing key
-
 
         // Create claims for the token
         var claims = new[]
@@ -131,6 +101,12 @@ public class LoginController : ControllerBase
 
         return tokenString;
     }
-
+  
+    [HttpGet, Authorize]
+    [Route("login")]
+    public IActionResult LoginProfiles()
+    {
+        return Ok("You are authorized - Login Profile.");
+    }
 
 }
