@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using server.Constants;
 namespace server.Controllers;
 
@@ -18,7 +19,8 @@ public class WeatherForecastController : ControllerBase
     _logger = logger;
   }
 
-  [HttpGet]
+//   [HttpGet]
+[HttpGet(Name = "GetWeatherForecast"), Authorize]
   public IEnumerable<WeatherForecast> Get()
   {
     return Enumerable.Range(1, 5).Select(index => new WeatherForecast
