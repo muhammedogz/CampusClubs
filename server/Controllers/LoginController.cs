@@ -1,16 +1,10 @@
 // login controller with token authentication
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using server.Constants;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Server.Data;
 using Server.Models;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
@@ -27,32 +21,26 @@ public class LoginController : ControllerBase
     [HttpPost, Route("login")]
     public IActionResult Login(Login loginDTO)
     {
-        try
-        {
+        try{
             if (string.IsNullOrEmpty(loginDTO.UserName) ||
             string.IsNullOrEmpty(loginDTO.Password))
                 return BadRequest("Username and/or Password not specified");
             if (loginDTO.UserName.Equals("sglbl") &&
                 loginDTO.Password.Equals("sglbl123"))
             {
-                var secretKey = new SymmetricSecurityKey
-                // (Encoding.UTF8.GetBytes("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlck5hbWUiOiJzZ2xibCIsInBhc3N3b3JkIjoic2dsYmwxMjMifQ.T53csRt1UbgNks_Oi3EML-y0_l45fCpUUjGQEpShzMc"));
-                (Encoding.UTF8.GetBytes("YWxpY2VudGVyX2FkZHI="));
-                var signinCredentials = new SigningCredentials
-            (secretKey, SecurityAlgorithms.HmacSha256);
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_signing_key"));
+                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var jwtSecurityToken = new JwtSecurityToken(
-                    issuer: "ABCXYZ",
-                    audience: "http://localhost:5130",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(10),
+                    issuer: "Issuer",
+                    audience: "Audience",
+                    claims: new[]{new Claim("unique_name", loginDTO.UserName)},
+                    expires: DateTime.UtcNow.AddHours(96),
                     signingCredentials: signinCredentials
                 );
-                Ok(new JwtSecurityTokenHandler().
-                WriteToken(jwtSecurityToken));
+                return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
             }
         }
-        catch
-        {
+        catch{
             return BadRequest("An error occurred in generating the token");
         }
         return Unauthorized();
@@ -61,8 +49,7 @@ public class LoginController : ControllerBase
     [HttpGet]
     [Route("SetToken")]
     public string GenerateToken(){
-        string userName = "sglbl";
-        // string password = "sglbl123";
+        string userName = "sglbl"; // no password in token
         string audience = "Audience"; // Set the desired audience value
         string issuer = "Issuer"; // Set the desired issuer value
         string signingKey = "your_signing_key"; // Set your secret signing key
