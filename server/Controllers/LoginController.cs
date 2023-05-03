@@ -10,6 +10,8 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.EntityFrameworkCore;
+using Server.Data;
 
 namespace server.Controllers;
 
@@ -18,6 +20,14 @@ namespace server.Controllers;
 [Route(Consts.DEFAULT_ROUTE)]
 public class LoginController : ControllerBase
 {
+    private readonly ApplicationDbContext _db; // create object of ApplicationDbContext class
+
+    public LoginController(ApplicationDbContext db) // constructor
+    {
+        _db = db;
+    }
+
+
     [HttpPost, Route("login")]
     public IActionResult Login(Login loginDTO)
     {
@@ -25,25 +35,28 @@ public class LoginController : ControllerBase
             if (string.IsNullOrEmpty(loginDTO.UserName) ||
             string.IsNullOrEmpty(loginDTO.Password))
                 return BadRequest("Username and/or Password not specified");
-            if (loginDTO.UserName.Equals("sglbl") &&
-                loginDTO.Password.Equals("sglbl123"))
-            {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_signing_key"));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var jwtSecurityToken = new JwtSecurityToken(
-                    issuer: "Issuer",
-                    audience: "Audience",
-                    claims: new[]{new Claim("unique_name", loginDTO.UserName)},
-                    expires: DateTime.UtcNow.AddHours(96),
-                    signingCredentials: signinCredentials
-                );
-                return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
-            }
+            
+            // Retrieve the user's credentials from the database
+            var user = _db.Users.FirstOrDefault(u => u.Username == loginDTO.UserName && u.Password == loginDTO.Password);
+
+            if (user == null)
+                return Unauthorized();
+
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_signing_key"));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: "Issuer",
+                audience: "Audience",
+                claims: new[]{new Claim("unique_name", loginDTO.UserName)},
+                expires: DateTime.UtcNow.AddHours(96),
+                signingCredentials: signinCredentials
+            );
+            var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            return Ok(new ApiResponse(true, token, user));
         }
         catch{
-            return BadRequest("An error occurred in generating the token");
+            return BadRequest(new ApiResponse(false, "Username or password is wrong. Please check again", null));
         }
-        return Unauthorized();
     }
 
     [HttpGet]
