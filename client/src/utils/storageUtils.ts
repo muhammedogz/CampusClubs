@@ -1,14 +1,20 @@
+import { UyeType } from "src/types/types";
+
 export enum StorageKeyEnum {
   AUTH_TOKEN_STORAGE = 'AuthTokenStorage',
+  USER_STORAGE = 'UserStorage',
 }
 
-export type AuthTokenStorageType = {
+type AuthTokenStorageType = {
   authToken?: string;
   xsrfToken?: string;
 };
 
+type UserStorageType = UyeType;
+
 type StorageKeyTypeMap = {
   [StorageKeyEnum.AUTH_TOKEN_STORAGE]: AuthTokenStorageType;
+  [StorageKeyEnum.USER_STORAGE]: UserStorageType;
 };
 
 export const updateLocalStorageItem = <K extends StorageKeyEnum>(

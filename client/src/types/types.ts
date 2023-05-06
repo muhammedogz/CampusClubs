@@ -40,6 +40,7 @@ export type UyeType = {
   image: string;
   kulup: KulupType;
   bolum: string;
+  role: RolesEnum;
 };
 
 export type DuyuruType = {

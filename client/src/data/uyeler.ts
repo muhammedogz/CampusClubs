@@ -1,5 +1,5 @@
 import { kulupler } from 'src/data/kulupler';
-import { UyeType } from 'src/types/types';
+import { RolesEnum, UyeType } from 'src/types/types';
 
 export const uyeler: UyeType[] = [
   {
@@ -11,6 +11,7 @@ export const uyeler: UyeType[] = [
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     bolum: 'Bilgisayar Mühendisliği',
     kulup: kulupler[0],
+    role: RolesEnum.UYE,
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ export const uyeler: UyeType[] = [
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     bolum: 'Endüstri Mühendisliği',
     kulup: kulupler[0],
+    role: RolesEnum.UYE,
   },
   {
     id: 3,
@@ -31,6 +33,7 @@ export const uyeler: UyeType[] = [
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     bolum: 'Makine Mühendisliği',
     kulup: kulupler[1],
+    role: RolesEnum.UYE,
   },
   {
     id: 4,
@@ -41,6 +44,7 @@ export const uyeler: UyeType[] = [
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     bolum: 'İnşaat Mühendisliği',
     kulup: kulupler[1],
+    role: RolesEnum.UYE,
   },
   {
     id: 5,
@@ -51,6 +55,7 @@ export const uyeler: UyeType[] = [
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     bolum: 'Elektrik Elektronik Mühendisliği',
     kulup: kulupler[2],
+    role: RolesEnum.UYE,
   },
   {
     id: 6,
@@ -61,5 +66,6 @@ export const uyeler: UyeType[] = [
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     bolum: 'Bilgisayar Mühendisliği',
     kulup: kulupler[2],
+    role: RolesEnum.UYE,
   },
 ];
