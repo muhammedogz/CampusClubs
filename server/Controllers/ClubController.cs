@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using server.Constants;
 using Server.Data;
 using Server.Models;
+using System.Data;
+using System.ComponentModel;
 
 namespace server.Controllers;
 
@@ -22,8 +24,8 @@ public class ClubController : ControllerBase
     public IActionResult GetAll()
     {   // Return all Club info
         try{
-            IEnumerable<Club> ClubList = _db.Clubs;
-            return Ok(new ApiResponse(true, "Club request is successful", ClubList));
+            IEnumerable<Club> clubList = _db.Club;
+            return Ok(new ApiResponse(true, "Club request is successful", clubList));
         }
         catch (Exception e){
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Club request is unsuccessful", e.Message));
@@ -38,7 +40,7 @@ public class ClubController : ControllerBase
         // SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
         // // get sql connection from appsettings.json
-        // var sql = "SELECT * FROM Clubs WHERE ClubId = @Id";
+        // var sql = "SELECT * FROM Club WHERE clubId = @Id";
         // var cmd = new SqlCommand(sql, sqlConnection);
         // cmd.Parameters.AddWithValue("@Id", id);
 
@@ -51,7 +53,7 @@ public class ClubController : ControllerBase
         // }
 
         /*** returns all info ***/
-        Club? Club = _db.Clubs.SingleOrDefault(u => u.ClubId == id);
+        Club? Club = _db.Club.SingleOrDefault(u => u.clubId == id);
 
         if (Club != null)
         {
@@ -61,40 +63,11 @@ public class ClubController : ControllerBase
         return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
     }
 
-    [HttpGet("Clubname")]
-    public IActionResult GetClubByClubname(string Clubname)
+    [HttpGet("name")]
+    public IActionResult GetClubByClubname(string name)
     {   
-        /*** only returns Clubname ***/
-        // // Get the underlying SqlConnection object
-        // SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-        // // get sql connection from appsettings.json
-        // var sql = "SELECT * FROM Clubs WHERE Clubname = @Clubname";
-        // var cmd = new SqlCommand(sql, sqlConnection);
-        // cmd.Parameters.AddWithValue("@Clubname", Clubname);
-
-        // sqlConnection.Open();
-        // var reader = cmd.ExecuteReader();
-        // if (reader.Read())
-        // {
-        //     Club Club = new Club
-        //     {
-        //         ClubId = reader.GetInt32(0),
-        //         Clubname = reader.GetString(1),
-        //         Name = reader.GetString(2),
-        //         Email = reader.GetString(3),
-        //         Password = reader.GetString(4),
-        //         CreatedDate = reader.GetDateTime(5),
-        //         DeletedDate = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
-        //     };
-
-        //     return Ok(Club);
-        // }
-
-        // return NotFound("Club not found");
-        
         /*** returns all info ***/
-        Club? Club = _db.Clubs.SingleOrDefault(u => u.Clubname == Clubname);
+        Club? Club = _db.Club.SingleOrDefault(u => u.name == name);
 
         if (Club != null)
         {
@@ -104,22 +77,144 @@ public class ClubController : ControllerBase
         return NotFound(new ApiResponse(false, "Club not found", null));
     }
 
-    [HttpPost]
+    // [HttpPost]
+    // public IActionResult Create(Club Club)
+    // {
+    //     try{
+    //         // Get the underlying SqlConnection object
+    //         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
+    //         List<int> eventIds = new List<int>();
+    //         List<int> memberIds = new List<int>();
+
+    //         // Add the IDs of the events and members to the respective lists
+    //         // foreach (var ev in Club.Events)
+    //         // {
+    //         //     eventIds.Add(ev.id);
+    //         // }
+
+    //         // foreach (var mem in Club.Members)
+    //         // {
+    //         //     memberIds.Add(mem.UserId);
+    //         // }
+            
+    //         // Convert the list of IDs to a comma-separated string
+    //         // string eventIdsString = string.Join(",", eventIds);
+    //         // string memberIdsString = string.Join(",", memberIds);
+
+    //         var sql = "INSERT INTO Club (clubId, slug, name, description, image, members, events, advisor, validFrom, validUntil) VALUES (@Id, @Slug, @Name, @Description, @Image, @Member, @Event, @Advisor, @ValidFrom, @ValidUntil)";
+    //         var cmd = new SqlCommand(sql, sqlConnection);
+    //         cmd.Parameters.AddWithValue("@Id", Club.clubId);
+    //         cmd.Parameters.AddWithValue("@Slug", Club.slug);
+    //         cmd.Parameters.AddWithValue("@Name", Club.name);
+    //         cmd.Parameters.AddWithValue("@Description", Club.description);
+    //         cmd.Parameters.AddWithValue("@Image", Club.image);
+    //         cmd.Parameters.AddWithValue("@Member",Club.members.ToArray());
+    //         // cmd.Parameters.AddWithValue("@Event", Club.events.ToArray());
+    //         cmd.Parameters.AddWithValue("@Event", (object)DBNull.Value);
+    //         cmd.Parameters.AddWithValue("@Advisor", Club.advisor);
+    //         cmd.Parameters.AddWithValue("@ValidFrom", Club.validFrom ?? (object)DBNull.Value);
+    //         cmd.Parameters.AddWithValue("@ValidUntil", Club.validUntil ?? (object)DBNull.Value);
+    //         /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
+
+    //         sqlConnection.Open();
+    //         int rowsAffected = cmd.ExecuteNonQuery();
+    //         sqlConnection.Close();
+
+    //         if (rowsAffected > 0)
+    //         {
+    //             return Ok(new ApiResponse(true, "Club created successfully.", Club));
+    //         }
+    //         else
+    //         {
+    //             return BadRequest(new ApiResponse(false, "BadRequest: Unable to create the Club.", null));
+    //         }
+    //     }
+    //     catch (Exception e){
+    //         return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Unable to create the Club. Internal server error occured.", e.Message));
+    //     }
+    // }
+
+    
+    // [HttpPost] ///////// 2  ///////////////
+    // public IActionResult Create(Club Club)
+    // {
+    //     try{
+    //         List<ClubMember> members = new List<ClubMember>();
+
+    //         // populate the members list...
+
+    //         DataTable table = new DataTable();
+    //         table.Columns.Add("memberId", typeof(int));
+    //         table.Columns.Add("clubId", typeof(int));
+    //         table.Columns.Add("memberRole", typeof(int));
+
+    //         foreach (var member in members)
+    //         {
+    //             table.Rows.Add(member.memberId, member.clubId, member.memberRole);
+    //         }
+
+    //         using (var connection = (SqlConnection)_db.Database.GetDbConnection())
+    //         using (var command = new SqlCommand("dbo.InsertClubMembers", connection))
+    //         {
+    //             SqlParameter parameter = new SqlParameter("@Members", SqlDbType.Structured);
+    //             parameter.Value = members.ToDataTable();
+    //             parameter.TypeName = "ClubMemberType";
+    //             command.CommandType = CommandType.StoredProcedure;
+    //             command.Parameters.Add(parameter);
+                
+    //             var sql = "INSERT INTO Club (clubId, slug, name, description, image, members, events, advisor, validFrom, validUntil) VALUES (@Id, @Slug, @Name, @Description, @Image, @Members, @Event, @Advisor, @ValidFrom, @ValidUntil)";
+    //             var cmd = new SqlCommand(sql, connection);
+    //             cmd.Parameters.AddWithValue("@Id", Club.clubId);
+    //             cmd.Parameters.AddWithValue("@Slug", Club.slug);
+    //             cmd.Parameters.AddWithValue("@Name", Club.name);
+    //             cmd.Parameters.AddWithValue("@Description", Club.description);
+    //             cmd.Parameters.AddWithValue("@Image", Club.image);
+    //             cmd.Parameters.AddWithValue("@Members", table);
+
+    //             cmd.Parameters.AddWithValue("@Event", (object)DBNull.Value);
+    //             cmd.Parameters.AddWithValue("@Advisor", Club.advisor);
+    //             cmd.Parameters.AddWithValue("@ValidFrom", Club.validFrom ?? (object)DBNull.Value);
+    //             cmd.Parameters.AddWithValue("@ValidUntil", Club.validUntil ?? (object)DBNull.Value);
+    //             /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
+
+    //             connection.Open();
+    //             command.ExecuteNonQuery();
+    //             int rowsAffected = cmd.ExecuteNonQuery();
+    //             connection.Close();
+
+    //             if (rowsAffected > 0)
+    //             {
+    //                 return Ok(new ApiResponse(true, "Club created successfully.", Club));
+    //             }
+    //             else
+    //             {
+    //                 return BadRequest(new ApiResponse(false, "BadRequest: Unable to create the Club.", null));
+    //             }
+    //         }
+    //     }
+    //     catch (Exception e){
+    //         return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Unable to create the Club. Internal server error occured.", e.Message));
+    //     }
+    // }
+
+    [HttpPost] ///////// 3 ///////////////
     public IActionResult Create(Club Club)
     {
         try{
             // Get the underlying SqlConnection object
             SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-            var sql = "INSERT INTO Clubs (ClubId, Clubname, name, email, password, createdDate, deletedDate) VALUES (@Id, @Clubname, @Name, @Email, @Password, @CreatedDate, @DeletedDate)";
+            
+            // Convert the list of IDs to a comma-separated string
+            var sql = "INSERT INTO Club (clubId, slug, name, description, image, advisor, validFrom, validUntil) VALUES (@Id, @Slug, @Name, @Description, @Image, @Advisor, @ValidFrom, @ValidUntil)";
             var cmd = new SqlCommand(sql, sqlConnection);
-            cmd.Parameters.AddWithValue("@Id", Club.ClubId);
-            cmd.Parameters.AddWithValue("@Clubname", Club.Clubname);
-            cmd.Parameters.AddWithValue("@Name", Club.Name);
-            cmd.Parameters.AddWithValue("@Email", Club.Email);
-            cmd.Parameters.AddWithValue("@Password", Club.Password);
-            cmd.Parameters.AddWithValue("@CreatedDate", Club.CreatedDate ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@DeletedDate", Club.DeletedDate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@Id", Club.clubId);
+            cmd.Parameters.AddWithValue("@Slug", Club.slug);
+            cmd.Parameters.AddWithValue("@Name", Club.name);
+            cmd.Parameters.AddWithValue("@Description", Club.description);
+            cmd.Parameters.AddWithValue("@Image", Club.image);
+            cmd.Parameters.AddWithValue("@Advisor", Club.advisor);
+            cmd.Parameters.AddWithValue("@ValidFrom", Club.validFrom ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@ValidUntil", Club.validUntil ?? (object)DBNull.Value);
             /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
 
             sqlConnection.Open();
@@ -136,19 +231,19 @@ public class ClubController : ControllerBase
             }
         }
         catch (Exception e){
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Unable to create the Club. Duplicate Club info are not allowed.", e.Message));
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Unable to create the Club. Internal server error occured.", e.Message));
         }
     }
 
-    [HttpDelete("ClubById/{ClubId}")]
-    public IActionResult DeleteWithId(int ClubId)
+    [HttpDelete("id")]
+    public IActionResult DeleteWithId(int id)
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-        Club? Club = _db.Clubs.FirstOrDefault(u => u.ClubId == ClubId);
-        var sql = "DELETE FROM Clubs WHERE ClubId = @Id";
+        Club? Club = _db.Club.FirstOrDefault(u => u.clubId == id);
+        var sql = "DELETE FROM Club WHERE clubId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Id", ClubId);
+        cmd.Parameters.AddWithValue("@Id", id);
 
         sqlConnection.Open();
         int rowsAffected = cmd.ExecuteNonQuery();
@@ -164,13 +259,13 @@ public class ClubController : ControllerBase
         }
     }
 
-    [HttpDelete("ClubByClubname/{Clubname}")]
+    [HttpDelete("name")]
     public IActionResult DeleteWithClubname(string Clubname)
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
-        var sql = "DELETE FROM Clubs WHERE Clubname = @Clubname";
+        var sql = "DELETE FROM Club WHERE name = @Clubname";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Clubname", Clubname);
 
@@ -188,21 +283,24 @@ public class ClubController : ControllerBase
         }
     }
 
-    [HttpPut("{ClubId}")]
-    public IActionResult Update(int ClubId, Club updatedClub)
+    [HttpPut("{club_id}")]
+    public IActionResult Update(int club_id, Club updatedClub)
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
-        var sql = "UPDATE Clubs SET Clubname = @Clubname, name = @Name, email = @Email, password = @Password, createdDate = @CreatedDate, deletedDate = @DeletedDate WHERE ClubId = @Id";
+        var sql = "UPDATE Club SET Clubname = @Clubname, name = @Name, email = @Email, password = @Password, createdDate = @CreatedDate, deletedDate = @DeletedDate WHERE club_id = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Id", ClubId);
-        cmd.Parameters.AddWithValue("@Clubname", updatedClub.Clubname);
-        cmd.Parameters.AddWithValue("@Name", updatedClub.Name);
-        cmd.Parameters.AddWithValue("@Email", updatedClub.Email);
-        cmd.Parameters.AddWithValue("@Password", updatedClub.Password);
-        cmd.Parameters.AddWithValue("@CreatedDate", updatedClub.CreatedDate ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@DeletedDate", updatedClub.DeletedDate ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@Id", club_id);
+        cmd.Parameters.AddWithValue("@Slug", updatedClub.slug);
+        cmd.Parameters.AddWithValue("@Clubname", updatedClub.name);
+        cmd.Parameters.AddWithValue("@Description", updatedClub.description);
+        cmd.Parameters.AddWithValue("@Image", updatedClub.image);
+        cmd.Parameters.AddWithValue("@Member", updatedClub.members);
+        // cmd.Parameters.AddWithValue("@Event", updatedClub.events);
+        cmd.Parameters.AddWithValue("@ValidFrom", updatedClub.validFrom ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@ValidUntil", updatedClub.validUntil ?? (object)DBNull.Value);
+    
 
         sqlConnection.Open();
         int rowsAffected = cmd.ExecuteNonQuery();
@@ -220,3 +318,23 @@ public class ClubController : ControllerBase
 
 
 }
+
+/** SQL COMMAND
+    CREATE TYPE dbo.ClubMemberType AS TABLE
+    (
+        memberId INT NOT NULL,
+        clubId INT NOT NULL,
+        memberRole INT NOT NULL
+    );
+
+    CREATE PROCEDURE dbo.InsertClubMembers
+    (
+        @members dbo.ClubMemberType READONLY
+    )
+    AS
+    BEGIN
+        INSERT INTO dbo.ClubMembers (memberId, clubId, memberRole)
+        SELECT memberId, clubId, memberRole
+        FROM @members
+    END
+*/

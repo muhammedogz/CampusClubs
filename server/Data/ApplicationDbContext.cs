@@ -15,8 +15,15 @@ public class ApplicationDbContext : DbContext
         
     }
 
+    // protected override void OnModelCreating(ModelBuilder modelBuilder)
+    // {
+    //     modelBuilder.Entity<Club>()
+    //         .HasKey(c => c.ClubId);
+    // }
 
     public DbSet<User> Users { get; set; } // create users table with 4 (category has 4) columns
+    
+    public DbSet<Club> Club { get; set; }
 
     public DbContext CreateDbContext(string[] args)
     {
