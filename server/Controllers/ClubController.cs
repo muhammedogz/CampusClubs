@@ -205,20 +205,28 @@ public class ClubController : ControllerBase
             SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
             
             // Convert the list of IDs to a comma-separated string
-            var sql = "INSERT INTO Club (clubId, slug, name, description, image, advisor, validFrom, validUntil) VALUES (@Id, @Slug, @Name, @Description, @Image, @Advisor, @ValidFrom, @ValidUntil)";
+            var sql = "INSERT INTO Club (clubId, slug, name, description, image, members, advisor, validFrom, validUntil) VALUES (@Id, @Slug, @Name, @Description, @Image, @Members, @Advisor, @ValidFrom, @ValidUntil)";
             var cmd = new SqlCommand(sql, sqlConnection);
+
+            var sql2 = "SELECT c.*, m.memberId, m.memberRole FROM Club c JOIN ClubMembers m ON c.clubId = m.clubId";
+            var cmd2 = new SqlCommand(sql2, sqlConnection);
+            cmd2.Parameters.AddWithValue("@Members", Club.members);
+
             cmd.Parameters.AddWithValue("@Id", Club.clubId);
             cmd.Parameters.AddWithValue("@Slug", Club.slug);
             cmd.Parameters.AddWithValue("@Name", Club.name);
             cmd.Parameters.AddWithValue("@Description", Club.description);
             cmd.Parameters.AddWithValue("@Image", Club.image);
             cmd.Parameters.AddWithValue("@Advisor", Club.advisor);
+
+            // cmd.Parameters.AddWithValue("@Members", );
             cmd.Parameters.AddWithValue("@ValidFrom", Club.validFrom ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@ValidUntil", Club.validUntil ?? (object)DBNull.Value);
             /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
 
             sqlConnection.Open();
             int rowsAffected = cmd.ExecuteNonQuery();
+            int rowsAffected2 = cmd2.ExecuteNonQuery();
             sqlConnection.Close();
 
             if (rowsAffected > 0)

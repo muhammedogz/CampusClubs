@@ -15,15 +15,12 @@ public class ApplicationDbContext : DbContext
         
     }
 
-    // protected override void OnModelCreating(ModelBuilder modelBuilder)
-    // {
-    //     modelBuilder.Entity<Club>()
-    //         .HasKey(c => c.ClubId);
-    // }
-
-    public DbSet<User> Users { get; set; } // create users table with 4 (category has 4) columns
+    // !!! Names should be same with the table names in the database
+    public DbSet<User> Users { get; set; }
     
     public DbSet<Club> Club { get; set; }
+
+    public DbSet<ClubMember> ClubMembers { get; set; }
 
     public DbContext CreateDbContext(string[] args)
     {
