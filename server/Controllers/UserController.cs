@@ -30,7 +30,84 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("id")]
+    [HttpGet("UserInfoById/id")]
+    public IActionResult GetUserDenemeById(int id)
+    {   
+        /*** returns all info ***/
+        User? user = _db.Users.SingleOrDefault(u => u.UserId == id);
+
+        List<Club> clubs = new List<Club>();
+        using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
+        {
+            string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.memberId WHERE u.userId = @UserId";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@UserId", id);
+
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Club club = new Club
+                {
+                    clubId = reader.GetInt32(0),
+                    slug = reader.GetString(1),
+                    name = reader.GetString(2),
+                    description = reader.GetString(3),
+                    image = reader.GetString(4),
+                    validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                    validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+                };
+                clubs.Add(club);
+            }
+            reader.Close();
+        }
+
+
+        if (user != null)
+        {
+            Console.WriteLine(1);
+            user.clubsRegistered = clubs;
+            Console.WriteLine(2);
+            return Ok(new ApiResponse(true, "User request is successfull", user));
+        }
+
+        return NotFound(new ApiResponse(false, "User request is unsuccessful since user couldn't be found", null));
+    }
+
+    [HttpGet("UserOnlyClubsById/id")]
+    public List<Server.Models.Club> GetUserClubsById(int id)
+    {   
+        List<Club> clubs = new List<Club>();
+        using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
+        {
+            string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.memberId WHERE u.userId = @UserId";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@UserId", id);
+
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Club club = new Club
+                {
+                    clubId = reader.GetInt32(0),
+                    slug = reader.GetString(1),
+                    name = reader.GetString(2),
+                    description = reader.GetString(3),
+                    image = reader.GetString(4),
+                    validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                    validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+                };
+                clubs.Add(club);
+            }
+            reader.Close();
+        }
+        return clubs;
+    }
+
+    [HttpGet("UserNoClubsById/id")]
     public IActionResult GetUserById(int id)
     {   
         /*** only returns username ***/
@@ -61,7 +138,7 @@ public class UserController : ControllerBase
         return NotFound(new ApiResponse(false, "User request is unsuccessful since user couldn't be found", null));
     }
 
-    [HttpGet("username")]
+    [HttpGet("UserInfoById/username")]
     public IActionResult GetUserByUsername(string username)
     {   
         /*** only returns username ***/

@@ -28,6 +28,7 @@ public class Club
     // public Event[]? Events { get; set; } = null;
     
     public List<ClubMember> members { get; set; } = new List<ClubMember>();
+    // public List<Club> clubsRegistered { get; set; } = new List<Club>();
 
     // public List<ClubEvent> events { get; set; } = new List<ClubEvent>();
     

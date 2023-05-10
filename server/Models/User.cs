@@ -28,4 +28,5 @@ public class User
     // public DateTime? DeletedDate { get; set; } = DateTime.Now;
     public DateTime? DeletedDate { get; set; }
 
+    public List<Club> clubsRegistered { get; set; } = new List<Club>();
 }
