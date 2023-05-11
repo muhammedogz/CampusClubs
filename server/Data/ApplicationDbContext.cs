@@ -20,6 +20,10 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<Club> Club { get; set; }
 
+    public DbSet<Event> Event { get; set; }
+
+    public DbSet<Announcement> Announcement { get; set; }
+
     public DbSet<ClubMember> ClubMembers { get; set; }
 
     public DbContext CreateDbContext(string[] args)

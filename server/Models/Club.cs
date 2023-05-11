@@ -28,14 +28,10 @@ public class Club
     // public Event[]? Events { get; set; } = null;
     
     public List<ClubMember> members { get; set; } = new List<ClubMember>();
-    // public List<Club> clubsRegistered { get; set; } = new List<Club>();
 
-    // public List<ClubEvent> events { get; set; } = new List<ClubEvent>();
+    public List<ClubEvent> events { get; set; } = new List<ClubEvent>();
     
-
-    // public List<int> Members { get; set; } = new List<int>();
-
-    // public List<int> Events { get; set; } = new List<int>();
+    public List<ClubAnnouncement> announcements { get; set; } = new List<ClubAnnouncement>();
 
     [Required]
     public int advisor { get; set; } = 0;
@@ -58,15 +54,21 @@ public class ClubMember
     public int clubId { get; set; }
 
     public int memberRole { get; set; }
-
 }
+
 
 public class ClubEvent
 {
     [Key]
-    public int ClubEventId { get; set; }
+    public int eventId { get; set; }
 
-    public int ClubId { get; set; }
+    public int clubId { get; set; }
+}
 
-    public int EventId { get; set; }
+public class ClubAnnouncement
+{
+    [Key]
+    public int announcementId { get; set; }
+
+    public int clubId { get; set; }
 }
