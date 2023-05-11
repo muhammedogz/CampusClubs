@@ -4,7 +4,7 @@ namespace Server.Models;
 public class Announcement
 {
     [Key] /* annotation */
-    public int id { get; set; }
+    public int announcementId { get; set; }
 
     [Required]
     public string title { get; set; } = string.Empty;
@@ -16,9 +16,9 @@ public class Announcement
     public DateTime date { get; set; } = DateTime.Now;
 
     // the default value above makes not allow to nulls.
-    public DateTime? ValidFrom { get; set; }
+    public DateTime? validFrom { get; set; }
     
     // public DateTime? DeletedDate { get; set; } = DateTime.Now;
-    public DateTime? ValidUntil { get; set; }
+    public DateTime? validUntil { get; set; }
 
 }
