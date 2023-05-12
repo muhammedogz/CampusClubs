@@ -21,15 +21,9 @@ public class Club
     [Required]
     public string image { get; set; } = string.Empty;
 
-    // [Required]
-    // public User[]? Members { get; set; } = null;
+    // public List<ClubMember> members { get; set; } = new List<ClubMember>();
 
-    // [Required]
-    // public Event[]? Events { get; set; } = null;
-    
-    public List<ClubMember> members { get; set; } = new List<ClubMember>();
-
-    public List<ClubEvent> events { get; set; } = new List<ClubEvent>();
+    // public List<ClubEvent> events { get; set; } = new List<ClubEvent>();
     
     public List<ClubAnnouncement> announcements { get; set; } = new List<ClubAnnouncement>();
 

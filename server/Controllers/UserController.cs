@@ -31,7 +31,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("UserInfoById/id")]
-    public IActionResult GetUserDenemeById(int id)
+    public IActionResult GetUserInfoById(int id)
     {   
         /*** returns all info ***/
         User? user = _db.Users.SingleOrDefault(u => u.UserId == id);
@@ -66,9 +66,7 @@ public class UserController : ControllerBase
 
         if (user != null)
         {
-            Console.WriteLine(1);
             user.clubsRegistered = clubs;
-            Console.WriteLine(2);
             return Ok(new ApiResponse(true, "User request is successfull", user));
         }
 
@@ -108,7 +106,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("UserNoClubsById/id")]
-    public IActionResult GetUserById(int id)
+    public IActionResult GetUserNoClubsById(int id)
     {   
         /*** only returns username ***/
         // // Get the underlying SqlConnection object

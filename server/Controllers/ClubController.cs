@@ -207,11 +207,6 @@ public class ClubController : ControllerBase
             // Convert the list of IDs to a comma-separated string
             var sql = "INSERT INTO Club (clubId, slug, name, description, image, members, advisor, validFrom, validUntil) VALUES (@Id, @Slug, @Name, @Description, @Image, @Members, @Advisor, @ValidFrom, @ValidUntil)";
             var cmd = new SqlCommand(sql, sqlConnection);
-
-            var sql2 = "SELECT c.*, m.memberId, m.memberRole FROM Club c JOIN ClubMembers m ON c.clubId = m.clubId";
-            var cmd2 = new SqlCommand(sql2, sqlConnection);
-            cmd2.Parameters.AddWithValue("@Members", Club.members);
-
             cmd.Parameters.AddWithValue("@Id", Club.clubId);
             cmd.Parameters.AddWithValue("@Slug", Club.slug);
             cmd.Parameters.AddWithValue("@Name", Club.name);
@@ -226,7 +221,10 @@ public class ClubController : ControllerBase
 
             sqlConnection.Open();
             int rowsAffected = cmd.ExecuteNonQuery();
-            int rowsAffected2 = cmd2.ExecuteNonQuery();
+            // var sql2 = "SELECT c.*, m.memberId, m.memberRole FROM Club c JOIN ClubMembers m ON c.clubId = m.clubId";
+            // var cmd2 = new SqlCommand(sql2, sqlConnection);
+            // cmd2.Parameters.AddWithValue("@Members", Club.members);
+            // int rowsAffected2 = cmd2.ExecuteNonQuery();
             sqlConnection.Close();
 
             if (rowsAffected > 0)
@@ -304,12 +302,11 @@ public class ClubController : ControllerBase
         cmd.Parameters.AddWithValue("@Clubname", updatedClub.name);
         cmd.Parameters.AddWithValue("@Description", updatedClub.description);
         cmd.Parameters.AddWithValue("@Image", updatedClub.image);
-        cmd.Parameters.AddWithValue("@Member", updatedClub.members);
+        // cmd.Parameters.AddWithValue("@Member", updatedClub.members);
         // cmd.Parameters.AddWithValue("@Event", updatedClub.events);
         cmd.Parameters.AddWithValue("@ValidFrom", updatedClub.validFrom ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@ValidUntil", updatedClub.validUntil ?? (object)DBNull.Value);
     
-
         sqlConnection.Open();
         int rowsAffected = cmd.ExecuteNonQuery();
         sqlConnection.Close();
