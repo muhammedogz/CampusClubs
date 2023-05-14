@@ -22,59 +22,118 @@ public class ClubController : ControllerBase
 
     [HttpGet]
     public IActionResult GetAll()
-    {   // Return all Club info
+    {   
         try{
-            IEnumerable<Club> clubList = _db.Club;
-            return Ok(new ApiResponse(true, "Club request is successful", clubList));
+            using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
+            {
+                string query = "SELECT c.* FROM Club c";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                
+                List<Club> clubs = new List<Club>();
+                while (reader.Read())
+                {
+                    Club club = new Club
+                    {
+                        clubId = reader.GetInt32(0),
+                        slug = reader.GetString(1),
+                        name = reader.GetString(2),
+                        description = reader.GetString(3),
+                        image = reader.GetString(4),
+                        validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                        validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+                    };
+                    clubs.Add(club);
+                }
+                return Ok(new ApiResponse(true, "Club request is successful.", clubs));
+            }
         }
-        catch (Exception e){
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Club request is unsuccessful", e.Message));
+        catch{
+            return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
         }
+        // Return all Club info - THIS THROWS ERROR
+        // try{
+        //     IEnumerable<Club> clubList = _db.Club;
+        //     return Ok(new ApiResponse(true, "Club request is successful", clubList));
+        // }
+        // catch (Exception e){
+        //     return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Club request is unsuccessful", e.Message));
+        // }
     }
 
     [HttpGet("id")]
     public IActionResult GetClubById(int id)
     {   
-        /*** only returns Clubname ***/
-        // // Get the underlying SqlConnection object
-        // SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
+        using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
+        {
+            string query = "SELECT * FROM Club WHERE clubId = @clubId";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@clubId", id);
 
-        // // get sql connection from appsettings.json
-        // var sql = "SELECT * FROM Club WHERE clubId = @Id";
-        // var cmd = new SqlCommand(sql, sqlConnection);
-        // cmd.Parameters.AddWithValue("@Id", id);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
 
-        // sqlConnection.Open();
-        // var reader = cmd.ExecuteReader();
-        // if (reader.Read())
+            if (reader.Read())
+            {
+                Club club = new Club
+                {
+                    clubId = reader.GetInt32(0),
+                    slug = reader.GetString(1),
+                    name = reader.GetString(2),
+                    description = reader.GetString(3),
+                    image = reader.GetString(4),
+                    validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                    validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+                };
+                reader.Close();
+                return Ok(new ApiResponse(true, "Club request is successful.", club));
+            }
+        }
+        return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
+
+        /*** it gives error of "userId", but I couldn't solve the problem ***/
+        // Club? Club = _db.Club.SingleOrDefault(u => u.clubId == id);
+
+        // if (Club != null)
         // {
-        //     var name = reader.GetString(1);
-        //     return name;
+        //     return Ok(new ApiResponse(true, "Club request is successfull", Club));
         // }
 
-        /*** returns all info ***/
-        Club? Club = _db.Club.SingleOrDefault(u => u.clubId == id);
-
-        if (Club != null)
-        {
-            return Ok(new ApiResponse(true, "Club request is successfull", Club));
-        }
-
-        return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
+        // return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
     }
 
     [HttpGet("name")]
     public IActionResult GetClubByClubname(string name)
     {   
-        /*** returns all info ***/
-        Club? Club = _db.Club.SingleOrDefault(u => u.name == name);
-
-        if (Club != null)
+        using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
         {
-            return Ok(new ApiResponse(true, "Club request is successful", Club));
-        }
+            string query = "SELECT * FROM Club WHERE name = @Name";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Name", name);
 
-        return NotFound(new ApiResponse(false, "Club not found", null));
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                Club club = new Club
+                {
+                    clubId = reader.GetInt32(0),
+                    slug = reader.GetString(1),
+                    name = reader.GetString(2),
+                    description = reader.GetString(3),
+                    image = reader.GetString(4),
+                    validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                    validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+                };
+                reader.Close();
+                return Ok(new ApiResponse(true, "Club request is successful.", club));
+            }
+        }
+        return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
+
     }
 
     // [HttpPost]
@@ -212,9 +271,11 @@ public class ClubController : ControllerBase
             cmd.Parameters.AddWithValue("@Name", Club.name);
             cmd.Parameters.AddWithValue("@Description", Club.description);
             cmd.Parameters.AddWithValue("@Image", Club.image);
-            cmd.Parameters.AddWithValue("@Advisor", Club.advisor);
+            
+            cmd.Parameters.AddWithValue("@Members", (object)DBNull.Value);
+            // cmd.Parameters.AddWithValue("@Advisor", Club.advisor);
+            cmd.Parameters.AddWithValue("@Advisor", (object)DBNull.Value);
 
-            // cmd.Parameters.AddWithValue("@Members", );
             cmd.Parameters.AddWithValue("@ValidFrom", Club.validFrom ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@ValidUntil", Club.validUntil ?? (object)DBNull.Value);
             /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */

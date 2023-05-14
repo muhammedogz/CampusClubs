@@ -34,14 +34,14 @@ public class UserController : ControllerBase
     public IActionResult GetUserInfoById(int id)
     {   
         /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.UserId == id);
+        User? user = _db.Users.SingleOrDefault(u => u.userId == id);
 
         List<Club> clubs = new List<Club>();
         using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
         {
-            string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.memberId WHERE u.userId = @UserId";
+            string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.userId WHERE u.userId = @userId";
             SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@UserId", id);
+            command.Parameters.AddWithValue("@userId", id);
 
             connection.Open();
             SqlDataReader reader = command.ExecuteReader();
@@ -79,9 +79,9 @@ public class UserController : ControllerBase
         List<Club> clubs = new List<Club>();
         using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
         {
-            string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.memberId WHERE u.userId = @UserId";
+            string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.userId WHERE u.userId = @userId";
             SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@UserId", id);
+            command.Parameters.AddWithValue("@userId", id);
 
             connection.Open();
             SqlDataReader reader = command.ExecuteReader();
@@ -126,7 +126,7 @@ public class UserController : ControllerBase
         // }
 
         /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.UserId == id);
+        User? user = _db.Users.SingleOrDefault(u => u.userId == id);
 
         if (user != null)
         {
@@ -154,7 +154,7 @@ public class UserController : ControllerBase
         // {
         //     User user = new User
         //     {
-        //         UserId = reader.GetInt32(0),
+        //         userId = reader.GetInt32(0),
         //         Username = reader.GetString(1),
         //         Name = reader.GetString(2),
         //         Email = reader.GetString(3),
@@ -188,7 +188,7 @@ public class UserController : ControllerBase
 
             var sql = "INSERT INTO Users (userId, username, name, email, password, createdDate, deletedDate) VALUES (@Id, @Username, @Name, @Email, @Password, @CreatedDate, @DeletedDate)";
             var cmd = new SqlCommand(sql, sqlConnection);
-            cmd.Parameters.AddWithValue("@Id", user.UserId);
+            cmd.Parameters.AddWithValue("@Id", user.userId);
             cmd.Parameters.AddWithValue("@Username", user.Username);
             cmd.Parameters.AddWithValue("@Name", user.Name);
             cmd.Parameters.AddWithValue("@Email", user.Email);
@@ -220,7 +220,7 @@ public class UserController : ControllerBase
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-        User? user = _db.Users.FirstOrDefault(u => u.UserId == userId);
+        User? user = _db.Users.FirstOrDefault(u => u.userId == userId);
         var sql = "DELETE FROM Users WHERE userId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Id", userId);

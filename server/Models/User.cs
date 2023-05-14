@@ -5,7 +5,7 @@ namespace Server.Models;
 public class User
 {
     [Key] /* annotation */
-    public int UserId { get; set; }
+    public int userId { get; set; }
 
     [Required]
     public string Username { get; set; } = string.Empty;

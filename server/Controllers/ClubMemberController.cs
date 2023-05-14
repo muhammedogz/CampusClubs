@@ -37,7 +37,7 @@ public class ClubMemberController : ControllerBase
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
         // get sql connection from appsettings.json
-        var sql = "SELECT c.*, m.memberId, m.memberRole FROM Club c JOIN ClubMembers m ON m.clubId =c.clubId AND m.memberId = @Id";
+        var sql = "SELECT c.*, m.userId, m.memberRole FROM Club c JOIN ClubMembers m ON m.clubId =c.clubId AND m.userId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Id", id);
 
@@ -65,11 +65,11 @@ public class ClubMemberController : ControllerBase
             SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
             
             // Convert the list of IDs to a comma-separated string
-            var sql = "INSERT INTO ClubMembers (memberId, clubId, memberRole) VALUES (@memberId, @clubId, @memberRole)";
+            var sql = "INSERT INTO ClubMembers (userId, clubId, memberRole) VALUES (@userId, @clubId, @memberRole)";
             var cmd = new SqlCommand(sql, sqlConnection);
 
-            // var sql2 = "SELECT c.*, m.memberId, m.memberRole FROM Club c JOIN ClubMembers m ON c.clubId = m.clubId";
-            cmd.Parameters.AddWithValue("@memberId", clubMember.memberId);
+            // var sql2 = "SELECT c.*, m.userId, m.memberRole FROM Club c JOIN ClubMembers m ON c.clubId = m.clubId";
+            cmd.Parameters.AddWithValue("@userId", clubMember.userId);
             cmd.Parameters.AddWithValue("@clubId", clubMember.clubId);
             cmd.Parameters.AddWithValue("@memberRole", clubMember.memberRole);
 
