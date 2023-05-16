@@ -5,7 +5,7 @@ using server.Constants;
 using Server.Data;
 using Server.Models;
 using System.Data;
-namespace server.Controllers;
+namespace server.Controllers.ConnectionControllers;
 
 [ApiController]
 [Route(Consts.DEFAULT_ROUTE)]

@@ -26,6 +26,10 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<ClubMember> ClubMembers { get; set; }
 
+    public DbSet<ClubAnnouncement> ClubAnnouncements { get; set; }
+    
+    public DbSet<ClubEvent> ClubEvents { get; set; }
+
     public DbContext CreateDbContext(string[] args)
     {
         throw new NotImplementedException();
