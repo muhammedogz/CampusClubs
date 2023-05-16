@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using server.Constants;
 using Server.Data;
 using Server.Models;
-using System.Data;
-using System.ComponentModel;
 
 namespace server.Controllers;
 
@@ -14,6 +12,7 @@ namespace server.Controllers;
 public class ClubController : ControllerBase
 {
     private readonly ApplicationDbContext _db; // create object of ApplicationDbContext class
+    private Helper helper = new Helper();
 
     public ClubController(ApplicationDbContext db) // constructor
     {
@@ -84,6 +83,7 @@ public class ClubController : ControllerBase
                     name = reader.GetString(2),
                     description = reader.GetString(3),
                     image = reader.GetString(4),
+                    announcements = helper.GetAnnouncementsByClubId(connection, id),
                     validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
                     validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
                 };

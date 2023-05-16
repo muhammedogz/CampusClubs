@@ -27,7 +27,7 @@ public class Club
     // public DateTime? DeletedDate { get; set; } = DateTime.Now;
     public DateTime? validUntil { get; set; }
 
-    public List<ClubAnnouncement> announcements { get; set; } = new List<ClubAnnouncement>();
+    public List<Announcement> announcements { get; set; } = new List<Announcement>();
     
     // public List<ClubMember> members { get; set; } = new List<ClubMember>();
 

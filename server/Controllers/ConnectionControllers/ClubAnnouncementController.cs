@@ -57,7 +57,7 @@ public class ClubAnnouncementController : ControllerBase
                     name = reader.GetString(2),
                     description = reader.GetString(3),
                     image = reader.GetString(4),
-                    validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                    validFrom  = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
                     validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
                 };
                 clubs.Add(club);
