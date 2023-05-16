@@ -31,7 +31,7 @@ public class Club
     
     // public List<ClubMember> members { get; set; } = new List<ClubMember>();
 
-    // public List<ClubEvent> events { get; set; } = new List<ClubEvent>();
+    public List<Event> events { get; set; } = new List<Event>();
     
     // [Required]
     // public int advisor { get; set; } = 0;
