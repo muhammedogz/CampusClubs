@@ -41,6 +41,7 @@ public class ClubController : ControllerBase
                         name = reader.GetString(2),
                         description = reader.GetString(3),
                         image = reader.GetString(4),
+                        announcements = helper.GetAnnouncementsByClubId(connection, reader.GetInt32(0)),
                         validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
                         validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
                     };
