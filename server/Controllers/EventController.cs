@@ -46,21 +46,6 @@ public class EventController : ControllerBase
         return NotFound(new ApiResponse(false, "Event request is unsuccessful since Event couldn't be found", null));
     }
 
-    [HttpGet("name")]
-    public IActionResult GetEventByEventname(string name)
-    {   
-        /*** returns all info ***/
-        Event? Event = _db.Event.SingleOrDefault(u => u.name == name);
-
-        if (Event != null)
-        {
-            return Ok(new ApiResponse(true, "Event request is successful", Event));
-        }
-
-        return NotFound(new ApiResponse(false, "Event not found", null));
-    }
-
-
     [HttpPost]
     public IActionResult Create(Event Event) 
     {
@@ -119,30 +104,6 @@ public class EventController : ControllerBase
         if (rowsAffected > 0)
         {
             return Ok(new ApiResponse(true, "Event deleted successfully.", Event));
-        }
-        else
-        {
-            return NotFound(new ApiResponse(false, "Event not found.", null));
-        }
-    }
-
-    [HttpDelete("name")]
-    public IActionResult DeleteWithEventname(string Eventname)
-    {
-        // Get the underlying SqlConnection object
-        SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-        var sql = "DELETE FROM Event WHERE name = @Eventname";
-        var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Eventname", Eventname);
-
-        sqlConnection.Open();
-        int rowsAffected = cmd.ExecuteNonQuery();
-        sqlConnection.Close();
-
-        if (rowsAffected > 0)
-        {
-            return Ok(new ApiResponse(true, "Event deleted successfully.", Eventname));
         }
         else
         {

@@ -54,14 +54,7 @@ public class ClubController : ControllerBase
         catch{
             return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
         }
-        // Return all Club info - THIS THROWS ERROR
-        // try{
-        //     IEnumerable<Club> clubList = _db.Club;
-        //     return Ok(new ApiResponse(true, "Club request is successful", clubList));
-        // }
-        // catch (Exception e){
-        //     return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Club request is unsuccessful", e.Message));
-        // }
+
     }
 
     [HttpGet("id")]
@@ -95,50 +88,7 @@ public class ClubController : ControllerBase
             }
         }
         return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
-
-        /*** it gives error of "userId", but I couldn't solve the problem ***/
-        // Club? Club = _db.Club.SingleOrDefault(u => u.clubId == id);
-
-        // if (Club != null)
-        // {
-        //     return Ok(new ApiResponse(true, "Club request is successfull", Club));
-        // }
-
-        // return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
     }
-
-    [HttpGet("name")]
-    public IActionResult GetClubByClubname(string name)
-    {   
-        using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
-        {
-            string query = "SELECT * FROM Club WHERE name = @Name";
-            SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@Name", name);
-
-            connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
-
-            if (reader.Read())
-            {
-                Club club = new Club
-                {
-                    clubId = reader.GetInt32(0),
-                    slug = reader.GetString(1),
-                    name = reader.GetString(2),
-                    description = reader.GetString(3),
-                    image = reader.GetString(4),
-                    validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
-                    validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
-                };
-                reader.Close();
-                return Ok(new ApiResponse(true, "Club request is successful.", club));
-            }
-        }
-        return NotFound(new ApiResponse(false, "Club request is unsuccessful since Club couldn't be found", null));
-
-    }
-
 
     [HttpPost]
     public IActionResult Create(Club Club)
@@ -201,30 +151,6 @@ public class ClubController : ControllerBase
         if (rowsAffected > 0)
         {
             return Ok(new ApiResponse(true, "Club deleted successfully.", Club));
-        }
-        else
-        {
-            return NotFound(new ApiResponse(false, "Club not found.", null));
-        }
-    }
-
-    [HttpDelete("name")]
-    public IActionResult DeleteWithClubname(string Clubname)
-    {
-        // Get the underlying SqlConnection object
-        SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-        var sql = "DELETE FROM Club WHERE name = @Clubname";
-        var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Clubname", Clubname);
-
-        sqlConnection.Open();
-        int rowsAffected = cmd.ExecuteNonQuery();
-        sqlConnection.Close();
-
-        if (rowsAffected > 0)
-        {
-            return Ok(new ApiResponse(true, "Club deleted successfully.", Clubname));
         }
         else
         {

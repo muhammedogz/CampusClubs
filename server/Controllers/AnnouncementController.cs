@@ -46,21 +46,6 @@ public class AnnouncementController : ControllerBase
         return NotFound(new ApiResponse(false, "Announcement request is unsuccessful since Announcement couldn't be found", null));
     }
 
-    [HttpGet("name")]
-    public IActionResult GetAnnouncementByAnnouncementname(string name)
-    {   
-        /*** returns all info ***/
-        Announcement? Announcement = _db.Announcement.SingleOrDefault(u => u.title == name);
-
-        if (Announcement != null)
-        {
-            return Ok(new ApiResponse(true, "Announcement request is successful", Announcement));
-        }
-
-        return NotFound(new ApiResponse(false, "Announcement not found", null));
-    }
-
-
     [HttpPost]
     public IActionResult Create(Announcement Announcement) 
     {
@@ -116,30 +101,6 @@ public class AnnouncementController : ControllerBase
         if (rowsAffected > 0)
         {
             return Ok(new ApiResponse(true, "Announcement deleted successfully.", Announcement));
-        }
-        else
-        {
-            return NotFound(new ApiResponse(false, "Announcement not found.", null));
-        }
-    }
-
-    [HttpDelete("name")]
-    public IActionResult DeleteWithAnnouncementname(string Announcementname)
-    {
-        // Get the underlying SqlConnection object
-        SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-        var sql = "DELETE FROM Announcement WHERE title = @Announcementname";
-        var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@Announcementname", Announcementname);
-
-        sqlConnection.Open();
-        int rowsAffected = cmd.ExecuteNonQuery();
-        sqlConnection.Close();
-
-        if (rowsAffected > 0)
-        {
-            return Ok(new ApiResponse(true, "Announcement deleted successfully.", Announcementname));
         }
         else
         {
