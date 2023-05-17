@@ -30,18 +30,18 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("id")]
-    public IActionResult GetUserInfoById(int id)
+    [HttpGet("userId")]
+    public IActionResult GetUserInfoById(int userId)
     {   
         /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.userId == id);
+        User? user = _db.Users.SingleOrDefault(u => u.userId == userId);
 
         List<Club> clubs = new List<Club>();
         using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
         {
             string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.userId WHERE u.userId = @userId";
             SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@userId", id);
+            command.Parameters.AddWithValue("@userId", userId);
 
             connection.Open();
             SqlDataReader reader = command.ExecuteReader();
@@ -123,7 +123,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("userById/userId")]
+    [HttpDelete("userId")]
     public IActionResult DeleteWithId(int userId)
     {
         // Get the underlying SqlConnection object
