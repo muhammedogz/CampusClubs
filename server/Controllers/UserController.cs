@@ -30,31 +30,43 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("id")]
-    public IActionResult GetUserById(int id)
+    [HttpGet("userId")]
+    public IActionResult GetUserInfoById(int userId)
     {   
-        /*** only returns username ***/
-        // // Get the underlying SqlConnection object
-        // SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-        // // get sql connection from appsettings.json
-        // var sql = "SELECT * FROM Users WHERE userId = @Id";
-        // var cmd = new SqlCommand(sql, sqlConnection);
-        // cmd.Parameters.AddWithValue("@Id", id);
-
-        // sqlConnection.Open();
-        // var reader = cmd.ExecuteReader();
-        // if (reader.Read())
-        // {
-        //     var name = reader.GetString(1);
-        //     return name;
-        // }
-
         /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.UserId == id);
+        User? user = _db.Users.SingleOrDefault(u => u.userId == userId);
+
+        List<Club> clubs = new List<Club>();
+        using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
+        {
+            string query = "SELECT c.* FROM Club c INNER JOIN ClubMembers cm ON c.clubId = cm.clubId INNER JOIN [Users] u ON u.userId = cm.userId WHERE u.userId = @userId";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@userId", userId);
+
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Club club = new Club
+                {
+                    clubId = reader.GetInt32(0),
+                    slug = reader.GetString(1),
+                    name = reader.GetString(2),
+                    description = reader.GetString(3),
+                    image = reader.GetString(4),
+                    validFrom = reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                    validUntil = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
+                };
+                clubs.Add(club);
+            }
+            reader.Close();
+        }
+
 
         if (user != null)
         {
+            user.clubsRegistered = clubs;
             return Ok(new ApiResponse(true, "User request is successfull", user));
         }
 
@@ -63,36 +75,7 @@ public class UserController : ControllerBase
 
     [HttpGet("username")]
     public IActionResult GetUserByUsername(string username)
-    {   
-        /*** only returns username ***/
-        // // Get the underlying SqlConnection object
-        // SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-        // // get sql connection from appsettings.json
-        // var sql = "SELECT * FROM Users WHERE username = @username";
-        // var cmd = new SqlCommand(sql, sqlConnection);
-        // cmd.Parameters.AddWithValue("@username", username);
-
-        // sqlConnection.Open();
-        // var reader = cmd.ExecuteReader();
-        // if (reader.Read())
-        // {
-        //     User user = new User
-        //     {
-        //         UserId = reader.GetInt32(0),
-        //         Username = reader.GetString(1),
-        //         Name = reader.GetString(2),
-        //         Email = reader.GetString(3),
-        //         Password = reader.GetString(4),
-        //         CreatedDate = reader.GetDateTime(5),
-        //         DeletedDate = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
-        //     };
-
-        //     return Ok(user);
-        // }
-
-        // return NotFound("User not found");
-        
+    {      
         /*** returns all info ***/
         User? user = _db.Users.SingleOrDefault(u => u.Username == username);
 
@@ -113,7 +96,7 @@ public class UserController : ControllerBase
 
             var sql = "INSERT INTO Users (userId, username, name, email, password, createdDate, deletedDate) VALUES (@Id, @Username, @Name, @Email, @Password, @CreatedDate, @DeletedDate)";
             var cmd = new SqlCommand(sql, sqlConnection);
-            cmd.Parameters.AddWithValue("@Id", user.UserId);
+            cmd.Parameters.AddWithValue("@Id", user.userId);
             cmd.Parameters.AddWithValue("@Username", user.Username);
             cmd.Parameters.AddWithValue("@Name", user.Name);
             cmd.Parameters.AddWithValue("@Email", user.Email);
@@ -140,12 +123,12 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("userById/{userId}")]
+    [HttpDelete("userId")]
     public IActionResult DeleteWithId(int userId)
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-        User? user = _db.Users.FirstOrDefault(u => u.UserId == userId);
+        User? user = _db.Users.FirstOrDefault(u => u.userId == userId);
         var sql = "DELETE FROM Users WHERE userId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Id", userId);
@@ -164,31 +147,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("userByUsername/{username}")]
-    public IActionResult DeleteWithUsername(string username)
-    {
-        // Get the underlying SqlConnection object
-        SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-
-        var sql = "DELETE FROM Users WHERE username = @username";
-        var cmd = new SqlCommand(sql, sqlConnection);
-        cmd.Parameters.AddWithValue("@username", username);
-
-        sqlConnection.Open();
-        int rowsAffected = cmd.ExecuteNonQuery();
-        sqlConnection.Close();
-
-        if (rowsAffected > 0)
-        {
-            return Ok(new ApiResponse(true, "User deleted successfully.", username));
-        }
-        else
-        {
-            return NotFound(new ApiResponse(false, "User not found.", null));
-        }
-    }
-
-    [HttpPut("{userId}")]
+    [HttpPut("userId")]
     public IActionResult Update(int userId, User updatedUser)
     {
         // Get the underlying SqlConnection object

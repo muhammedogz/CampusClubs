@@ -1,5 +1,10 @@
 using Server.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +13,55 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSwaggerGen(); // Add this line to add Swagger services
+builder.Services.AddSwaggerGen(option => // authentication in Swagger
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters  
+    {
+        ValidateAudience = true,
+        ValidateIssuer = true,
+        ValidAudience = "Audience", // Set the desired audience value
+        ValidIssuer = "Issuer", // Set the desired issuer value
+        RequireExpirationTime = false,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_signing_key"))
+    };
+});
+
+builder.Services.AddAuthorization(auth =>
+{
+    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
+        .RequireAuthenticatedUser().Build());
+});
+
 
 var app = builder.Build();
 
@@ -25,13 +79,13 @@ app.UseSwaggerUI(c =>
   c.RoutePrefix = "swagger";
 }); // Add this line to configure Swagger UI
 
-// if (app.Environment.IsProduction())
-// {
-//   app.UseHttpsRedirection();
-// }
 
 app.UseStaticFiles();
 app.UseRouting();
+
+// // Place the following line after app.UseRouting() and before app.UseEndpoints(...)
+app.UseAuthentication(); 
+app.UseAuthorization();
 
 app.MapControllerRoute(
   name: "api",
@@ -40,4 +94,3 @@ app.MapControllerRoute(
 app.MapFallbackToFile("/index.html");
 
 app.Run();
-

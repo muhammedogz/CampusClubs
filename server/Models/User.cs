@@ -5,7 +5,7 @@ namespace Server.Models;
 public class User
 {
     [Key] /* annotation */
-    public int UserId { get; set; }
+    public int userId { get; set; }
 
     [Required]
     public string Username { get; set; } = string.Empty;
@@ -28,4 +28,5 @@ public class User
     // public DateTime? DeletedDate { get; set; } = DateTime.Now;
     public DateTime? DeletedDate { get; set; }
 
+    public List<Club> clubsRegistered { get; set; } = new List<Club>();
 }

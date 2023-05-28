@@ -15,8 +15,20 @@ public class ApplicationDbContext : DbContext
         
     }
 
+    // !!! Names should be same with the table names in the database
+    public DbSet<User> Users { get; set; }
+    
+    public DbSet<Club> Club { get; set; }
 
-    public DbSet<User> Users { get; set; } // create users table with 4 (category has 4) columns
+    public DbSet<Event> Event { get; set; }
+
+    public DbSet<Announcement> Announcement { get; set; }
+
+    public DbSet<ClubMember> ClubMembers { get; set; }
+
+    public DbSet<ClubAnnouncement> ClubAnnouncements { get; set; }
+    
+    public DbSet<ClubEvent> ClubEvents { get; set; }
 
     public DbContext CreateDbContext(string[] args)
     {
