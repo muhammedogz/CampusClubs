@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   readonly VITE_API_PATH: string;
   readonly VITE_BASE_PATH: string;
   readonly VITE_PUBLIC_PATH: string;
+  readonly VITE_PUBLIC_AUTH_PATH: string;
 }
 
 interface ImportMeta {

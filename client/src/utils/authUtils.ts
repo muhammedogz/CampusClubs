@@ -8,7 +8,6 @@ const VERIFIER_LENGTH = 64;
 
 const RESPONSE_TYPE = 'code';
 const CLIENT_ID = '88AD669CED46431AB77DAD88309327F5';
-const REDIRECT_URI = 'https://ogrenciprojeleri.gtu.edu.tr/KulupYonetim/router';
 const CODE_CHALLENGE_METHOD = 'S256';
 
 const generateState = () => {
@@ -28,9 +27,11 @@ export const generateRedirectUrl = () => {
 
   const state = generateState();
 
+  const redirect_uri = import.meta.env.VITE_PUBLIC_AUTH_PATH;
+
   const code_challenge = challenge;
 
-  const url = `https://kampus.gtu.edu.tr/oauth/yetki?response_type=${RESPONSE_TYPE}&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${state}&code_challenge_method=${CODE_CHALLENGE_METHOD}&code_challenge=${code_challenge}`;
+  const url = `https://kampus.gtu.edu.tr/oauth/yetki?response_type=${RESPONSE_TYPE}&client_id=${CLIENT_ID}&redirect_uri=${redirect_uri}&state=${state}&code_challenge_method=${CODE_CHALLENGE_METHOD}&code_challenge=${code_challenge}`;
 
   return { url, code_verifier: verifier, state };
 };
