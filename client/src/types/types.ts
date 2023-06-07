@@ -40,6 +40,7 @@ export type UyeType = {
   image: string;
   kulup: KulupType;
   bolum: string;
+  role: RolesEnum;
 };
 
 export type DuyuruType = {
@@ -48,3 +49,10 @@ export type DuyuruType = {
   description: string;
   date: string;
 };
+
+export enum RolesEnum {
+  SKS = 'SKS',
+  UYE = 'UYE',
+  DANISMAN = 'DANISMAN',
+  KULUP_BASKANI = 'KULUP_BASKANI',
+}

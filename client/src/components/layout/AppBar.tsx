@@ -1,39 +1,48 @@
-import { Button, Stack } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
+import { Menu, MenuItem, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { Link } from 'src/components/common/Link';
-import { Routes } from 'src/data/routes';
+import { useCallback, useState } from 'react';
+import CCButton from 'src/components/common/CCButton';
+import { generateRedirectUrl } from 'src/utils/authUtils';
+import { StorageKeyEnum, updateLocalStorageItem } from 'src/utils/storageUtils';
+import { isUserLoggedIn } from 'src/utils/utils';
 
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
-  // const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [loadingSigninButton, setLoadingSigninButton] = useState(false);
 
-  // const handleCloseUserMenu = () => {
-  //   setAnchorElUser(null);
-  // };
+  const handleSignin = useCallback(() => {
+    setLoadingSigninButton(true);
+    const { url, code_verifier, state, code_challenge } = generateRedirectUrl();
+    console.log('url', url);
+    console.log('code_verifier', code_verifier);
+    console.log('state', state);
+    console.log('code_challenge', code_challenge);
+    updateLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE, {
+      code_verifier,
+      code_challenge,
+      state,
+    });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    // setAnchorElUser(event.currentTarget);
+    window.location.href = url;
+
+    setLoadingSigninButton(false);
+  }, []);
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
-  return (
-    <Stack
-      sx={{
-        position: 'fixed',
-        top: 10,
-        right: 10,
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-      }}
-    >
-      <Tooltip title="Giriş Yap">
-        <Button onClick={handleOpenUserMenu} variant="contained">
-          <Link to={Routes.SIGN_IN}>
-            <Typography textAlign="center">Giriş Yap</Typography>
-          </Link>
-        </Button>
-      </Tooltip>
-      {/* <Menu
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const userLoggedIn = isUserLoggedIn();
+
+  const LoggedUserContent = () => {
+    return (
+      <Menu
         sx={{ mt: '45px' }}
         id="menu-appbar"
         anchorEl={anchorElUser}
@@ -54,7 +63,34 @@ function ResponsiveAppBar() {
             <Typography textAlign="center">{setting}</Typography>
           </MenuItem>
         ))}
-      </Menu> */}
+      </Menu>
+    );
+  };
+
+  const NotLoggedUserContent = () => {
+    return (
+      <CCButton
+        loading={loadingSigninButton}
+        onClick={handleSignin}
+        variant="contained"
+      >
+        <Typography textAlign="center">Giriş Yap</Typography>
+      </CCButton>
+    );
+  };
+
+  console.log('userLoggedIn', userLoggedIn);
+
+  return (
+    <Stack
+      sx={{
+        position: 'fixed',
+        top: 10,
+        right: 10,
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
+    >
+      {userLoggedIn ? <LoggedUserContent /> : <NotLoggedUserContent />}
     </Stack>
   );
 }

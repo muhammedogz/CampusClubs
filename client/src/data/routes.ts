@@ -1,7 +1,7 @@
 export enum Routes {
   HOME = '/',
-  SIGN_IN = '/signin',
-  SIGN_UP = '/signup',
+  SIGN_IN = '/giris-yap',
+  SIGN_UP = '/uye-ol',
   KULUP = '/kulup',
   ETKINLIK = '/etkinlik',
   DANISMAN = '/danisman',

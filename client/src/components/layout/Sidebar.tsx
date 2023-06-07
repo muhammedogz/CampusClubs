@@ -10,13 +10,17 @@ import { Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import {
   Menu,
   MenuItem,
+  MenuItemProps,
   Sidebar as ProSidebar,
   SubMenu,
 } from 'react-pro-sidebar';
+import { useNavigate } from 'react-router-dom';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Routes } from 'src/data/routes';
 import { getLocalImage } from 'src/utils/imageUtils';
+import { StorageKeyEnum, removeLocalStorageItem } from 'src/utils/storageUtils';
+import { isUserLoggedIn } from 'src/utils/utils';
 
 const SidebarHeader = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -123,7 +127,7 @@ const SidebarMenu = ({ children, title }: SidebarMenuProps) => {
   );
 };
 
-type SidebarMenuItemProps = {
+type SidebarMenuItemProps = MenuItemProps & {
   children: React.ReactNode | React.ReactNode[];
   icon?: React.ReactNode;
 };
@@ -142,6 +146,9 @@ const SidebarMenuItem = ({ ...rest }: SidebarMenuItemProps) => {
 
 export const Sidebar = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
+  const loggedIn = isUserLoggedIn();
+
+  const navigate = useNavigate();
 
   return (
     <Stack
@@ -206,19 +213,28 @@ export const Sidebar = () => {
                   </Link>
                 </SubMenu>
               </SidebarMenu>
-              <SidebarMenu title="Kullanıcı">
-                <Link to={'/kullanici/muhammed-oguz'}>
-                  <SidebarMenuItem icon={<PersonPinIcon />}>
-                    Profilim
+              {loggedIn && (
+                <SidebarMenu title="Kullanıcı">
+                  <Link to={'/kullanici/muhammed-oguz'}>
+                    <SidebarMenuItem icon={<PersonPinIcon />}>
+                      Profilim
+                    </SidebarMenuItem>
+                  </Link>
+                  <SidebarMenuItem icon={<SettingsIcon />}>
+                    Ayarlar
                   </SidebarMenuItem>
-                </Link>
-                <SidebarMenuItem icon={<SettingsIcon />}>
-                  Ayarlar
-                </SidebarMenuItem>
-                <SidebarMenuItem icon={<LogoutIcon />}>
-                  Çıkış Yap
-                </SidebarMenuItem>
-              </SidebarMenu>
+                  <SidebarMenuItem
+                    onClick={() => {
+                      removeLocalStorageItem(StorageKeyEnum.USER_STORAGE);
+                      // reload page
+                      navigate(0);
+                    }}
+                    icon={<LogoutIcon />}
+                  >
+                    Çıkış Yap
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              )}
             </Stack>
           </Stack>
           <SidebarFooter />
