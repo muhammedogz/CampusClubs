@@ -1,5 +1,4 @@
 import { Menu, MenuItem, Stack } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useCallback, useState } from 'react';
 import CCButton from 'src/components/common/CCButton';
@@ -70,15 +69,13 @@ function ResponsiveAppBar() {
 
   const NotLoggedUserContent = () => {
     return (
-      <Tooltip title="Giriş Yap">
-        <CCButton
-          loading={loadingSigninButton}
-          onClick={handleSignin}
-          variant="contained"
-        >
-          <Typography textAlign="center">Giriş Yap</Typography>
-        </CCButton>
-      </Tooltip>
+      <CCButton
+        loading={loadingSigninButton}
+        onClick={handleSignin}
+        variant="contained"
+      >
+        <Typography textAlign="center">Giriş Yap</Typography>
+      </CCButton>
     );
   };
 
