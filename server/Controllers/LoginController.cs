@@ -117,6 +117,11 @@ public class LoginController : ControllerBase
     var clientId = System.Environment.GetEnvironmentVariable("AUTH_CLIENT_ID");
     var clientSecret = System.Environment.GetEnvironmentVariable("AUTH_CLIENT_SECRET");
 
+    if (clientId == null || clientSecret == null)
+    {
+      return BadRequest(new ApiResponse(false, "Env variables not loaded correctly", null));
+    }
+
     var client = new HttpClient();
 
     var requestBody = new
@@ -138,14 +143,14 @@ public class LoginController : ControllerBase
 
     if (jsonResult == null)
     {
-      return BadRequest(new ApiResponse(false, "Auth request is not successful", null));
+      return BadRequest(new ApiResponse(false, "Can't get access_token 1", null));
     }
 
     var accessToken = jsonResult["access_token"];
 
     if (accessToken == null)
     {
-      return BadRequest(new ApiResponse(false, "Auth request is not successful", null));
+      return BadRequest(new ApiResponse(false, "Can't get access_token 2", null));
     }
 
     /*{
@@ -181,7 +186,7 @@ public class LoginController : ControllerBase
 
     if (userName == null)
     {
-      return BadRequest(new ApiResponse(false, "Auth request is not successful", null));
+      return BadRequest(new ApiResponse(false, "Kullanici_adi is null", null));
     }
 
     return Ok(new ApiResponse(true, "Auth request is successful", jsonResult2));
