@@ -30,13 +30,11 @@ const Auth = () => {
 
     // post request to https://kampus.gtu.edu.tr/oauth/dogrulama
     const body = {
-      client_id: '88AD669CED46431AB77DAD88309327F5',
-      client_secret: 'BD35E1A4DBE84B7EA9D618B9E341C190',
-      code_verifier,
+      codeVerifier: code_verifier,
       code,
     };
     const response = await axios.post(
-      'https://kampus.gtu.edu.tr/oauth/dogrulama',
+      `${import.meta.env.VITE_API_PATH}/login/auth`,
       body
     );
 
