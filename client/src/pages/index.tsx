@@ -1,18 +1,11 @@
 import { Button, Stack, Typography } from '@mui/material';
-import { useEffect } from 'react';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
-import { generateRedirectUrl } from 'src/utils/authUtils';
 import { getLocalImage } from 'src/utils/imageUtils';
 
 const Home = () => {
-  useEffect(() => {
-    const redirect = generateRedirectUrl();
-    console.log('redirect', redirect);
-  }, []);
-
   return (
     <Layout>
       <Stack
