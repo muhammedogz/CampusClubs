@@ -22,16 +22,14 @@ const generateState = () => {
 export const generateRedirectUrl = () => {
   const { generateChallenge }: PKCEHelperLegacyBrowser =
     createPKCEHelper(false);
-  const { verifier, challenge }: PKCEChallenge =
+  const { verifier: code_verifier, challenge: code_challenge }: PKCEChallenge =
     generateChallenge(VERIFIER_LENGTH);
 
   const state = generateState();
 
   const redirect_uri = import.meta.env.VITE_PUBLIC_AUTH_PATH;
 
-  const code_challenge = challenge;
-
   const url = `https://kampus.gtu.edu.tr/oauth/yetki?response_type=${RESPONSE_TYPE}&client_id=${CLIENT_ID}&redirect_uri=${redirect_uri}&state=${state}&code_challenge_method=${CODE_CHALLENGE_METHOD}&code_challenge=${code_challenge}`;
 
-  return { url, code_verifier: verifier, state };
+  return { url, code_verifier, code_challenge, state };
 };

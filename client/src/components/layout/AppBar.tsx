@@ -2,9 +2,9 @@ import { Menu, MenuItem, Stack } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CCButton from 'src/components/common/CCButton';
 import { generateRedirectUrl } from 'src/utils/authUtils';
+import { StorageKeyEnum, updateLocalStorageItem } from 'src/utils/storageUtils';
 import { isUserLoggedIn } from 'src/utils/utils';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -13,11 +13,19 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [loadingSigninButton, setLoadingSigninButton] = useState(false);
 
-  const navigate = useNavigate();
-
   const handleSignin = useCallback(() => {
     setLoadingSigninButton(true);
-    const { url } = generateRedirectUrl();
+    const { url, code_verifier, state, code_challenge } = generateRedirectUrl();
+    console.log('url', url);
+    console.log('code_verifier', code_verifier);
+    console.log('state', state);
+    console.log('code_challenge', code_challenge);
+    updateLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE, {
+      code_verifier,
+      code_challenge,
+      state,
+    });
+
     window.location.href = url;
 
     setLoadingSigninButton(false);
