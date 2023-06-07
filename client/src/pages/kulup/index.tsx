@@ -1,10 +1,25 @@
 import { Stack, Typography } from '@mui/material';
+import { useCallback, useEffect } from 'react';
 import CampusClubCard from 'src/components/cards/CampusClubCard';
 import { Layout } from 'src/components/layout/Layout';
 import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
+import { getAllClubsFetcher } from 'src/fetch/fetchers';
 
 const index = () => {
+  const getAllClubs = useCallback(async () => {
+    try {
+      const allClubs = await getAllClubsFetcher();
+      console.log('allClubs', allClubs);
+    } catch (error) {
+      console.log('error', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllClubs();
+  }, [])
+
   return (
     <Layout>
       <Stack gap="20px" pt="60px">

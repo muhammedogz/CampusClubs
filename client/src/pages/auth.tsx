@@ -2,6 +2,7 @@ import { Backdrop, CircularProgress } from '@mui/material';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
 import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
 
 const Auth = () => {
@@ -34,7 +35,7 @@ const Auth = () => {
       code,
     };
     const response = await axios.post(
-      `${import.meta.env.VITE_API_PATH}/login/auth`,
+      getApiEndpoint(Endpoints.AUTH),
       body
     );
 
