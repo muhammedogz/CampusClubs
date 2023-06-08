@@ -114,8 +114,8 @@ public class LoginController : ControllerBase
   [Route("auth")]
   public async Task<IActionResult> Auth([FromBody] CodeVerifierBody codeVerifier)
   {
-    var clientId = System.Environment.GetEnvironmentVariable("AUTH_CLIENT_ID");
-    var clientSecret = System.Environment.GetEnvironmentVariable("AUTH_CLIENT_SECRET");
+    var clientId = Secrets.Secret.AUTH_CLIENT_ID;
+    var clientSecret = Secrets.Secret.AUTH_CLIENT_SECRET;
 
     if (clientId == null || clientSecret == null)
     {

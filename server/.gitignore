@@ -238,3 +238,6 @@ _Pvt_Extensions
 
 # ignore env
 .env
+
+# ignore secrets in consts/secrets.cs
+Const/Secrets.cs
