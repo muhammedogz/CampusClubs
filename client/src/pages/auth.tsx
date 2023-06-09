@@ -1,11 +1,19 @@
-import { Backdrop, CircularProgress } from '@mui/material';
+import { Backdrop, CircularProgress, Stack } from '@mui/material';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
+import { ApiResponseType } from 'src/types/types';
 import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
 
+type AuthResponse = {
+  kullanici_adi: string;
+  kurumsal_email_adresi: string;
+  auth_token?: string;
+};
+
 const Auth = () => {
+  const [auth, setAuth] = useState<AuthResponse | null>(null);
   const [urlParams] = useSearchParams();
 
   const handleAuth = async () => {
@@ -15,16 +23,7 @@ const Auth = () => {
     if (!authorizeStorage) return;
     const code = urlParams.get('code');
     const state = urlParams.get('state');
-    console.log('code', code);
-    console.log('state', state);
-    const {
-      code_verifier,
-      state: storedState,
-      code_challenge,
-    } = authorizeStorage;
-    console.log('code_verifier', code_verifier);
-    console.log('code_challenge', code_challenge);
-    console.log('storedState', storedState);
+    const { code_verifier, state: storedState } = authorizeStorage;
 
     // Check with stored state
     if (state !== storedState) return;
@@ -34,20 +33,27 @@ const Auth = () => {
       codeVerifier: code_verifier,
       code,
     };
-    const response = await axios.post(
+    const response = await axios.post<ApiResponseType<AuthResponse>>(
       getApiEndpoint(Endpoints.AUTH),
       body
     );
 
-    const data = await response;
-    console.log('data', data);
+    console.log('response', response);
 
-    console.log("I'm here");
+    setAuth(response.data.data);
   };
 
   useEffect(() => {
     handleAuth();
   }, []);
+
+  console.log(auth);
+
+  if (auth?.auth_token) {
+    return <Stack>Giriş Yapıldı</Stack>;
+  } else if (auth?.kullanici_adi && auth?.kurumsal_email_adresi) {
+    return <Stack>Üye ol modalı</Stack>;
+  }
 
   return (
     <Backdrop
