@@ -28,7 +28,7 @@ public class FileUploadController : ControllerBase
       string fileName = Guid.NewGuid().ToString() + extension;
 
       // Construct the path where the file should be saved
-      string path = Path.Combine(Directory.GetCurrentDirectory(), "../test-image", fileName);
+      string path = Path.Combine(Directory.GetCurrentDirectory(), "../KulupYonetimStorage", fileName);
 
       // Save the file
       await using (var stream = new FileStream(path, FileMode.Create))
