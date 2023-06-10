@@ -16,7 +16,7 @@ public class ApplicationDbContext : DbContext
     }
 
     // !!! Names should be same with the table names in the database
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> User { get; set; }
     
     public DbSet<Club> Club { get; set; }
 

@@ -22,7 +22,7 @@ public class UserController : ControllerBase
     public IActionResult GetAll()
     {   // Return all user info
         try{
-            IEnumerable<User> userList = _db.Users;
+            IEnumerable<User> userList = _db.User;
             return Ok(new ApiResponse(true, "User request is successful", userList));
         }
         catch (Exception e){
@@ -34,7 +34,7 @@ public class UserController : ControllerBase
     public IActionResult GetUserInfoById(int userId)
     {   
         /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.userId == userId);
+        User? user = _db.User.SingleOrDefault(u => u.userId == userId);
 
         List<Club> clubs = new List<Club>();
         using (SqlConnection connection = (SqlConnection)_db.Database.GetDbConnection())
@@ -77,7 +77,7 @@ public class UserController : ControllerBase
     public IActionResult GetUserByUserName(string username)
     {      
         /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.UserName == username);
+        User? user = _db.User.SingleOrDefault(u => u.UserName == username);
 
         if (user != null)
         {
@@ -129,7 +129,7 @@ public class UserController : ControllerBase
     {
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
-        User? user = _db.Users.FirstOrDefault(u => u.userId == userId);
+        User? user = _db.User.FirstOrDefault(u => u.userId == userId);
         var sql = "DELETE FROM User WHERE userId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Id", userId);

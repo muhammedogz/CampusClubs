@@ -154,7 +154,7 @@ public class LoginController : ControllerBase
             return BadRequest(new ApiResponse(false, "Kullanici_adi or email are null", null));
         }
 
-        User? existingUser = _db.Users.SingleOrDefault(u => u.UserName == userName);
+        User? existingUser = _db.User.SingleOrDefault(u => u.UserName == userName);
         if (existingUser != null)
         {
             var token = GenerateToken(existingUser);
@@ -183,7 +183,7 @@ public class LoginController : ControllerBase
             };
             using (var dbContext = _db)
             {
-                dbContext.Users.Add(userInfo);
+                dbContext.User.Add(userInfo);
                 dbContext.SaveChanges();
             }
             int newUserId = userInfo.userId;
