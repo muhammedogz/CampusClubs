@@ -74,10 +74,10 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("username")]
-    public IActionResult GetUserByUsername(string username)
+    public IActionResult GetUserByUserName(string username)
     {      
         /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.Username == username);
+        User? user = _db.Users.SingleOrDefault(u => u.UserName == username);
 
         if (user != null)
         {
@@ -94,13 +94,14 @@ public class UserController : ControllerBase
             // Get the underlying SqlConnection object
             SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
-            var sql = "INSERT INTO Users (userId, username, name, email, password, createdDate, deletedDate) VALUES (@Id, @Username, @Name, @Email, @Password, @CreatedDate, @DeletedDate)";
+            var sql = "INSERT INTO Users (userId, username, firstName, lastName, email, image, createdDate, deletedDate) VALUES (@Id, @UserName, @firstName, @lastName, @Email, @Image, @CreatedDate, @DeletedDate)";
             var cmd = new SqlCommand(sql, sqlConnection);
             cmd.Parameters.AddWithValue("@Id", user.userId);
-            cmd.Parameters.AddWithValue("@Username", user.Username);
-            cmd.Parameters.AddWithValue("@Name", user.Name);
+            cmd.Parameters.AddWithValue("@UserName", user.UserName);
+            cmd.Parameters.AddWithValue("@firstName", user.firstName);
+            cmd.Parameters.AddWithValue("@lastName", user.lastName);
             cmd.Parameters.AddWithValue("@Email", user.Email);
-            cmd.Parameters.AddWithValue("@Password", user.Password);
+            cmd.Parameters.AddWithValue("@Image", user.image);
             cmd.Parameters.AddWithValue("@CreatedDate", user.CreatedDate ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@DeletedDate", user.DeletedDate ?? (object)DBNull.Value);
             /* ?? (object)DBNull.Value makes allow nulls by converting DBNull */
@@ -153,13 +154,14 @@ public class UserController : ControllerBase
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
-        var sql = "UPDATE Users SET username = @Username, name = @Name, email = @Email, password = @Password, createdDate = @CreatedDate, deletedDate = @DeletedDate WHERE userId = @Id";
+        var sql = "UPDATE Users SET username = @UserName, firstName = @firstName, lastName = @lastName, email = @Email, image = @Image, createdDate = @CreatedDate, deletedDate = @DeletedDate WHERE userId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Id", userId);
-        cmd.Parameters.AddWithValue("@Username", updatedUser.Username);
-        cmd.Parameters.AddWithValue("@Name", updatedUser.Name);
+        cmd.Parameters.AddWithValue("@UserName", updatedUser.UserName);
+        cmd.Parameters.AddWithValue("@firstName", updatedUser.firstName);
+        cmd.Parameters.AddWithValue("@lastName", updatedUser.lastName);
         cmd.Parameters.AddWithValue("@Email", updatedUser.Email);
-        cmd.Parameters.AddWithValue("@Password", updatedUser.Password);
+        cmd.Parameters.AddWithValue("@Image", updatedUser.image);
         cmd.Parameters.AddWithValue("@CreatedDate", updatedUser.CreatedDate ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@DeletedDate", updatedUser.DeletedDate ?? (object)DBNull.Value);
 

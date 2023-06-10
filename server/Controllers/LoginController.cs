@@ -18,199 +18,265 @@ namespace server.Controllers;
 [Route(Consts.DEFAULT_ROUTE)]
 public class LoginController : ControllerBase
 {
-  private readonly ApplicationDbContext _db; // create object of ApplicationDbContext class
+    private readonly ApplicationDbContext _db; // create object of ApplicationDbContext class
 
-  public LoginController(ApplicationDbContext db) // constructor
-  {
-    _db = db;
-  }
-
-
-  [HttpPost, Route("login")]
-  public IActionResult Login(Login loginDTO)
-  {
-    try
+    public LoginController(ApplicationDbContext db) // constructor
     {
-      if (string.IsNullOrEmpty(loginDTO.UserName) ||
-      string.IsNullOrEmpty(loginDTO.Password))
-        return BadRequest("Username and/or Password not specified");
-
-      // Retrieve the user's credentials from the database
-      var user = _db.Users.FirstOrDefault(u => u.Username == loginDTO.UserName && u.Password == loginDTO.Password);
-
-      if (user == null)
-        return Unauthorized();
-
-      var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_signing_key"));
-      var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-      var jwtSecurityToken = new JwtSecurityToken(
-          issuer: "Issuer",
-          audience: "Audience",
-          claims: new[] { new Claim("unique_name", loginDTO.UserName) },
-          expires: DateTime.UtcNow.AddHours(96),
-          signingCredentials: signinCredentials
-      );
-      var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-      return Ok(new ApiResponse(true, token, user));
+        _db = db;
     }
-    catch
-    {
-      return BadRequest(new ApiResponse(false, "Username or password is wrong. Please check again", null));
-    }
-  }
 
-  [HttpGet]
-  [Route("SetToken")]
-  public string GenerateToken()
-  {
-    string userName = "sglbl"; // no password in token
-    string audience = "Audience"; // Set the desired audience value
-    string issuer = "Issuer"; // Set the desired issuer value
-    string signingKey = "your_signing_key"; // Set your secret signing key
+    // [HttpGet, Authorize]
+    // [Route("login")]
+    // public IActionResult LoginProfiles()
+    // {
+    //     return Ok("You are authorized - Login Profile.");
+    // }
 
-    // Create claims for the token
-    var claims = new[]
+    [HttpGet]
+    [Route("SetToken")]
+    public string GenerateToken(User userInfo)
     {
+        // Retrieve the user information
+        string userName = userInfo.UserName;
+        int userId = userInfo.userId;
+        string email = userInfo.Email;
+
+        string audience = "Audience"; // Set the desired audience value
+        string issuer = "Issuer"; // Set the desired issuer value
+        string signingKey = Secrets.Secret.SIGNING_KEY; // Set your secret signing key
+
+        // Create claims for the token
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()), // Add userId as NameIdentifier
             new Claim(ClaimTypes.Name, userName),
+            new Claim(ClaimTypes.Email, email),
             // Add any additional claims as needed
         };
 
-    // Create a symmetric security key based on the signing key
-    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
+        // Create a symmetric security key based on the signing key
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
 
-    // Create signing credentials using the security key
-    var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        // Create signing credentials using the security key
+        var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-    // Create the token descriptor
-    var tokenDescriptor = new SecurityTokenDescriptor
-    {
-      Subject = new ClaimsIdentity(claims),
-      Audience = audience,
-      Issuer = issuer,
-      Expires = DateTime.UtcNow.AddHours(1296), // Set the token expiration time
-      SigningCredentials = signingCredentials
-    };
+        // Create the token descriptor
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Audience = audience,
+            Issuer = issuer,
+            Expires = DateTime.UtcNow.AddHours(1296), // Set the token expiration time
+            SigningCredentials = signingCredentials
+        };
 
-    // Create a token handler
-    var tokenHandler = new JwtSecurityTokenHandler();
+        // Create a token handler
+        var tokenHandler = new JwtSecurityTokenHandler();
 
-    // Generate the token
-    var token = tokenHandler.CreateToken(tokenDescriptor);
+        // Generate the token
+        var token = tokenHandler.CreateToken(tokenDescriptor);
 
-    // Serialize the token to a string
-    var tokenString = tokenHandler.WriteToken(token);
+        // Serialize the token to a string
+        var tokenString = tokenHandler.WriteToken(token);
 
-    return tokenString;
-  }
-
-  [HttpGet, Authorize]
-  [Route("login")]
-  public IActionResult LoginProfiles()
-  {
-    return Ok("You are authorized - Login Profile.");
-  }
-
-  [HttpPost]
-  [Route("auth")]
-  public async Task<IActionResult> Auth([FromBody] CodeVerifierBody codeVerifier)
-  {
-    var clientId = Secrets.Secret.AUTH_CLIENT_ID;
-    var clientSecret = Secrets.Secret.AUTH_CLIENT_SECRET;
-
-    if (clientId == null || clientSecret == null)
-    {
-      return BadRequest(new ApiResponse(false, "Env variables not loaded correctly", null));
+        return tokenString;
     }
 
-    var client = new HttpClient();
 
-    var requestBody = new
+    [HttpGet("username")]
+    public IActionResult GetUserByUserName(string username)
     {
-      client_id = clientId,
-      client_secret = clientSecret,
-      code_verifier = codeVerifier.CodeVerifier,
-      code = codeVerifier.Code
-    };
+        /*** returns all info ***/
+        User? user = _db.Users.SingleOrDefault(u => u.UserName == username);
 
-    var json = JsonConvert.SerializeObject(requestBody);
-    var data = new StringContent(json, Encoding.UTF8, "application/json");
+        if (user != null)
+        {
+            return Ok(new ApiResponse(true, "User request is successful", user));
+        }
 
-    var url = "https://kampus.gtu.edu.tr/oauth/dogrulama";
-    var response = await client.PostAsync(url, data);
-
-    var result = await response.Content.ReadAsStringAsync();
-    var jsonResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
-
-    if (jsonResult == null)
-    {
-      return BadRequest(new ApiResponse(false, "Can't get access_token 1", null));
+        return NotFound(new ApiResponse(false, "User not found", null));
     }
 
-    var accessToken = jsonResult["access_token"];
-
-    if (accessToken == null)
+    [HttpPost]
+    [Route("auth")]
+    public async Task<IActionResult> Auth([FromBody] CodeVerifierBody codeVerifier)
     {
-      return BadRequest(new ApiResponse(false, "Can't get access_token 2", null));
+        var clientId = Secrets.Secret.AUTH_CLIENT_ID;
+        var clientSecret = Secrets.Secret.AUTH_CLIENT_SECRET;
+
+        if (clientId == null || clientSecret == null)
+        {
+            return BadRequest(new ApiResponse(false, "Env variables not loaded correctly", null));
+        }
+
+        var client = new HttpClient();
+
+        var requestBody = new
+        {
+            client_id = clientId,
+            client_secret = clientSecret,
+            code_verifier = codeVerifier.CodeVerifier,
+            code = codeVerifier.Code
+        };
+
+        var json = JsonConvert.SerializeObject(requestBody);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var url = "https://kampus.gtu.edu.tr/oauth/dogrulama";
+        var response = await client.PostAsync(url, data);
+
+        var result = await response.Content.ReadAsStringAsync();
+        var jsonResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+
+        if (jsonResult == null)
+        {
+            return BadRequest(new ApiResponse(false, "Can't get access_token 1", null));
+        }
+
+        var accessToken = jsonResult["access_token"];
+
+        if (accessToken == null)
+        {
+            return BadRequest(new ApiResponse(false, "Can't get access_token 2", null));
+        }
+
+        /*{
+        "clientId": "88AD669CED46431AB77DAD88309327F5",
+        "accessToken": "d8b68ca0-9d1d-4d74-a378-2294717d4383",
+        "kapsam": "GENEL"
+    }
+        */
+        /* https://kampus.gtu.edu.tr/oauth/sorgulama */
+
+        url = "https://kampus.gtu.edu.tr/oauth/sorgulama";
+        var requestBody2 = new
+        {
+            clientId = clientId,
+            accessToken = accessToken,
+            kapsam = "GENEL"
+        };
+
+        var json2 = JsonConvert.SerializeObject(requestBody2);
+        var data2 = new StringContent(json2, Encoding.UTF8, "application/json");
+
+        var response2 = await client.PostAsync(url, data2);
+
+        var result2 = await response2.Content.ReadAsStringAsync();
+        var jsonResult2 = JsonConvert.DeserializeObject<Dictionary<string, string>>(result2);
+
+        if (jsonResult2 == null)
+        {
+            return BadRequest(new ApiResponse(false, "Auth request is not successful", null));
+        }
+
+        var userName = jsonResult2["kullanici_adi"];
+        var email = jsonResult2["kurumsal_email_adresi"];
+
+        if (userName == null || email == null)
+        {
+            return BadRequest(new ApiResponse(false, "Kullanici_adi or email are null", null));
+        }
+
+        // userName = "m.oguz2018"
+        // TOKEN -> id, username, email
+        // Database e bak, bu username varsa, onun bilgileri + token döndür;
+        // checking if the userName already exists in the database. if does return.
+        User? existingUser = _db.Users.SingleOrDefault(u => u.UserName == userName);
+        if (existingUser != null)
+        {
+            var token = GenerateToken(existingUser);
+            return Ok(new ApiResponse(true, "kullanici-bulundu", new { existingUser, token }));
+        }
+        else
+        { // User does not exist in the database so we need to create a new user
+            return Ok(new ApiResponse(true, "kullanici-kayit", jsonResult2));
+        }
     }
 
-    /*{
-    "clientId": "88AD669CED46431AB77DAD88309327F5",
-    "accessToken": "d8b68ca0-9d1d-4d74-a378-2294717d4383",
-    "kapsam": "GENEL"
-}
-    */
-    /* https://kampus.gtu.edu.tr/oauth/sorgulama */
 
-    url = "https://kampus.gtu.edu.tr/oauth/sorgulama";
-    var requestBody2 = new
+    // [HttpPost]
+    // [Route("authTest")]
+    // public IActionResult testAuth(string userName, string email)
+    // {
+    //     // checking if the userName already exists in the database. if does return.
+    //     User? existingUser = _db.Users.SingleOrDefault(u => u.UserName == userName);
+    //     System.Console.WriteLine("Passed" + userName + email);
+    //     if (existingUser != null)
+    //     {
+    //         // User exists in the database
+    //         var userInfo = new User
+    //         {
+    //             userId = existingUser.userId,
+    //             UserName = existingUser.UserName,
+    //             Email = existingUser.Email
+    //         };
+
+    //         var token = GenerateToken(userInfo);
+    //         return Ok(new ApiResponse(true, "kullanici-bulundu", new { userInfo, token }));
+    //     }
+    //     else
+    //     { // User does not exist in the database so we need to create a new user
+    //         return Ok(new ApiResponse(true, "kullanici-kayit", jsonResult2));
+    //     }
+    // }
+
+
+
+    // Signup
+    [HttpPost]
+    [Route("signup")]
+    public IActionResult signup([FromBody] UserNameandEmailBody userNameandEmailBody)
     {
-      clientId = clientId,
-      accessToken = accessToken,
-      kapsam = "GENEL"
-    };
+        try{
+            var userInfo = new User
+            {
+                UserName = userNameandEmailBody.userName,
+                Email = userNameandEmailBody.email,
+                firstName = userNameandEmailBody.firstName,
+                lastName = userNameandEmailBody.lastName,
+                image = userNameandEmailBody.image
+                // Set other properties as needed
+            };
+            using (var dbContext = _db)
+            {
+                dbContext.Users.Add(userInfo);
+                dbContext.SaveChanges();
+            }
+            int newUserId = userInfo.userId;
 
-    var json2 = JsonConvert.SerializeObject(requestBody2);
-    var data2 = new StringContent(json2, Encoding.UTF8, "application/json");
+            // Generate token or retrieve existing token
+            var token = GenerateToken(userInfo);
 
-    var response2 = await client.PostAsync(url, data2);
-
-    var result2 = await response2.Content.ReadAsStringAsync();
-    var jsonResult2 = JsonConvert.DeserializeObject<Dictionary<string, string>>(result2);
-
-    if (jsonResult2 == null)
-    {
-      return BadRequest(new ApiResponse(false, "Auth request is not successful", null));
+            return Ok(new ApiResponse(true, "kullanici-kayit", new { userInfo, token }));
+        }
+        catch(Exception e){
+            return BadRequest(new ApiResponse(false, "Error while signing up, please check all required fields.", e.Message));
+        }
     }
 
-    var userName = jsonResult2["kullanici_adi"];
-    var email = jsonResult2["kurumsal_email_adresi"];
 
-    if (userName == null || email == null)
+    public class CodeVerifierBody
     {
-      return BadRequest(new ApiResponse(false, "Kullanici_adi or email are null", null));
+        public string? CodeVerifier { get; set; }
+        public string? Code { get; set; }
     }
 
-    // TODO 
-    // userName = "m.oguz2018"
-    // TOKAN -> id, username, email
-    // Database e bak, bu username varsa, onun bilgileri + token döndür;
-    // return Ok(new ApiResponse(true, "kullanici-bulundu", userInfo));
-
-
-
-    return Ok(new ApiResponse(true, "kullanici-kayit", jsonResult2));
-    // Database e bak, bu username yoksa, 
-
-  }
-
-
-  // TODO
-  // Signup
-
-  public class CodeVerifierBody
-  {
-    public string? CodeVerifier { get; set; }
-    public string? Code { get; set; }
-  }
+    public class UserNameandEmailBody
+    {
+        // constructor
+        public UserNameandEmailBody(string userName, string email, string firstName, string lastName, string image)
+        {
+            this.userName = userName;
+            this.email = email;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.image = image;
+        }
+        public string userName { get; set; }
+        public string email { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string image { get; set; }
+    }
 
 }
