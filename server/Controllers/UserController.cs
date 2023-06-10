@@ -154,7 +154,7 @@ public class UserController : ControllerBase
         // Get the underlying SqlConnection object
         SqlConnection sqlConnection = (SqlConnection)_db.Database.GetDbConnection();
 
-        var sql = "UPDATE Users SET username = @UserName, firstName = @firstName, lastName = @lastName, email = @Email, image = @Image, createdDate = @CreatedDate, deletedDate = @DeletedDate WHERE userId = @Id";
+        var sql = "UPDATE User SET username = @UserName, firstName = @firstName, lastName = @lastName, email = @Email, image = @Image, createdDate = @CreatedDate, deletedDate = @DeletedDate WHERE userId = @Id";
         var cmd = new SqlCommand(sql, sqlConnection);
         cmd.Parameters.AddWithValue("@Id", userId);
         cmd.Parameters.AddWithValue("@UserName", updatedUser.UserName);
