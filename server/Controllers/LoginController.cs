@@ -194,34 +194,6 @@ public class LoginController : ControllerBase
     }
 
 
-    // [HttpPost]
-    // [Route("authTest")]
-    // public IActionResult testAuth(string userName, string email)
-    // {
-    //     // checking if the userName already exists in the database. if does return.
-    //     User? existingUser = _db.Users.SingleOrDefault(u => u.UserName == userName);
-    //     System.Console.WriteLine("Passed" + userName + email);
-    //     if (existingUser != null)
-    //     {
-    //         // User exists in the database
-    //         var userInfo = new User
-    //         {
-    //             userId = existingUser.userId,
-    //             UserName = existingUser.UserName,
-    //             Email = existingUser.Email
-    //         };
-
-    //         var token = GenerateToken(userInfo);
-    //         return Ok(new ApiResponse(true, "kullanici-bulundu", new { userInfo, token }));
-    //     }
-    //     else
-    //     { // User does not exist in the database so we need to create a new user
-    //         return Ok(new ApiResponse(true, "kullanici-kayit", jsonResult2));
-    //     }
-    // }
-
-
-
     // Signup
     [HttpPost]
     [Route("signup")]
