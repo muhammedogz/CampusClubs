@@ -183,14 +183,29 @@ public class LoginController : ControllerBase
     }
 
     var userName = jsonResult2["kullanici_adi"];
+    var email = jsonResult2["kurumsal_email_adresi"];
 
-    if (userName == null)
+    if (userName == null || email == null)
     {
-      return BadRequest(new ApiResponse(false, "Kullanici_adi is null", null));
+      return BadRequest(new ApiResponse(false, "Kullanici_adi or email are null", null));
     }
 
-    return Ok(new ApiResponse(true, "Auth request is successful", jsonResult2));
+    // TODO 
+    // userName = "m.oguz2018"
+    // TOKAN -> id, username, email
+    // Database e bak, bu username varsa, onun bilgileri + token döndür;
+    // return Ok(new ApiResponse(true, "kullanici-bulundu", userInfo));
+
+
+
+    return Ok(new ApiResponse(true, "kullanici-kayit", jsonResult2));
+    // Database e bak, bu username yoksa, 
+
   }
+
+
+  // TODO
+  // Signup
 
   public class CodeVerifierBody
   {
