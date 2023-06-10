@@ -82,21 +82,6 @@ public class LoginController : ControllerBase
         return tokenString;
     }
 
-
-    [HttpGet("username")]
-    public IActionResult GetUserByUserName(string username)
-    {
-        /*** returns all info ***/
-        User? user = _db.Users.SingleOrDefault(u => u.UserName == username);
-
-        if (user != null)
-        {
-            return Ok(new ApiResponse(true, "User request is successful", user));
-        }
-
-        return NotFound(new ApiResponse(false, "User not found", null));
-    }
-
     [HttpPost]
     [Route("auth")]
     public async Task<IActionResult> Auth([FromBody] CodeVerifierBody codeVerifier)
@@ -140,14 +125,6 @@ public class LoginController : ControllerBase
             return BadRequest(new ApiResponse(false, "Can't get access_token 2", null));
         }
 
-        /*{
-        "clientId": "88AD669CED46431AB77DAD88309327F5",
-        "accessToken": "d8b68ca0-9d1d-4d74-a378-2294717d4383",
-        "kapsam": "GENEL"
-    }
-        */
-        /* https://kampus.gtu.edu.tr/oauth/sorgulama */
-
         url = "https://kampus.gtu.edu.tr/oauth/sorgulama";
         var requestBody2 = new
         {
@@ -177,10 +154,6 @@ public class LoginController : ControllerBase
             return BadRequest(new ApiResponse(false, "Kullanici_adi or email are null", null));
         }
 
-        // userName = "m.oguz2018"
-        // TOKEN -> id, username, email
-        // Database e bak, bu username varsa, onun bilgileri + token döndür;
-        // checking if the userName already exists in the database. if does return.
         User? existingUser = _db.Users.SingleOrDefault(u => u.UserName == userName);
         if (existingUser != null)
         {
@@ -207,7 +180,6 @@ public class LoginController : ControllerBase
                 firstName = userNameandEmailBody.firstName,
                 lastName = userNameandEmailBody.lastName,
                 image = userNameandEmailBody.image
-                // Set other properties as needed
             };
             using (var dbContext = _db)
             {
