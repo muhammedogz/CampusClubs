@@ -61,4 +61,16 @@ export type ApiResponseType<T> = {
   data: T;
   message: string;
   status: boolean;
+  token: string | null;
 }
+
+
+// Backend Types
+
+export type UyeBackendType = {
+  userId: number;
+  firstName: string;
+  lastName: string;
+  image: string;
+  email: string;
+};

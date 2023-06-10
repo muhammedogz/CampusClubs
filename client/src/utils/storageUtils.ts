@@ -1,5 +1,5 @@
 import { AuthResponse } from 'src/pages/auth';
-import { UyeType } from 'src/types/types';
+import { UyeBackendType, UyeType } from 'src/types/types';
 
 export enum StorageKeyEnum {
   AUTH_TOKEN_STORAGE = 'AuthTokenStorage',
@@ -13,6 +13,11 @@ type AuthTokenStorageType = {
   xsrfToken?: string;
 };
 
+type UserStorageType = {
+  user: UyeBackendType;
+  token: string;
+}
+
 type AuthorizeStorageType = {
   code_verifier?: string;
   code_challenge?: string;
@@ -22,8 +27,6 @@ type AuthorizeStorageType = {
 type SignupStorageType = {
   auth: AuthResponse;
 };
-
-type UserStorageType = UyeType;
 
 type StorageKeyTypeMap = {
   [StorageKeyEnum.AUTH_TOKEN_STORAGE]: AuthTokenStorageType;

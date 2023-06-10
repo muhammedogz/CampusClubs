@@ -13,6 +13,7 @@ import {
   StorageKeyEnum,
   getLocalStorageItem,
   removeLocalStorageItem,
+  updateLocalStorageItem,
 } from 'src/utils/storageUtils';
 import { generateRoute } from 'src/utils/urlUtils';
 
@@ -59,7 +60,14 @@ const SignUp = () => {
       });
 
       if (signUpUsrResponse.status) {
+        const data = signUpUsrResponse.data;
+        const token = signUpUsrResponse.token as string;
+        updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
+          token,
+          user: data,
+        });
         removeLocalStorageItem(StorageKeyEnum.SignupStorage);
+        naviagte(generateRoute(Routes.HOME));
       }
 
       console.log(signUpUsrResponse);

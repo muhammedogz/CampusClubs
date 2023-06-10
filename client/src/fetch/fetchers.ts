@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
-import { ApiResponseType } from 'src/types/types';
+import { AuthResponse } from 'src/pages/auth';
+import { ApiResponseType, UyeBackendType } from 'src/types/types';
 
 export type UserPayloadType = {
   email: string;
@@ -8,16 +9,15 @@ export type UserPayloadType = {
   firstName: string;
   lastName: string;
   image: string | null;
-}
+};
 
 export const signUpFetcher = async (data: UserPayloadType) => {
-  const { data: responseData } = await axios.post(
-    getApiEndpoint(Endpoints.SIGNUP),
-    data
-  );
+  const { data: responseData } = await axios.post<
+    ApiResponseType<UyeBackendType>
+  >(getApiEndpoint(Endpoints.SIGNUP), data);
 
   return responseData;
-}
+};
 
 export const getAllClubsFetcher = async () => {
   const { data } = await axios.get(getApiEndpoint(Endpoints.CLUB));
@@ -37,6 +37,19 @@ export const uploadFileFetcher = async (file: File) => {
     getApiEndpoint(Endpoints.FILEUPLOAD),
     formData
   );
+
+  return data;
+};
+
+type AuthPayloadType = {
+  codeVerifier: string;
+  code: string;
+};
+
+export const authFetcher = async (payload: AuthPayloadType) => {
+  const { data } = await axios.post<
+    ApiResponseType<AuthResponse | UyeBackendType>
+  >(getApiEndpoint(Endpoints.AUTH), payload);
 
   return data;
 };

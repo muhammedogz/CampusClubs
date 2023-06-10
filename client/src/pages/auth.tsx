@@ -1,13 +1,13 @@
 import { Backdrop, CircularProgress } from '@mui/material';
-import axios from 'axios';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
 import { Routes } from 'src/data/routes';
-import { ApiResponseType } from 'src/types/types';
+import { authFetcher } from 'src/fetch/fetchers';
+import { UyeBackendType } from 'src/types/types';
 import {
   StorageKeyEnum,
   getLocalStorageItem,
+  removeLocalStorageItem,
   updateLocalStorageItem,
 } from 'src/utils/storageUtils';
 import { generateRoute } from 'src/utils/urlUtils';
@@ -32,25 +32,32 @@ const Auth = () => {
     const { code_verifier, state: storedState } = authorizeStorage;
 
     // Check with stored state
-    if (state !== storedState) return;
+    if (state !== storedState || !code_verifier || !code) return;
 
     // post request to https://kampus.gtu.edu.tr/oauth/dogrulama
-    const body = {
+    const authResponse = await authFetcher({
       codeVerifier: code_verifier,
       code,
-    };
-    const response = await axios.post<ApiResponseType<AuthResponse>>(
-      getApiEndpoint(Endpoints.AUTH),
-      body
-    );
-
-    console.log('response', response);
-    const auth = response.data.data;
-    if (!auth) return;
-    updateLocalStorageItem(StorageKeyEnum.SignupStorage, {
-      auth,
     });
-    navigate(generateRoute(Routes.SIGN_UP));
+
+    if (authResponse.message === 'kullanici-bulundu') {
+      const data = authResponse.data as UyeBackendType;
+      const token = authResponse.token as string;
+      updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
+        token,
+        user: data,
+      });
+      removeLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE);
+      navigate(generateRoute(Routes.HOME));
+    } else {
+      const auth = authResponse.data as AuthResponse;
+      if (!auth) return;
+      updateLocalStorageItem(StorageKeyEnum.SignupStorage, {
+        auth,
+      });
+      removeLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE);
+      navigate(generateRoute(Routes.SIGN_UP));
+    }
   };
 
   useEffect(() => {
