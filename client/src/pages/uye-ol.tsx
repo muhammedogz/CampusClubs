@@ -1,15 +1,19 @@
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Grid, Stack, TextField, Typography } from '@mui/material';
 import { Box, Container } from '@mui/system';
-import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CCButton from 'src/components/common/CCButton';
 import Image from 'src/components/common/Image';
 import FileUpload from 'src/components/form/FileUpload';
 import { Layout } from 'src/components/layout/Layout';
-import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
 import { Routes } from 'src/data/routes';
+import { signUpFetcher, uploadFileFetcher } from 'src/fetch/fetchers';
 import { getLocalImage } from 'src/utils/imageUtils';
-import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
+import {
+  StorageKeyEnum,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from 'src/utils/storageUtils';
 import { generateRoute } from 'src/utils/urlUtils';
 
 type UserSignUpType = {
@@ -21,44 +25,62 @@ type UserSignUpType = {
 };
 
 const SignUp = () => {
+  const [loadingSignup, setLoadingSignup] = useState(false);
   const naviagte = useNavigate();
   const auth = getLocalStorageItem(StorageKeyEnum.SignupStorage)?.auth;
 
-  if (!auth) {
-    naviagte(generateRoute(Routes.HOME));
-    return null;
-  }
-
   const [user, setUser] = useState<UserSignUpType>({
-    username: auth.kullanici_adi,
-    email: auth.kurumsal_email_adresi,
+    username: auth?.kullanici_adi ?? '',
+    email: auth?.kurumsal_email_adresi ?? '',
     firstName: '',
     lastName: '',
     file: null,
   });
 
   const handleSubmit = async () => {
-    console.log({ user });
+    try {
+      setLoadingSignup(true);
+      console.log({ user });
 
-    if (user.file) {
-      try {
-        const formData = new FormData();
-        formData.append('file', user.file);
+      let imageUrl: string | null = null;
 
-        const { data } = await axios.post(
-          getApiEndpoint(Endpoints.FILEUPLOAD),
-          formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        );
+      if (user.file) {
+        const uploadResponse = await uploadFileFetcher(user.file);
 
-        console.log(data);
-      } catch (error) {
-        console.log(error);
+        console.log(uploadResponse);
+        imageUrl = uploadResponse.data.filePath;
       }
+
+      console.log(imageUrl);
+
+      const signUpUsrResponse = await signUpFetcher({
+        ...user,
+        image: imageUrl,
+      });
+
+      if (signUpUsrResponse.status) {
+        removeLocalStorageItem(StorageKeyEnum.SignupStorage);
+      }
+
+      console.log(signUpUsrResponse);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingSignup(false);
     }
   };
+
+  useEffect(() => {
+    console.log('auth', auth);
+    if (!auth) {
+      console.log('here');
+      naviagte(generateRoute(Routes.HOME));
+    }
+  }, []);
+
+  if (!auth) {
+    return null;
+  }
 
   return (
     <Layout>
@@ -143,14 +165,33 @@ const SignUp = () => {
                 />
               </Grid>
             </Grid>
-            <Button
-              onClick={handleSubmit}
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
+            <Stack>
+              <Stack justifyContent="center" alignItems="center">
+                <CCButton
+                  loading={loadingSignup}
+                  disabled={!user.firstName || !user.lastName}
+                  onClick={handleSubmit}
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2, width: '50%' }}
+                >
+                  Üye Ol
+                </CCButton>
+              </Stack>
+              <Stack justifyContent="center" alignItems="center">
+                <CCButton
+                  onClick={() => {
+                    removeLocalStorageItem(StorageKeyEnum.SignupStorage);
+                    naviagte(generateRoute(Routes.HOME));
+                  }}
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2, width: '50%' }}
+                >
+                  İptal Et
+                </CCButton>
+              </Stack>
+            </Stack>
           </Box>
         </Box>
       </Container>

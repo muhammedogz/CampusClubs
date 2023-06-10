@@ -7,7 +7,16 @@ type CCButtonProps = ButtonProps & {
 const CCButton = ({ loading, children, ...rest }: CCButtonProps) => {
   return (
     <Button disabled={loading} {...rest}>
-      {loading ? <CircularProgress size={20} /> : children}
+      {loading ? (
+        <CircularProgress
+          size={25}
+          sx={{
+            color: '#78ee11',
+          }}
+        />
+      ) : (
+        children
+      )}
     </Button>
   );
 };

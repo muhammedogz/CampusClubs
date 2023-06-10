@@ -95,10 +95,6 @@ const FileUpload = ({ onSelectComplete }: FileUploadProps) => {
 
   return (
     <Stack gap="10px">
-      <Button variant="contained" component="label">
-        Resim Yükle
-        <input hidden type="file" name="file" onChange={onFileChange} />
-      </Button>
       {isCropping && imageSrc && (
         <Backdrop
           open
@@ -124,22 +120,30 @@ const FileUpload = ({ onSelectComplete }: FileUploadProps) => {
                 onZoomChange={setZoom}
               />
             </Stack>
-            <Button onClick={makeCroppedImage}>Finish Crop</Button>
+            <Button variant="contained" onClick={makeCroppedImage}>
+              Seç
+            </Button>
           </Stack>
         </Backdrop>
       )}
-      <Stack>
-        <MyImage
-          src={croppedImage ?? getLocalImage('default-avatar.png')}
-          alt="Cropped"
-          width="150px"
-          height="150px"
-          sx={{
-            borderRadius: '20px',
-            boxShadow:
-              'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
-          }}
-        />
+      <Stack justifyContent="center" alignItems="center" gap="20px">
+        {croppedImage && (
+          <MyImage
+            src={croppedImage ?? getLocalImage('default-avatar.png')}
+            alt="Cropped"
+            width="150px"
+            height="150px"
+            sx={{
+              borderRadius: '20px',
+              boxShadow:
+                'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
+            }}
+          />
+        )}
+        <Button variant="contained" component="label">
+          Resim Yükle
+          <input hidden type="file" name="file" onChange={onFileChange} />
+        </Button>
       </Stack>
     </Stack>
   );
