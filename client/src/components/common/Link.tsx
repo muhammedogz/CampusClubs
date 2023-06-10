@@ -2,12 +2,12 @@ import {
   Link as ReactRouterLink,
   LinkProps as ReactRouterLinkProps,
 } from 'react-router-dom';
+import { Routes } from 'src/data/routes';
+import { generateRoute } from 'src/utils/urlUtils';
 
 type LinkProps = ReactRouterLinkProps;
 
 export const Link = ({ to, ...rest }: LinkProps) => {
-  const basePath = import.meta.env.VITE_BASE_PATH;
-
   return (
     <ReactRouterLink
       style={{
@@ -15,7 +15,7 @@ export const Link = ({ to, ...rest }: LinkProps) => {
         color: 'inherit',
         display: 'flex',
       }}
-      to={`/${basePath}${to}`}
+      to={generateRoute(to as Routes)}
       {...rest}
     />
   );

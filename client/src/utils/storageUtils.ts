@@ -1,9 +1,11 @@
-import { UyeType } from "src/types/types";
+import { AuthResponse } from 'src/pages/auth';
+import { UyeType } from 'src/types/types';
 
 export enum StorageKeyEnum {
   AUTH_TOKEN_STORAGE = 'AuthTokenStorage',
   USER_STORAGE = 'UserStorage',
   AUTHORIZE_STORAGE = 'AuthorizeStorage',
+  SignupStorage = 'SignupStorage',
 }
 
 type AuthTokenStorageType = {
@@ -15,7 +17,11 @@ type AuthorizeStorageType = {
   code_verifier?: string;
   code_challenge?: string;
   state?: string;
-}
+};
+
+type SignupStorageType = {
+  auth: AuthResponse;
+};
 
 type UserStorageType = UyeType;
 
@@ -23,6 +29,7 @@ type StorageKeyTypeMap = {
   [StorageKeyEnum.AUTH_TOKEN_STORAGE]: AuthTokenStorageType;
   [StorageKeyEnum.USER_STORAGE]: UserStorageType;
   [StorageKeyEnum.AUTHORIZE_STORAGE]: AuthorizeStorageType;
+  [StorageKeyEnum.SignupStorage]: SignupStorageType;
 };
 
 export const updateLocalStorageItem = <K extends StorageKeyEnum>(
