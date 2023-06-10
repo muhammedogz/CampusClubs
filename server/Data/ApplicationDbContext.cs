@@ -30,6 +30,15 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<ClubEvent> ClubEvents { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // to auto increment the id
+        modelBuilder.Entity<User>()
+            .Property(u => u.userId)
+            .ValueGeneratedOnAdd();
+        // ...
+    }
+
     public DbContext CreateDbContext(string[] args)
     {
         throw new NotImplementedException();
