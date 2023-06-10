@@ -13,7 +13,10 @@ export type UserPayloadType = {
 
 export const signUpFetcher = async (data: UserPayloadType) => {
   const { data: responseData } = await axios.post<
-    ApiResponseType<UyeBackendType>
+    ApiResponseType<{
+      userInfo: UyeBackendType;
+      token: string | null;
+    }>
   >(getApiEndpoint(Endpoints.SIGNUP), data);
 
   return responseData;
@@ -46,9 +49,14 @@ type AuthPayloadType = {
   code: string;
 };
 
+export type AuthExistingResponseType = {
+  existingUser: UyeBackendType;
+  token: string | null;
+};
+
 export const authFetcher = async (payload: AuthPayloadType) => {
   const { data } = await axios.post<
-    ApiResponseType<AuthResponse | UyeBackendType>
+    ApiResponseType<AuthResponse | AuthExistingResponseType>
   >(getApiEndpoint(Endpoints.AUTH), payload);
 
   return data;

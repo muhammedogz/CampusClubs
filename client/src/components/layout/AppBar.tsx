@@ -1,16 +1,23 @@
-import { Menu, MenuItem, Stack } from '@mui/material';
+import { Button, Menu, MenuItem, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useCallback, useState } from 'react';
 import CCButton from 'src/components/common/CCButton';
+import Image from 'src/components/common/Image';
 import { generateRedirectUrl } from 'src/utils/authUtils';
-import { StorageKeyEnum, updateLocalStorageItem } from 'src/utils/storageUtils';
-import { isUserLoggedIn } from 'src/utils/utils';
+import { getLocalImage } from 'src/utils/imageUtils';
+import {
+  StorageKeyEnum,
+  getLocalStorageItem,
+  updateLocalStorageItem,
+} from 'src/utils/storageUtils';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [loadingSigninButton, setLoadingSigninButton] = useState(false);
+
+  const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
 
   const handleSignin = useCallback(() => {
     setLoadingSigninButton(true);
@@ -38,32 +45,37 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const userLoggedIn = isUserLoggedIn();
+  const userLoggedIn = !!user?.firstName;
+  console.log('user', user);
 
   const LoggedUserContent = () => {
     return (
-      <Menu
-        sx={{ mt: '45px' }}
-        id="menu-appbar"
-        anchorEl={anchorElUser}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={Boolean(anchorElUser)}
-        onClose={handleCloseUserMenu}
-      >
-        {settings.map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography textAlign="center">{setting}</Typography>
-          </MenuItem>
-        ))}
-      </Menu>
+      <Stack>
+        <Stack>
+          <Menu
+            sx={{ mt: '45px' }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            {settings.map((setting) => (
+              <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">{setting}</Typography>
+              </MenuItem>
+            ))}
+          </Menu>
+        </Stack>
+      </Stack>
     );
   };
 
@@ -90,8 +102,27 @@ function ResponsiveAppBar() {
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      {userLoggedIn ? <LoggedUserContent /> : <NotLoggedUserContent />}
+      {userLoggedIn ? (
+        <Stack
+          sx={{
+            border: '2px solid red',
+          }}
+        >
+          <Button onClick={handleOpenUserMenu}>
+            <Image
+              width="50px"
+              height="50px"
+              variant="circular"
+              src={getLocalImage('images/default-avatar.png')}
+            />
+          </Button>
+          <LoggedUserContent />
+        </Stack>
+      ) : (
+        <NotLoggedUserContent />
+      )}
     </Stack>
   );
 }
+
 export default ResponsiveAppBar;

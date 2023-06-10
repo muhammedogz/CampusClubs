@@ -28,7 +28,7 @@ type UserSignUpType = {
 const SignUp = () => {
   const [loadingSignup, setLoadingSignup] = useState(false);
   const naviagte = useNavigate();
-  const auth = getLocalStorageItem(StorageKeyEnum.SignupStorage)?.auth;
+  const auth = getLocalStorageItem(StorageKeyEnum.SIGNUP_STORAGE)?.auth;
 
   const [user, setUser] = useState<UserSignUpType>({
     username: auth?.kullanici_adi ?? '',
@@ -60,13 +60,14 @@ const SignUp = () => {
       });
 
       if (signUpUsrResponse.status) {
+        console.log('signUpUsrResponse', signUpUsrResponse);
         const data = signUpUsrResponse.data;
-        const token = signUpUsrResponse.token as string;
+        const token = data.token as string;
         updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
           token,
-          user: data,
+          user: data.userInfo,
         });
-        removeLocalStorageItem(StorageKeyEnum.SignupStorage);
+        removeLocalStorageItem(StorageKeyEnum.SIGNUP_STORAGE);
         naviagte(generateRoute(Routes.HOME));
       }
 
@@ -189,7 +190,7 @@ const SignUp = () => {
               <Stack justifyContent="center" alignItems="center">
                 <CCButton
                   onClick={() => {
-                    removeLocalStorageItem(StorageKeyEnum.SignupStorage);
+                    removeLocalStorageItem(StorageKeyEnum.SIGNUP_STORAGE);
                     naviagte(generateRoute(Routes.HOME));
                   }}
                   fullWidth

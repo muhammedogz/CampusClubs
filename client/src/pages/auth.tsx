@@ -2,8 +2,7 @@ import { Backdrop, CircularProgress } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Routes } from 'src/data/routes';
-import { authFetcher } from 'src/fetch/fetchers';
-import { UyeBackendType } from 'src/types/types';
+import { AuthExistingResponseType, authFetcher } from 'src/fetch/fetchers';
 import {
   StorageKeyEnum,
   getLocalStorageItem,
@@ -41,18 +40,18 @@ const Auth = () => {
     });
 
     if (authResponse.message === 'kullanici-bulundu') {
-      const data = authResponse.data as UyeBackendType;
-      const token = authResponse.token as string;
+      console.log('authResponse', authResponse);
+      const data = authResponse.data as AuthExistingResponseType;
       updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
-        token,
-        user: data,
+        token: data.token as string,
+        user: data.existingUser,
       });
       removeLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE);
       navigate(generateRoute(Routes.HOME));
     } else {
       const auth = authResponse.data as AuthResponse;
       if (!auth) return;
-      updateLocalStorageItem(StorageKeyEnum.SignupStorage, {
+      updateLocalStorageItem(StorageKeyEnum.SIGNUP_STORAGE, {
         auth,
       });
       removeLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE);
