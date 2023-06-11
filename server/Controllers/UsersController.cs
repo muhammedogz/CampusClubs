@@ -89,7 +89,10 @@ public class UsersController : ControllerBase
     _context.Users.Update(user);
     await _context.SaveChangesAsync();
 
+    // Map User to UserDTO
+    var userResult = _mapper.Map<UserDTO>(user);
+
     // Return a success response
-    return Ok(new ApiResponse(true, "User updated successfully", null));
+    return Ok(new ApiResponse(true, "User updated successfully", userResult));
   }
 }

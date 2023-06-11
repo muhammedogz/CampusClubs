@@ -85,7 +85,6 @@ app.UseSwaggerUI(c =>
 app.UseStaticFiles();
 app.UseRouting();
 
-// // Place the following line after app.UseRouting() and before app.UseEndpoints(...)
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -11,16 +11,20 @@ public class User
 
   [Required]
   public string UserName { get; set; } = string.Empty;
+
   [Required]
   public string FirstName { get; set; } = string.Empty;
+
   [Required]
   public string LastName { get; set; } = string.Empty;
+  
   [Required]
   public string Email { get; set; } = string.Empty;
+  
   [Required]
-
   [ForeignKey(nameof(Department))]
   public int DepartmentId { get; set; }
+
   public Department? Department { get; set; }
 
   public string? Image { get; set; } = string.Empty;
