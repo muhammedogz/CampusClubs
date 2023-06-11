@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext
   public DbSet<Announcement> Announcements { get; set; }
   public DbSet<UserClub> UserClubs { get; set; }
   public DbSet<UserEvent> UserEvents { get; set; }
+  public DbSet<Department> Departments { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -54,6 +55,11 @@ public class ApplicationDbContext : DbContext
       .WithMany(e => e.UserEvents)
       .HasForeignKey(ue => ue.EventId)
       .OnDelete(DeleteBehavior.Restrict);
+
+    modelBuilder.Entity<User>()
+       .HasOne(u => u.Department)
+       .WithMany()
+       .OnDelete(DeleteBehavior.Restrict);
   }
 
   public DbContext CreateDbContext(string[] args)

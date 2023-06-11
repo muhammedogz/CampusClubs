@@ -39,6 +39,7 @@ public class UsersController : ControllerBase
             .ThenInclude(uc => uc.Club)
         .Include(u => u.UserEvents)
             .ThenInclude(ue => ue.Event)
+        .Include(u => u.Department)
         .AsSplitQuery()
         .FirstOrDefaultAsync(u => u.UserId == id);
 
@@ -67,43 +68,5 @@ public class UsersController : ControllerBase
 
     // Return a 201 Created response
     return CreatedAtAction(nameof(GetUser), new { id = userResult.UserId }, new ApiResponse(true, "User created successfully", userResult));
-  }
-
-  // [HttpPut("{id}")]
-  // public async Task<IActionResult> UpdateUser(int id, UserDTO userDTO)
-  // {
-  //   // Here you should map your UserDTO back to a User object
-  //   // For simplicity, I'm treating the DTO as a User object
-  //   var user = userDTO as User;
-
-  //   if (id != user.UserId)
-  //   {
-  //     return BadRequest();
-  //   }
-
-  //   _context.Entry(user).State = EntityState.Modified;
-
-  //   try
-  //   {
-  //     await _context.SaveChangesAsync();
-  //   }
-  //   catch (DbUpdateConcurrencyException)
-  //   {
-  //     if (!UserExists(id))
-  //     {
-  //       return NotFound();
-  //     }
-  //     else
-  //     {
-  //       throw;
-  //     }
-  //   }
-
-  //   return NoContent();
-  // }
-
-  private bool UserExists(int id)
-  {
-    return _context.Users.Any(e => e.UserId == id);
   }
 }

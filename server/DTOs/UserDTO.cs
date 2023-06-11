@@ -12,7 +12,7 @@ public class UserDTO
 
   public string? Email { get; set; }
 
-  public string? Department { get; set; }
+  public DepartmentDTO? Department { get; set; }
 
   public string? Image { get; set; }
 
@@ -25,4 +25,10 @@ public class UserDTO
 
   public List<ClubDTO> Clubs { get; set; } = new List<ClubDTO>();
   public List<EventDTO> Events { get; set; } = new List<EventDTO>();
+}
+
+public class DepartmentDTO
+{
+  public int DepartmentId { get; set; }
+  public string? Name { get; set; }
 }

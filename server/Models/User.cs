@@ -18,7 +18,11 @@ public class User
   [Required]
   public string Email { get; set; } = string.Empty;
   [Required]
-  public string Department { get; set; } = string.Empty;
+
+  [ForeignKey(nameof(Department))]
+  public int DepartmentId { get; set; }
+  public Department? Department { get; set; }
+
   public string? Image { get; set; } = string.Empty;
   public bool IsAdvisor { get; set; }
   public bool IsSuperAdmin { get; set; }
