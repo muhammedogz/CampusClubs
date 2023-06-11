@@ -69,3 +69,11 @@ export const getUserInfoFromIdfetcher = async (id: string) => {
 
   return data;
 }
+
+export const getAllUsersFetcher = async () => {
+  const { data } = await axios.get<ApiResponseType<UyeBackendType[]>>(
+    getApiEndpoint(Endpoints.USER)
+  );
+
+  return data;
+}
