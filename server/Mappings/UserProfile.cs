@@ -7,11 +7,16 @@ public class UserProfile : Profile
   public UserProfile()
   {
     CreateMap<User, UserDTO>()
-       .ForMember(dest => dest.Department,
-                  opt => opt.MapFrom(src => src.Department)); // This will map the Department object.
+        .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
+        .ForMember(dest => dest.Clubs, opt => opt.MapFrom(src => src.UserClubs.Select(uc => uc.Club)))
+        .IncludeBase<User, UserSummaryDTO>(); // Add this line
 
-    CreateMap<Department, DepartmentDTO>(); // Add this line to map Department to DepartmentDTO
+    CreateMap<User, UserSummaryDTO>()
+        .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department));
+
+    CreateMap<Department, DepartmentDTO>();
     CreateMap<UserCreateDTO, User>();
     CreateMap<UserUpdateDTO, User>();
+    CreateMap<UserClub, UserClubDTO>();
   }
 }

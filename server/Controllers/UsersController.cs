@@ -33,25 +33,27 @@ public class UsersController : ControllerBase
     return Ok(users);
   }
 
-  [HttpGet("{id}")]
-  public async Task<ActionResult<ApiResponse>> GetUser(int id)
-  {
-    var user = await _context.Users
-        .Include(u => u.UserClubs)
-            .ThenInclude(uc => uc.Club)
-        .Include(u => u.UserEvents)
-            .ThenInclude(ue => ue.Event)
-        .Include(u => u.Department)
-        .AsSplitQuery()
-        .FirstOrDefaultAsync(u => u.UserId == id);
-
-    if (user == null)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse>> GetUser(int id)
     {
-      return NotFound(new ApiResponse(false, "User not found", null));
-    }
+      var user = await _context.Users
+          .Include(u => u.UserClubs)
+              .ThenInclude(uc => uc.Club)
+          .Include(u => u.UserEvents)
+              .ThenInclude(ue => ue.Event)
+          .Include(u => u.Department)
+          .AsSplitQuery()
+          .FirstOrDefaultAsync(u => u.UserId == id);
 
-    return Ok(new ApiResponse(true, "User found", _mapper.Map<UserDTO>(user)));
-  }
+      if (user == null)
+      {
+        return NotFound(new ApiResponse(false, "User not found", null));
+      }
+
+      Console.WriteLine(user.UserClubs.Count);
+
+      return Ok(new ApiResponse(true, "User found", _mapper.Map<UserDTO>(user)));
+    }
 
   [HttpPost]
   public async Task<ActionResult<ApiResponse>> CreateUser(UserCreateDTO userDTO)

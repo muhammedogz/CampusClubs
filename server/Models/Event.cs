@@ -34,7 +34,7 @@ public class Event
   [ForeignKey(nameof(Club))]
   public int ClubId { get; set; }
   public Club? Club { get; set; }
-  public List<UserEvent>? UserEvents { get; set; }
+  public List<UserEvent> UserEvents { get; set; } = new List<UserEvent>();
 
 }
 

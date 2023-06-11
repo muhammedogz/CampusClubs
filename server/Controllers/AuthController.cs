@@ -8,11 +8,12 @@ using Server.Data;
 using Server.DTOs;
 using Server.Models;
 using Server.Secrets;
+using Server.Constants;
 
 namespace Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route(Consts.DEFAULT_ROUTE)]
 public class AuthController : ControllerBase
 {
   private readonly ApplicationDbContext _context;

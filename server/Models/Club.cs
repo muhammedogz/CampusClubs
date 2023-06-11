@@ -25,7 +25,7 @@ public class Club
   // Navigation properties
   [ForeignKey("AdvisorId")]
   public User? Advisor { get; set; }
-  public List<Event>? Events { get; set; }
-  public List<Announcement>? Announcements { get; set; }
-  public List<UserClub>? UserClubs { get; set; }
+  public List<Event> Events { get; set; } = new List<Event>();
+  public List<Announcement> Announcements { get; set; } = new List<Announcement>();
+  public List<UserClub> UserClubs { get; set; } = new List<UserClub>();
 }

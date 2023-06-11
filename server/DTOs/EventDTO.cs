@@ -10,9 +10,6 @@ public class EventDTO
   public string? Location { get; set; }
   public string? Type { get; set; }
   public DateTime EventDate { get; set; }
-  public DateTime CreatedAt { get; set; }
-  public DateTime? DeletedAt { get; set; }
   public int ClubId { get; set; }
   public List<UserDTO>? Users { get; set; }
-
 }
