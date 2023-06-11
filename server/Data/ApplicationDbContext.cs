@@ -64,6 +64,14 @@ public class ApplicationDbContext : DbContext
     modelBuilder.Entity<User>()
       .Property(u => u.Role)
       .HasConversion<string>();
+
+    modelBuilder.Entity<User>()
+          .HasIndex(u => u.UserName)
+          .IsUnique();
+
+    modelBuilder.Entity<User>()
+        .HasIndex(u => u.Email)
+        .IsUnique();
   }
 
   public DbContext CreateDbContext(string[] args)
