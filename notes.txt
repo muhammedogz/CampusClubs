@@ -1,4 +1,4 @@
-1- Club Create Controller Only Admin yapar
+DONE 1- Club Create Controller Only Admin yapar
 2- Login Oauth thingy
 3- Event Controller
   3.1- Create Event

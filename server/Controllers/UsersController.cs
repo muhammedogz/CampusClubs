@@ -82,19 +82,14 @@ public class UsersController : ControllerBase
   [HttpPost]
   public async Task<ActionResult<ApiResponse>> CreateUser(UserCreateDTO userDTO)
   {
-    // Map UserCreateDTO to User using AutoMapper
     var user = _mapper.Map<User>(userDTO);
-    // Set creation date
     user.CreatedAt = DateTime.UtcNow;
 
-    // Save the new user to the database
     await _context.Users.AddAsync(user);
     await _context.SaveChangesAsync();
 
-    // Map User to UserDTO
     var userResult = _mapper.Map<UserDTO>(user);
 
-    // Return a 201 Created response
     return CreatedAtAction(nameof(GetUser), new { id = userResult.UserId }, new ApiResponse(true, "User created successfully", userResult));
   }
 
