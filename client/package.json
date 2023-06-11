@@ -5,7 +5,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "ln -s /home/muo/projects/CampusClubs/KulupYonetimStorage public/storage",
     "dev": "vite",
     "prebuild": "rm -rf public/storage",
     "build": "vite build",
