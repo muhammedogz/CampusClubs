@@ -1,0 +1,18 @@
+1- Club Create Controller Only Admin yapar
+2- Login Oauth thingy
+3- Event Controller
+  3.1- Create Event
+  3.2- Edit Event
+  3.3- Delete Event
+  3.4- List Pending Events for Related Club Advisor
+  3.5- List Event Users for Related Club Admin
+4- Announcement Controller
+  4.1- Create Announcement
+  4.2- Edit Announcement
+  4.3- Delete Announcement
+5- Event Approval Controller
+  5.1- Approve Event
+  5.2- Reject Event
+6- Event Join Approval Controller
+  6.1- Approve Join
+  6.2- Reject Join

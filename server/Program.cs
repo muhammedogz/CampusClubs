@@ -60,6 +60,10 @@ builder.Services.AddAuthorization(auth =>
       .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
       .RequireAuthenticatedUser().Build());
 });
+builder.Services.AddAuthorization(options =>
+{
+  options.AddPolicy("Admin", policy => policy.RequireClaim(System.Security.Claims.ClaimTypes.Role, "Admin"));
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

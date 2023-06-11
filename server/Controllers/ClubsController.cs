@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Constants;
@@ -52,6 +53,7 @@ public class ClubsController : ControllerBase
   }
 
   [HttpPost]
+  [Authorize(Policy = "Admin")]
   public async Task<ActionResult<ApiResponse>> CreateClub(CreateClubDTO clubDTO)
   {
     var club = _mapper.Map<Club>(clubDTO);
