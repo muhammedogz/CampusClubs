@@ -39,6 +39,7 @@ public class UsersController : ControllerBase
             .ThenInclude(uc => uc.Club)
         .Include(u => u.UserEvents)
             .ThenInclude(ue => ue.Event)
+        .AsSplitQuery()
         .FirstOrDefaultAsync(u => u.UserId == id);
 
     if (user == null)

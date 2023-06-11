@@ -28,6 +28,6 @@ public class User
   [DataType(DataType.Date)]
   public DateTime? DeletedAt { get; set; }
 
-  public List<UserClub>? UserClubs { get; set; }
-  public List<UserEvent>? UserEvents { get; set; }
+  public List<UserClub> UserClubs { get; set; } = new List<UserClub>();
+  public List<UserEvent> UserEvents { get; set; } = new List<UserEvent>();
 }
