@@ -7,40 +7,33 @@ namespace Server.Data;
 
 public class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext(){
-        
-    }
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-        
-    }
+  public ApplicationDbContext()
+  {
 
-    // !!! Names should be same with the table names in the database
-    public DbSet<User> User { get; set; }
-    
-    public DbSet<Club> Club { get; set; }
+  }
 
-    public DbSet<Event> Event { get; set; }
+  public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<Announcement> Announcement { get; set; }
+  public DbSet<User> Users { get; set; }
+  public DbSet<Club> Clubs { get; set; }
+  public DbSet<Event> Events { get; set; }
+  public DbSet<Announcement> Announcements { get; set; }
+  public DbSet<UserClub> UserClubs { get; set; }
+  public DbSet<UserEvent> UserEvents { get; set; }
 
-    public DbSet<ClubMember> ClubMembers { get; set; }
+  protected override void OnModelCreating(ModelBuilder modelBuilder)
+  {
+    base.OnModelCreating(modelBuilder);
 
-    public DbSet<ClubAnnouncement> ClubAnnouncements { get; set; }
-    
-    public DbSet<ClubEvent> ClubEvents { get; set; }
+    modelBuilder.Entity<UserClub>()
+        .HasKey(uc => new { uc.UserId, uc.ClubId });
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        // to auto increment the id
-        modelBuilder.Entity<User>()
-            .Property(u => u.userId)
-            .ValueGeneratedOnAdd();
-        // ...
-    }
+    modelBuilder.Entity<UserEvent>()
+        .HasKey(ue => new { ue.UserId, ue.EventId });
+  }
 
-    public DbContext CreateDbContext(string[] args)
-    {
-        throw new NotImplementedException();
-    }
+  public DbContext CreateDbContext(string[] args)
+  {
+    throw new NotImplementedException();
+  }
 }

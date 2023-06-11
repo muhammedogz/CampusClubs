@@ -1,37 +1,46 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models;
 
 public class Event
 {
-    [Key] /* annotation */
-    public int eventId { get; set; }
+  [Key]
+  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+  public int EventId { get; set; }
 
-    [Required]
-    public string name { get; set; } = string.Empty;
+  [Required]
+  public string? Name { get; set; }
 
-    [Required]
-    public string slug { get; set; } = string.Empty;
+  [Required]
+  public string? Description { get; set; }
 
-    [Required]
-    public string description { get; set; } = string.Empty;
-    
-    [Required]
-    public string image { get; set; } = string.Empty;
+  public string? Image { get; set; }
 
-    [Required]
-    public string location { get; set; } = string.Empty;    
+  [Required]
+  public string? Location { get; set; }
 
-    [Required]
-    public string type { get; set; } = string.Empty;    
+  [Required]
+  public string? Type { get; set; }
 
-    [Required]
-    public DateTime date { get; set; } = DateTime.Now;
+  public ApprovalStatus Status { get; set; } = ApprovalStatus.Pending;
 
-    // the default value above makes not allow to nulls.
-    public DateTime? validFrom { get; set; }
-    
-    // public DateTime? DeletedDate { get; set; } = DateTime.Now;
-    public DateTime? validUntil { get; set; }
+  public DateTime EventDate { get; set; }
 
+  public DateTime CreatedAt { get; set; }
+
+  public DateTime? DeletedAt { get; set; }
+
+  [ForeignKey(nameof(Club))]
+  public int ClubId { get; set; }
+  public Club? Club { get; set; }
+  public List<UserEvent>? UserEvents { get; set; }
+
+}
+
+public enum ApprovalStatus
+{
+  Pending,
+  Approved,
+  Declined
 }

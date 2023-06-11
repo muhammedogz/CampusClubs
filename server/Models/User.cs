@@ -5,31 +5,32 @@ namespace Server.Models;
 
 public class User
 {
-    [Key] /* annotation */
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int userId { get; set; }
+  [Key]
+  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+  public int UserId { get; set; }
 
-    [Required]
-    public string UserName { get; set; } = string.Empty;
+  [Required]
+  public string UserName { get; set; } = string.Empty;
 
-    [Required]
-    public string firstName { get; set; } = string.Empty;
-    [Display(Name = "The Name")]
-    // [Range(1, 100, ErrorMessage = "This is a error message for the name")]
+  [Required]
+  public string FirstName { get; set; } = string.Empty;
+  [Required]
+  public string LastName { get; set; } = string.Empty;
 
-    [Required]
-    public string lastName { get; set; } = string.Empty;
+  [Required]
+  public string Email { get; set; } = string.Empty;
+  [Required]
+  public string Department { get; set; } = string.Empty;
+  public string? Image { get; set; } = string.Empty;
+  public bool IsAdvisor { get; set; }
+  public bool IsSuperAdmin { get; set; }
+  [DataType(DataType.Date)]
+  public DateTime CreatedAt { get; set; }
 
-    [Required]
-    public string Email { get; set; } = string.Empty;
+  [DataType(DataType.Date)]
+  public DateTime? DeletedAt { get; set; }
 
-    public string? image { get; set; } = string.Empty;
-    
-    public DateTime? CreatedDate { get; set; }
-    
-    public DateTime? DeletedDate { get; set; }
+  public List<UserClub>? UserClubs { get; set; }
 
-    // public DateTime? DeletedDate { get; set; } = DateTime.Now; // the default value above makes not allow to nulls.
-
-    public List<Club> clubsRegistered { get; set; } = new List<Club>();
+  public List<UserEvent>? UserEvents { get; set; }
 }
