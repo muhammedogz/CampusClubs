@@ -1,4 +1,11 @@
-import { Button, Menu, MenuItem, Stack } from '@mui/material';
+import {
+  Button,
+  Menu,
+  MenuItem,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +25,7 @@ function ResponsiveAppBar() {
   const [loadingSigninButton, setLoadingSigninButton] = useState(false);
   const navigate = useNavigate();
   const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
 
   const handleSignin = useCallback(() => {
     setLoadingSigninButton(true);
@@ -111,15 +119,12 @@ function ResponsiveAppBar() {
       }}
     >
       {userLoggedIn ? (
-        <Stack
-          sx={{
-            border: '2px solid red',
-          }}
-        >
+        <Stack>
           <Button onClick={handleOpenUserMenu}>
             <Image
-              width="100px"
-              height="100px"
+              shadow
+              width={isMobile ? '50px' : '100px'}
+              height={isMobile ? '50px' : '100px'}
               variant="circular"
               src={getRemoteImage(user?.image)}
             />
