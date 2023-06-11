@@ -16,6 +16,10 @@ public class UserDto
 
   public string? Image { get; set; }
 
+  public bool IsAdvisor { get; set; }
+
+  public bool IsSuperAdmin { get; set; }
+
   public DateTime CreatedAt { get; set; }
 
   public DateTime? DeletedAt { get; set; }

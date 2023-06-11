@@ -11,12 +11,10 @@ public class User
 
   [Required]
   public string UserName { get; set; } = string.Empty;
-
   [Required]
   public string FirstName { get; set; } = string.Empty;
   [Required]
   public string LastName { get; set; } = string.Empty;
-
   [Required]
   public string Email { get; set; } = string.Empty;
   [Required]
@@ -24,13 +22,12 @@ public class User
   public string? Image { get; set; } = string.Empty;
   public bool IsAdvisor { get; set; }
   public bool IsSuperAdmin { get; set; }
+
   [DataType(DataType.Date)]
   public DateTime CreatedAt { get; set; }
-
   [DataType(DataType.Date)]
   public DateTime? DeletedAt { get; set; }
 
   public List<UserClub>? UserClubs { get; set; }
-
   public List<UserEvent>? UserEvents { get; set; }
 }
