@@ -1,6 +1,6 @@
 namespace Server.DTOs;
 
-public class AnnouncementDto
+public class AnnouncementDTO
 {
   public int AnnouncementId { get; set; }
   public string? Title { get; set; }

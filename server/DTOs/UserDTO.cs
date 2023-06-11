@@ -1,6 +1,6 @@
 namespace Server.DTOs;
 
-public class UserDto
+public class UserDTO
 {
   public int UserId { get; set; }
 
@@ -21,8 +21,8 @@ public class UserDto
   public bool IsSuperAdmin { get; set; }
 
   public DateTime CreatedAt { get; set; }
-
   public DateTime? DeletedAt { get; set; }
-  public List<ClubDto>? Clubs { get; set; }
-  public List<EventDto>? Events { get; set; }
+
+  public List<ClubDTO> Clubs { get; set; } = new List<ClubDTO>();
+  public List<EventDTO> Events { get; set; } = new List<EventDTO>();
 }

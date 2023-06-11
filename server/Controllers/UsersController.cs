@@ -22,11 +22,11 @@ public class UsersController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<ActionResult<UserDto>> GetUsers()
+  public async Task<ActionResult<UserDTO>> GetUsers()
   {
     var users = await _context.Users.ToListAsync();
 
-    // Here you should map your User objects to UserDtos
+    // Here you should map your User objects to UserDTOs
     // For simplicity, I'm returning the User objects directly
     return Ok(users);
   }
@@ -47,15 +47,34 @@ public class UsersController : ControllerBase
       return NotFound(new ApiResponse(false, "User not found", null));
     }
 
-    return Ok(new ApiResponse(true, "User found", _mapper.Map<UserDto>(user)));
+    return Ok(new ApiResponse(true, "User found", _mapper.Map<UserDTO>(user)));
+  }
+
+  [HttpPost]
+  public async Task<ActionResult<ApiResponse>> CreateUser(UserCreateDTO userDTO)
+  {
+    // Map UserCreateDTO to User using AutoMapper
+    var user = _mapper.Map<User>(userDTO);
+    // Set creation date
+    user.CreatedAt = DateTime.UtcNow;
+
+    // Save the new user to the database
+    await _context.Users.AddAsync(user);
+    await _context.SaveChangesAsync();
+
+    // Map User to UserDTO
+    var userResult = _mapper.Map<UserDTO>(user);
+
+    // Return a 201 Created response
+    return CreatedAtAction(nameof(GetUser), new { id = userResult.UserId }, new ApiResponse(true, "User created successfully", userResult));
   }
 
   // [HttpPut("{id}")]
-  // public async Task<IActionResult> UpdateUser(int id, UserDto userDto)
+  // public async Task<IActionResult> UpdateUser(int id, UserDTO userDTO)
   // {
-  //   // Here you should map your UserDto back to a User object
+  //   // Here you should map your UserDTO back to a User object
   //   // For simplicity, I'm treating the DTO as a User object
-  //   var user = userDto as User;
+  //   var user = userDTO as User;
 
   //   if (id != user.UserId)
   //   {

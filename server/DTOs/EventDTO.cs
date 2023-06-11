@@ -1,7 +1,7 @@
 namespace Server.DTOs;
 
 
-public class EventDto
+public class EventDTO
 {
   public int EventId { get; set; }
   public string? Name { get; set; }
@@ -13,6 +13,6 @@ public class EventDto
   public DateTime CreatedAt { get; set; }
   public DateTime? DeletedAt { get; set; }
   public int ClubId { get; set; }
-  public List<UserDto>? Users { get; set; }
+  public List<UserDTO>? Users { get; set; }
 
 }
