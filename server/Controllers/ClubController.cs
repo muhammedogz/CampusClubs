@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using server.Constants;
 using Server.Data;
 using Server.Models;
@@ -99,7 +101,7 @@ public class ClubController : ControllerBase
   // Tokendan bi şey almak ile authorize olmasının alakası yok
   [HttpPost]
   [Route("test-deneme")]
-  public IActionResult TestDeneme()
+  public IActionResult TestDeneme(string token)
   {
     // var token = biŞekilde;
     // var userInfoFromToken = decodeToken(token);
@@ -115,68 +117,56 @@ public class ClubController : ControllerBase
     // sen authsun blader
     // }
 
-    // var token = 
+    var tokenHandler = new JwtSecurityTokenHandler();
 
-    return Ok();
+    // Read the token and parse it into a JwtSecurityToken object
+    var jwtToken = tokenHandler.ReadJwtToken(token);
+
+    // Access the claims from the decoded token
+    var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+    var uniqueNameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "unique_name")?.Value;
+    var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+
+    // Example: Retrieve and print the username
+    Console.WriteLine("Name ID: " + userIdClaim);
+    Console.WriteLine("Unique Name: " + uniqueNameClaim);
+    Console.WriteLine("Email: " + emailClaim);
+
+    // Perform additional operations with the claims as needed
+    User? userInfo = _db.User.SingleOrDefault(u => u.UserName == userIdClaim);
+    if(userInfo == null){
+      return Unauthorized(new ApiResponse(false, "User is not authorized.", null));
+    }
+    else if (!userInfo.isSuperAdmin)
+    {
+      return Unauthorized(new ApiResponse(false, "User is not authorized.", null));
+    }
+    else
+    {
+      return Ok(new ApiResponse(true, "User is authorized.", null));
+    }
   }
 
   [HttpPost]
   [Route("create2")]
   public IActionResult Create2(Club club)
   {
-    // Check if the authorization header is present
-    if (Request.Headers.TryGetValue("Authorization", out var authHeader))
-    {
-      // Extract the token from the authorization header
-      var token = authHeader.ToString().Replace("Bearer ", "");
-      Console.WriteLine(token);
-
-      // TODO: Token decode
-
-      // Perform token validation and authorization checks
-      if (ValidateToken(token))
-      {
-        // Token is valid, perform additional authorization checks if needed
-        if (IsAuthorized(token, club))
-        {
-          // User is authorized, proceed with the creation logic
-
-          // Rest of your code...
-          return Ok();
-        }
-        else
-        {
-          // User is not authorized
-          return Forbid();
-        }
+    try{
+      var req = Request;
+      // get token from request; get user from token, get admin info from user.
+      if(helper.checkIsUserSuperAdminFromToken(req, _db)){
+        Console.WriteLine("User is super admin");
+        _db.Club.Add(club);
+        _db.SaveChanges();
+        return Ok(new ApiResponse(true, "User is authorized.", club));
       }
-      else
-      {
-        // Token is invalid
-        return Unauthorized();
+      else{
+        return Unauthorized(new ApiResponse(false, "User is not authorized.", null));
       }
     }
-
-    // Authorization header not found
-    return BadRequest("Authorization header is missing.");
-  }
-
-  private bool ValidateToken(string token)
-  {
-    // Perform token validation logic here
-    // You can use a JWT library or any other token validation mechanism
-
-    // Example: Simulate token validation by checking if the token is not empty
-    return !string.IsNullOrEmpty(token);
-  }
-
-  private bool IsAuthorized(string token, Club club)
-  {
-    // Perform authorization checks based on the token and club data
-    // You can check if the token contains the necessary claims or roles for the requested action
-
-    // Example: Simulate authorization by allowing access if the club name is "Authorized Club"
-    return club.name == "ieee";
+    catch(Exception e){
+      return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse(false, "Unable to create the Club. Internal server error occurred.", e.Message));
+    }
   }
 
 

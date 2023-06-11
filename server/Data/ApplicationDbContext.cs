@@ -37,6 +37,9 @@ public class ApplicationDbContext : DbContext
             .Property(u => u.userId)
             .ValueGeneratedOnAdd();
         // ...
+        modelBuilder.Entity<ClubMember>().
+            HasKey(nameof(ClubMember.userId), 
+            nameof(ClubMember.clubId));
     }
 
     public DbContext CreateDbContext(string[] args)
