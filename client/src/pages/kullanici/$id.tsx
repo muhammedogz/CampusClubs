@@ -9,6 +9,7 @@ import { Routes } from 'src/data/routes';
 import { uyeler } from 'src/data/uyeler';
 import { EtkinlikType, KulupType, UyeType } from 'src/types/types';
 import { Layout } from '../../components/layout/Layout';
+import { useState } from 'react';
 
 const etkinlikColumns: Column<EtkinlikType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
@@ -98,7 +99,9 @@ const UyeEtkinlikler = ({ etkinlikler }: UyeEtkinliklerType) => {
 };
 
 const Kullanici = () => {
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
+
 
   const tumUyeler = uyeler;
   const bulunanKullanici = tumUyeler.find((uye) => uye.slug === id);
