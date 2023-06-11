@@ -67,9 +67,11 @@ export type ApiResponseType<T> = {
 // Backend Types
 
 export type UyeBackendType = {
+  userName: string;
   userId: number;
   firstName: string;
   lastName: string;
   image: string;
   email: string;
+  clubsRegistered: KulupType[];
 };

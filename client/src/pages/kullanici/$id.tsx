@@ -1,15 +1,14 @@
 import { Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Image from 'src/components/common/Image';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
-import { events } from 'src/data/etkinlikler';
-import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
-import { uyeler } from 'src/data/uyeler';
-import { EtkinlikType, KulupType, UyeType } from 'src/types/types';
+import { getUserInfoFromIdfetcher } from 'src/fetch/fetchers';
+import { EtkinlikType, KulupType, UyeBackendType } from 'src/types/types';
+import { getRemoteImage } from 'src/utils/imageUtils';
 import { Layout } from '../../components/layout/Layout';
-import { useState } from 'react';
 
 const etkinlikColumns: Column<EtkinlikType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
@@ -24,11 +23,12 @@ const kulupColumns: Column<KulupType>[] = [
   { header: 'Kulüp Açıklaması', accessor: 'description' },
 ];
 
-type CommonProps = {
-  uye: UyeType;
+type UserProps = {
+  uye: UyeBackendType;
 };
 
-const UyeInfo = ({ uye }: CommonProps) => {
+const UyeInfo = ({ uye }: UserProps) => {
+  console.log('uye', uye);
   return (
     <Stack
       id="upper-content-left"
@@ -40,7 +40,7 @@ const UyeInfo = ({ uye }: CommonProps) => {
       <Image
         width="150px"
         height="150px"
-        src={uye.image}
+        src={getRemoteImage(uye.image)}
         sx={{
           borderRadius: '20px',
           boxShadow:
@@ -49,12 +49,12 @@ const UyeInfo = ({ uye }: CommonProps) => {
       />
       <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
         <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
-          {uye.name}
+          {uye.firstName} {uye.lastName}
         </Typography>
         <Typography variant="h6" color="secondary">
-          @{uye.slug}
+          {uye.email}
         </Typography>
-        <Typography variant="h6">{uye.bolum}</Typography>
+        <Typography variant="h6">Bilgisayar Mühendisliği</Typography>
       </Stack>
     </Stack>
   );
@@ -68,7 +68,7 @@ const UyeKulupler = ({ kulupler }: UyeKuluplerType) => {
   return (
     <Stack id="middle-content-right">
       <Table
-        title="Uyesi Olunan Kulupler"
+        title="Kulüp Üyelikleri"
         data={kulupler.map((kulup) => ({
           ...kulup,
           slug: `${Routes.KULUP}/${kulup.slug}`,
@@ -87,7 +87,7 @@ const UyeEtkinlikler = ({ etkinlikler }: UyeEtkinliklerType) => {
   return (
     <Stack id="middle-content-right">
       <Table
-        title="Katılınan Etkinlikler"
+        title="Etkinlik Kayıtları"
         data={etkinlikler.map((event) => ({
           ...event,
           slug: `${Routes.ETKINLIK}/${event.slug}`,
@@ -99,25 +99,43 @@ const UyeEtkinlikler = ({ etkinlikler }: UyeEtkinliklerType) => {
 };
 
 const Kullanici = () => {
+  const [user, setUser] = useState<UyeBackendType | null>(null);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
+  const getUserInfo = useCallback(async () => {
+    try {
+      if (!id) return;
+      setLoading(true);
+      const userResponse = await getUserInfoFromIdfetcher(id);
+      if (userResponse.status) {
+        setUser(userResponse.data);
+        setLoading(false);
+      }
+      console.log(userResponse);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [id]);
 
-  const tumUyeler = uyeler;
-  const bulunanKullanici = tumUyeler.find((uye) => uye.slug === id);
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
 
-  if (!bulunanKullanici) return <Layout>404</Layout>;
-
-  return (
-    <Layout>
-      <ContentLayout
-        upperLeft={<UyeInfo uye={bulunanKullanici} />}
-        upperRight={<Stack> </Stack>}
-        middleLeft={<UyeEtkinlikler etkinlikler={events} />}
-        middleRight={<UyeKulupler kulupler={kulupler} />}
-      />
-    </Layout>
-  );
+  if (loading || !user) {
+    <Layout loading={loading}>Yükleniyor...</Layout>;
+  } else {
+    return (
+      <Layout>
+        <ContentLayout
+          upperLeft={<UyeInfo uye={user} />}
+          upperRight={<Stack> </Stack>}
+          middleLeft={<UyeEtkinlikler etkinlikler={[]} />}
+          middleRight={<UyeKulupler kulupler={user.clubsRegistered} />}
+        />
+      </Layout>
+    );
+  }
 };
 
 export default Kullanici;

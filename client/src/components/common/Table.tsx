@@ -110,7 +110,7 @@ const EmptyTable = () => {
   return (
     <Stack alignContent="center" justifyContent="center" p="50px" gap="20px">
       <Typography variant="h6" fontWeight={600} color="main" textAlign="center">
-        Henüz bir data bulunmamaktadır.
+        Henüz bir veri bulunmamaktadır.
       </Typography>
       <ZoomOutSharpIcon
         color="primary"
