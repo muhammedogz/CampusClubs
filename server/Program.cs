@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server.Data;
+using Server.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,13 +46,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
   options.TokenValidationParameters = new TokenValidationParameters
   {
-    ValidateAudience = true,
-    ValidateIssuer = true,
-    ValidAudience = "Audience", // Set the desired audience value
-    ValidIssuer = "Issuer", // Set the desired issuer value
+    ValidateAudience = false,
+    ValidateIssuer = false,
     RequireExpirationTime = false,
     ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_signing_key"))
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Secret.SIGNING_KEY))
   };
 });
 

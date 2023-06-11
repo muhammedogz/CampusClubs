@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Constants;
@@ -70,11 +72,16 @@ public class UsersController : ControllerBase
     return CreatedAtAction(nameof(GetUser), new { id = userResult.UserId }, new ApiResponse(true, "User created successfully", userResult));
   }
 
-  // PUT: api/User/{id}
   [HttpPut("{id}")]
-  public async Task<IActionResult> UpdateUser(int id, UserUpdateDTO userUpdateDTO)
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> UpdateUser(int id, UserUpdateDTO userUpdateDTO)
   {
-    // Fetch the user from the database
+    var userIdFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (userIdFromToken != id.ToString())
+    {
+      return Forbid(); // or BadRequest, depending on how you want to handle it
+    }
+
     var user = await _context.Users.FindAsync(id);
 
     if (user == null)
@@ -82,17 +89,22 @@ public class UsersController : ControllerBase
       return NotFound(new ApiResponse(false, "User not found", null));
     }
 
-    // Map the updated fields to the user object
     _mapper.Map(userUpdateDTO, user);
 
-    // Update and save the user in the database
-    _context.Users.Update(user);
-    await _context.SaveChangesAsync();
+    try
+    {
+      await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException) when (!UserExists(id))
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
 
-    // Map User to UserDTO
-    var userResult = _mapper.Map<UserDTO>(user);
+    return Ok(new ApiResponse(true, "User updated successfully", _mapper.Map<UserDTO>(user)));
+  }
 
-    // Return a success response
-    return Ok(new ApiResponse(true, "User updated successfully", userResult));
+  private bool UserExists(int id)
+  {
+    return _context.Users.Any(e => e.UserId == id);
   }
 }
