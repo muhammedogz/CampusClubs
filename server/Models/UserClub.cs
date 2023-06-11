@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models;
 
-public enum Role
+public enum ClubRole
 {
   Advisor,
   Admin,
@@ -19,5 +19,5 @@ public class UserClub
   public int ClubId { get; set; }
   public Club? Club { get; set; }
 
-  public Role Role { get; set; }
+  public ClubRole Role { get; set; }
 }

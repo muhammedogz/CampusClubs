@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models;
 
-public enum EventAttendanceStatus
+public enum UserApprovalStatus
 {
   Pending,
   Approved,
@@ -19,5 +19,5 @@ public class UserEvent
   public int EventId { get; set; }
   public Event? Event { get; set; }
 
-  public EventAttendanceStatus Status { get; set; } = EventAttendanceStatus.Pending;
+  public UserApprovalStatus ApprovalStatus { get; set; } = UserApprovalStatus.Pending;
 }

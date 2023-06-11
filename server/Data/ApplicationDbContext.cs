@@ -60,6 +60,10 @@ public class ApplicationDbContext : DbContext
        .HasOne(u => u.Department)
        .WithMany()
        .OnDelete(DeleteBehavior.Restrict);
+
+    modelBuilder.Entity<User>()
+      .Property(u => u.Role)
+      .HasConversion<string>();
   }
 
   public DbContext CreateDbContext(string[] args)

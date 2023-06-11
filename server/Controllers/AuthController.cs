@@ -45,8 +45,7 @@ public class AuthController : ControllerBase
           new Claim(ClaimTypes.Name, user.UserName),
           new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
           new Claim(ClaimTypes.Email, user.Email),
-          new Claim("IsSuperAdmin", user.IsSuperAdmin.ToString()),
-          new Claim("IsAdvisor", user.IsAdvisor.ToString())
+          new Claim(ClaimTypes.Role, user.Role.ToString())
         }),
       Expires = DateTime.UtcNow.AddDays(700), // Token expiration, you can set it as per your needs
       SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

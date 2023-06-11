@@ -3,6 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models;
 
+public enum UserRole
+{
+  Admin,
+  Advisor,
+  Student
+}
+
 public class User
 {
   [Key]
@@ -17,19 +24,21 @@ public class User
 
   [Required]
   public string LastName { get; set; } = string.Empty;
-  
+
   [Required]
   public string Email { get; set; } = string.Empty;
-  
+
   [Required]
   [ForeignKey(nameof(Department))]
   public int DepartmentId { get; set; }
 
+  [Required]
+  public UserRole Role { get; set; } = UserRole.Student;
+
   public Department? Department { get; set; }
 
   public string? Image { get; set; } = string.Empty;
-  public bool IsAdvisor { get; set; }
-  public bool IsSuperAdmin { get; set; }
+
 
   [DataType(DataType.Date)]
   public DateTime CreatedAt { get; set; }

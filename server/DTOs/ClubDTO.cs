@@ -12,7 +12,7 @@ public class ClubDTO
   public DateTime CreatedAt { get; set; }
   public DateTime? DeletedAt { get; set; }
   public UserDTO? Advisor { get; set; }
-  public ApprovalStatus ApprovalStatus { get; set; }
+  public EventApprovalStatus ApprovalStatus { get; set; }
   public List<EventDTO>? Events { get; set; }
   public List<AnnouncementDTO>? Announcements { get; set; }
   public List<UserDTO>? Users { get; set; }

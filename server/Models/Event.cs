@@ -23,7 +23,7 @@ public class Event
   [Required]
   public string? Type { get; set; }
 
-  public ApprovalStatus Status { get; set; } = ApprovalStatus.Pending;
+  public EventApprovalStatus ApprovalStatus { get; set; } = EventApprovalStatus.Pending;
 
   public DateTime EventDate { get; set; }
 
@@ -38,7 +38,7 @@ public class Event
 
 }
 
-public enum ApprovalStatus
+public enum EventApprovalStatus
 {
   Pending,
   Approved,

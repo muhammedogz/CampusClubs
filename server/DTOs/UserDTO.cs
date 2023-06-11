@@ -1,3 +1,5 @@
+using Server.Models;
+
 namespace Server.DTOs;
 
 public class UserDTO
@@ -16,9 +18,7 @@ public class UserDTO
 
   public string? Image { get; set; }
 
-  public bool IsAdvisor { get; set; }
-
-  public bool IsSuperAdmin { get; set; }
+  public UserRole Role { get; set; }
 
   public DateTime CreatedAt { get; set; }
   public DateTime? DeletedAt { get; set; }
@@ -51,6 +51,4 @@ public class UserCreateDTO
   public string? Email { get; set; }
   public string? Image { get; set; }
   public int? DepartmentId { get; set; }
-  public bool IsAdvisor { get; set; }
-  public bool IsSuperAdmin { get; set; }
 }
