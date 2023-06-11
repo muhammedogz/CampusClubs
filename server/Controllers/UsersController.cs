@@ -69,4 +69,27 @@ public class UsersController : ControllerBase
     // Return a 201 Created response
     return CreatedAtAction(nameof(GetUser), new { id = userResult.UserId }, new ApiResponse(true, "User created successfully", userResult));
   }
+
+  // PUT: api/User/{id}
+  [HttpPut("{id}")]
+  public async Task<IActionResult> UpdateUser(int id, UserUpdateDTO userUpdateDTO)
+  {
+    // Fetch the user from the database
+    var user = await _context.Users.FindAsync(id);
+
+    if (user == null)
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
+
+    // Map the updated fields to the user object
+    _mapper.Map(userUpdateDTO, user);
+
+    // Update and save the user in the database
+    _context.Users.Update(user);
+    await _context.SaveChangesAsync();
+
+    // Return a success response
+    return Ok(new ApiResponse(true, "User updated successfully", null));
+  }
 }

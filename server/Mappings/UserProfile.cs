@@ -12,5 +12,6 @@ public class UserProfile : Profile
 
     CreateMap<Department, DepartmentDTO>(); // Add this line to map Department to DepartmentDTO
     CreateMap<UserCreateDTO, User>();
+    CreateMap<UserUpdateDTO, User>();
   }
 }
