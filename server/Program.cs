@@ -1,10 +1,10 @@
-using Server.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,17 +15,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddSwaggerGen(); // Add this line to add Swagger services
 builder.Services.AddSwaggerGen(option => // authentication in Swagger
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+  option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+  option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+  {
+    In = ParameterLocation.Header,
+    Description = "Please enter a valid token",
+    Name = "Authorization",
+    Type = SecuritySchemeType.Http,
+    BearerFormat = "JWT",
+    Scheme = "Bearer"
+  });
+  option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -43,25 +43,26 @@ builder.Services.AddSwaggerGen(option => // authentication in Swagger
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters  
-    {
-        ValidateAudience = true,
-        ValidateIssuer = true,
-        ValidAudience = "Audience", // Set the desired audience value
-        ValidIssuer = "Issuer", // Set the desired issuer value
-        RequireExpirationTime = false,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_signing_key"))
-    };
+  options.TokenValidationParameters = new TokenValidationParameters
+  {
+    ValidateAudience = true,
+    ValidateIssuer = true,
+    ValidAudience = "Audience", // Set the desired audience value
+    ValidIssuer = "Issuer", // Set the desired issuer value
+    RequireExpirationTime = false,
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your_signing_key"))
+  };
 });
 
 builder.Services.AddAuthorization(auth =>
 {
-    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
-        .RequireAuthenticatedUser().Build());
+  auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+      .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
+      .RequireAuthenticatedUser().Build());
 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 DotNetEnv.Env.Load();
@@ -85,7 +86,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // // Place the following line after app.UseRouting() and before app.UseEndpoints(...)
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
