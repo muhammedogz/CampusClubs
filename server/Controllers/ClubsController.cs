@@ -25,16 +25,9 @@ public class ClubsController : ControllerBase
   public async Task<ActionResult<ApiResponse>> GetClubs()
   {
     var clubs = await _context.Clubs
-        .Include(c => c.Advisor)
-        .Include(c => c.Events)
-            .ThenInclude(e => e.UserEvents)
-        .Include(c => c.Announcements)
-        .Include(c => c.UserClubs)
-            .ThenInclude(uc => uc.User)
-        .AsSplitQuery()
         .ToListAsync();
 
-    return Ok(new ApiResponse(true, "Clubs retrieved successfully", _mapper.Map<List<ClubDTO>>(clubs)));
+    return Ok(new ApiResponse(true, "Clubs retrieved successfully", _mapper.Map<List<ClubSummaryDTO>>(clubs)));
   }
 
   [HttpGet("{id}")]

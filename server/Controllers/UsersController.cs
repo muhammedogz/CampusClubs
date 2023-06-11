@@ -23,37 +23,61 @@ public class UsersController : ControllerBase
     _mapper = mapper;
   }
 
-  [HttpGet]
-  public async Task<ActionResult<UserDTO>> GetUsers()
+  private async Task<ActionResult<ApiResponse>> GetUsersByRole(UserRole role, string message)
   {
-    var users = await _context.Users.ToListAsync();
-
-    // Here you should map your User objects to UserDTOs
-    // For simplicity, I'm returning the User objects directly
-    return Ok(users);
-  }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ApiResponse>> GetUser(int id)
+    try
     {
-      var user = await _context.Users
-          .Include(u => u.UserClubs)
-              .ThenInclude(uc => uc.Club)
-          .Include(u => u.UserEvents)
-              .ThenInclude(ue => ue.Event)
-          .Include(u => u.Department)
-          .AsSplitQuery()
-          .FirstOrDefaultAsync(u => u.UserId == id);
+      var users = await _context.Users
+            .Where(u => u.Role == role)
+            .Include(u => u.Department)
+            .ToListAsync();
 
-      if (user == null)
+      if (!users.Any())
       {
-        return NotFound(new ApiResponse(false, "User not found", null));
+        return NotFound(new ApiResponse(false, $"No users found with role {role}", null));
       }
 
-      Console.WriteLine(user.UserClubs.Count);
-
-      return Ok(new ApiResponse(true, "User found", _mapper.Map<UserDTO>(user)));
+      return Ok(new ApiResponse(true, message, _mapper.Map<List<UserSummaryDTO>>(users)));
     }
+    catch (Exception)
+    {
+
+      return StatusCode(StatusCodes.Status500InternalServerError,
+          new ApiResponse(false, $"An error occurred while retrieving users with role {role}", null));
+    }
+  }
+
+  [HttpGet("students")]
+  public async Task<ActionResult<ApiResponse>> GetStudentUsers()
+  {
+    return await GetUsersByRole(UserRole.Student, "Student users retrieved successfully");
+  }
+
+  [HttpGet("advisors")]
+  public async Task<ActionResult<ApiResponse>> GetAdvisorUsers()
+  {
+    return await GetUsersByRole(UserRole.Advisor, "Advisor users retrieved successfully");
+  }
+
+  [HttpGet("{id}")]
+  public async Task<ActionResult<ApiResponse>> GetUser(int id)
+  {
+    var user = await _context.Users
+        .Include(u => u.UserClubs)
+            .ThenInclude(uc => uc.Club)
+        .Include(u => u.UserEvents)
+            .ThenInclude(ue => ue.Event)
+        .Include(u => u.Department)
+        .AsSplitQuery()
+        .FirstOrDefaultAsync(u => u.UserId == id);
+
+    if (user == null)
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
+
+    return Ok(new ApiResponse(true, "User found", _mapper.Map<UserDTO>(user)));
+  }
 
   [HttpPost]
   public async Task<ActionResult<ApiResponse>> CreateUser(UserCreateDTO userDTO)
