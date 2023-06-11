@@ -1,22 +1,22 @@
 import { Button, Menu, MenuItem, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CCButton from 'src/components/common/CCButton';
 import Image from 'src/components/common/Image';
 import { generateRedirectUrl } from 'src/utils/authUtils';
-import { getLocalImage } from 'src/utils/imageUtils';
+import { getRemoteImage } from 'src/utils/imageUtils';
 import {
   StorageKeyEnum,
   getLocalStorageItem,
+  removeLocalStorageItem,
   updateLocalStorageItem,
 } from 'src/utils/storageUtils';
-
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [loadingSigninButton, setLoadingSigninButton] = useState(false);
-
+  const navigate = useNavigate();
   const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
 
   const handleSignin = useCallback(() => {
@@ -46,7 +46,6 @@ function ResponsiveAppBar() {
   };
 
   const userLoggedIn = !!user?.firstName;
-  console.log('user', user);
 
   const LoggedUserContent = () => {
     return (
@@ -68,11 +67,22 @@ function ResponsiveAppBar() {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{setting}</Typography>
-              </MenuItem>
-            ))}
+            <MenuItem onClick={handleCloseUserMenu}>
+              <Typography textAlign="center">Profilim</Typography>
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                // remove all stroages and logout
+                const storageKeysToRemove = Object.values(StorageKeyEnum);
+                storageKeysToRemove.forEach((key) => {
+                  removeLocalStorageItem(key);
+                });
+                navigate(0);
+                handleCloseUserMenu();
+              }}
+            >
+              <Typography textAlign="center">Çıkış yap</Typography>
+            </MenuItem>
           </Menu>
         </Stack>
       </Stack>
@@ -91,8 +101,6 @@ function ResponsiveAppBar() {
     );
   };
 
-  console.log('userLoggedIn', userLoggedIn);
-
   return (
     <Stack
       sx={{
@@ -110,10 +118,10 @@ function ResponsiveAppBar() {
         >
           <Button onClick={handleOpenUserMenu}>
             <Image
-              width="50px"
-              height="50px"
+              width="100px"
+              height="100px"
               variant="circular"
-              src={getLocalImage('images/default-avatar.png')}
+              src={getRemoteImage(user?.image)}
             />
           </Button>
           <LoggedUserContent />
