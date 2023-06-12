@@ -19,5 +19,6 @@ public class EventProfile : Profile
                     opt => opt.MapFrom(src => src.Club));
 
     CreateMap<EventCreateDTO, Event>();
+    CreateMap<EventUpdateDTO, Event>();
   }
 }

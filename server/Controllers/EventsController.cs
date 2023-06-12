@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Constants;
@@ -35,15 +37,181 @@ public class EventsController : ControllerBase
   }
 
   [HttpPost]
+  [Authorize]
   public async Task<ActionResult<ApiResponse>> CreateEvent(EventCreateDTO eventDTO)
   {
+    var authResponse = await CheckUserAuthorization(eventDTO.ClubId);
+    if (authResponse != null)
+    {
+      return authResponse;
+    }
+
     var eventModel = _mapper.Map<Event>(eventDTO);
     eventModel.CreatedAt = DateTime.UtcNow;
 
     _context.Events.Add(eventModel);
+
+    // Retrieve the current user.
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (userId == null)
+    {
+      return Unauthorized(new ApiResponse(false, "User not found", null));
+    }
+
+    var currentUser = await GetUserFromDb(userId.ToString());
+    if (currentUser == null)
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
+
+    // Create a new UserEvent for the event creator.
+    var userEvent = new UserEvent
+    {
+      User = currentUser,
+      Event = eventModel,
+      ApprovalStatus = UserApprovalStatus.Approved
+    };
+
+    _context.UserEvents.Add(userEvent);
+
     await _context.SaveChangesAsync();
 
     return CreatedAtAction(nameof(GetEvent), new { id = eventModel.EventId }, new ApiResponse(true, "Event created successfully", _mapper.Map<EventDTO>(eventModel)));
+  }
+
+  [HttpPut("{id}")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> UpdateEvent(int id, EventUpdateDTO eventDTO)
+  {
+    var eventModel = await GetEventFromDb(id);
+    if (eventModel == null)
+    {
+      return NotFound(new ApiResponse(false, "Event not found", null));
+    }
+
+    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    if (authResponse != null)
+    {
+      return authResponse;
+    }
+
+    _mapper.Map(eventDTO, eventModel); // Apply changes to the eventModel
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Event updated successfully", _mapper.Map<EventDTO>(eventModel)));
+  }
+
+  [HttpDelete("{id}")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> DeleteEvent(int id)
+  {
+    var eventModel = await GetEventFromDb(id);
+    if (eventModel == null)
+    {
+      return NotFound(new ApiResponse(false, "Event not found", null));
+    }
+
+    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    if (authResponse != null)
+    {
+      return authResponse;
+    }
+
+    _context.Events.Remove(eventModel);
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Event deleted successfully", null));
+  }
+
+  [HttpPost("{eventId}/join")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> JoinEvent(int eventId)
+  {
+    var eventModel = await _context.Events.FindAsync(eventId);
+    if (eventModel == null)
+    {
+      return NotFound(new ApiResponse(false, "Event not found", null));
+    }
+
+    // Retrieve the current user.
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (userId == null)
+    {
+      return Unauthorized(new ApiResponse(false, "User not found", null));
+    }
+
+    var currentUser = await GetUserFromDb(userId.ToString());
+    if (currentUser == null)
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
+
+    var existingUserEvent = await _context.UserEvents
+        .FirstOrDefaultAsync(ue => ue.UserId == currentUser.UserId && ue.EventId == eventId);
+    if (existingUserEvent != null)
+    {
+      return BadRequest(new ApiResponse(false, "User has already joined the event", null));
+    }
+
+    var userEvent = new UserEvent
+    {
+      User = currentUser,
+      Event = eventModel,
+      ApprovalStatus = UserApprovalStatus.Pending,
+    };
+    _context.UserEvents.Add(userEvent);
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Joined event successfully", _mapper.Map<EventDTO>(eventModel)));
+  }
+
+  private async Task<Event> GetEventFromDb(int id)
+  {
+    var eventEntity = await _context.Events.FindAsync(id);
+    if (eventEntity == null)
+    {
+      throw new ArgumentException($"Event with id {id} not found.");
+    }
+    return eventEntity;
+  }
+
+  private async Task<List<UserSummaryDTO>> GetEventUsers(int eventId, UserApprovalStatus approvalStatus)
+  {
+    var userEvents = await _context.UserEvents
+        .Where(ue => ue.EventId == eventId && ue.ApprovalStatus == approvalStatus)
+        .Include(ue => ue.User)
+        .ToListAsync();
+
+    return _mapper.Map<List<UserSummaryDTO>>(userEvents.Select(ue => ue.User));
+  }
+
+
+  private async Task<User> GetUserFromDb(string id)
+  {
+    var intId = int.Parse(id);
+
+    var userEntity = await _context.Users.FindAsync(intId);
+    if (userEntity == null)
+    {
+      throw new ArgumentException($"User with id {id} not found.");
+    }
+    return userEntity;
+  }
+
+  private async Task<ActionResult<ApiResponse>?> CheckUserAuthorization(int clubId)
+  {
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    var userClub = await _context.UserClubs
+        .FirstOrDefaultAsync(uc => uc.UserId.ToString() == userId && uc.ClubId == clubId);
+
+    if (userClub?.ClubRole != ClubRole.Admin)
+    {
+      return Unauthorized(new ApiResponse(false, "You are not authorized to edit/delete events in this club", null));
+    }
+
+    return null;
   }
 
   [HttpGet("{id}")]
@@ -60,6 +228,60 @@ public class EventsController : ControllerBase
       return NotFound(new ApiResponse(false, "Event not found", null));
     }
 
-    return Ok(new ApiResponse(true, "Event retrieved successfully", _mapper.Map<EventDTO>(eventModel)));
+    var eventDTO = _mapper.Map<EventDTO>(eventModel);
+
+    eventDTO.Users = await GetEventUsers(id, UserApprovalStatus.Approved);
+
+    return Ok(new ApiResponse(true, "Event retrieved successfully", eventDTO));
   }
+
+  [HttpGet("{id}/pending")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> GetPendingUsers(int id)
+  {
+    var eventModel = await _context.Events.FindAsync(id);
+    if (eventModel == null)
+    {
+      return NotFound(new ApiResponse(false, "Event not found", null));
+    }
+
+    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    if (authResponse != null)
+    {
+      return authResponse;
+    }
+
+    var users = await GetEventUsers(id, UserApprovalStatus.Pending);
+
+    return Ok(new ApiResponse(true, "Pending users retrieved successfully", users));
+  }
+
+  [HttpPost("approval/{eventId}/{userId}")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] UserApprovalStatus status)
+  {
+    var userEvent = await _context.UserEvents.FirstOrDefaultAsync(ue => ue.EventId == eventId && ue.UserId == userId);
+    if (userEvent == null)
+    {
+      return NotFound(new ApiResponse(false, "User or event not found", null));
+    }
+
+    var eventModel = await _context.Events.FindAsync(eventId);
+    if (eventModel == null)
+    {
+      return NotFound(new ApiResponse(false, "Event not found", null));
+    }
+
+    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    if (authResponse != null)
+    {
+      return authResponse;
+    }
+
+    userEvent.ApprovalStatus = status;
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "User approval status updated successfully", null));
+  }
+
 }

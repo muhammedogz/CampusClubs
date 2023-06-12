@@ -20,6 +20,8 @@ public class UserSummaryDTO
 
   public UserRole UserRole { get; set; }
   public ClubRole? ClubRole { get; set; }
+
+  public EventApprovalStatus? EventApprovalStatus { get; set; }
 }
 
 public class UserDTO : UserSummaryDTO
