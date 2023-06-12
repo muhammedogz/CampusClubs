@@ -19,5 +19,5 @@ public class UserClub
   public int ClubId { get; set; }
   public Club? Club { get; set; }
 
-  public ClubRole Role { get; set; }
+  public ClubRole ClubRole { get; set; }
 }

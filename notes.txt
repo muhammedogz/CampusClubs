@@ -18,3 +18,6 @@ DONE 2- Login Oauth thingy
   6.2- Reject Join
 7- Club
   7.1- Club Edit
+8- User Club Join Approval
+  8.1- Approve Join
+  8.2- Reject Join

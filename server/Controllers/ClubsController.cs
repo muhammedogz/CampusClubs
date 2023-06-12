@@ -49,7 +49,14 @@ public class ClubsController : ControllerBase
       return NotFound(new ApiResponse(false, "Club not found", null));
     }
 
-    return Ok(new ApiResponse(true, "Club found", _mapper.Map<ClubDTO>(club)));
+    var clubDto = _mapper.Map<ClubDTO>(club);
+
+    // Map UserClubs to Users
+    clubDto.Users = club.UserClubs
+        .Select(uc => _mapper.Map<UserSummaryDTO>(uc))
+        .ToList();
+
+    return Ok(new ApiResponse(true, "Club found", clubDto));
   }
 
   [HttpPost]

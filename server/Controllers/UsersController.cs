@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
     try
     {
       var users = await _context.Users
-            .Where(u => u.Role == role)
+            .Where(u => u.UserRole == role)
             .Include(u => u.Department)
             .ToListAsync();
 

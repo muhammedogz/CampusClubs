@@ -62,7 +62,11 @@ public class ApplicationDbContext : DbContext
        .OnDelete(DeleteBehavior.Restrict);
 
     modelBuilder.Entity<User>()
-      .Property(u => u.Role)
+      .Property(u => u.UserRole)
+      .HasConversion<string>();
+
+    modelBuilder.Entity<UserClub>()
+      .Property(u => u.ClubRole)
       .HasConversion<string>();
 
     modelBuilder.Entity<User>()

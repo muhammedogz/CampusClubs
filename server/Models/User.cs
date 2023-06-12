@@ -33,12 +33,11 @@ public class User
   public int DepartmentId { get; set; }
 
   [Required]
-  public UserRole Role { get; set; } = UserRole.Student;
+  public UserRole UserRole { get; set; } = UserRole.Student;
 
   public Department? Department { get; set; }
 
   public string? Image { get; set; } = string.Empty;
-
 
   [DataType(DataType.Date)]
   public DateTime CreatedAt { get; set; }

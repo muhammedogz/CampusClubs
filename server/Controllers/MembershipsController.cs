@@ -39,7 +39,7 @@ public class MembershipsController : ControllerBase
     {
       UserId = userClubDto.UserId,
       ClubId = userClubDto.ClubId,
-      Role = (ClubRole)userClubDto.RoleId,
+      ClubRole = (ClubRole)userClubDto.RoleId,
     };
 
     try
