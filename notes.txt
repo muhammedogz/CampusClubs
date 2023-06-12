@@ -1,23 +1,25 @@
 DONE 1- Club Create Controller Only Admin yapar
 DONE 2- Login Oauth thingy
-3- Event Controller
-  3.1- Create Event
-  3.2- Edit Event
-  3.3- Delete Event
-  3.4- List Pending Events for Related Club Advisor
-  3.5- List Event Users for Related Club Admin
-4- Announcement Controller
-  4.1- Create Announcement
-  4.2- Edit Announcement
-  4.3- Delete Announcement
-5- Event Approval Controller
-  5.1- Approve Event
-  5.2- Reject Event
-6- Event Join Approval Controller
-  6.1- Approve Join
-  6.2- Reject Join
-7- Club
-  7.1- Club Edit
-8- User Club Join Approval
+DONE 3- Event Controller
+DONE 3.1- Create Event
+DONE 3.2- Edit Event
+DONE 3.3- Delete Event
+DONE 3.5- List Event Users for Related Club Admin
+
+4- List Pending Events for Related Club Advisor
+5- Show EventApprovalStatus in getUser
+6- Announcement Controller
+  6.1- Create Announcement
+  6.2- Edit Announcement
+  6.3- Delete Announcement
+7- Event Approval Controller
+  7.1- Approve Event
+  7.2- Reject Event
+8- Event Join Approval Controller
   8.1- Approve Join
   8.2- Reject Join
+9- Club
+  9.1- Club Edit
+10- User Club Join Approval
+  10.1- Approve Join
+  10.2- Reject Join

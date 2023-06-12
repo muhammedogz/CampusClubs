@@ -33,7 +33,7 @@ public class UserProfile : Profile
         .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.User!.UserRole));
 
     CreateMap<UserEvent, UserSummaryDTO>()
-        .ForMember(dest => dest.EventApprovalStatus, opt => opt.MapFrom(src => src.ApprovalStatus))
+        .ForMember(dest => dest.UserApprovalStatus, opt => opt.MapFrom(src => src.ApprovalStatus))
         .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User!.UserId))
         .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!.UserName))
         .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User!.FirstName))

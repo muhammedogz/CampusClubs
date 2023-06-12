@@ -13,6 +13,8 @@ public class EventSummaryDTO
   public EventApprovalStatus ApprovalStatus { get; set; }
   public DateTime EventDate { get; set; }
   public ClubSummaryDTO? Club { get; set; }
+
+  public UserApprovalStatus? UserApprovalStatus { get; set; }
 }
 
 public class EventDTO : EventSummaryDTO
