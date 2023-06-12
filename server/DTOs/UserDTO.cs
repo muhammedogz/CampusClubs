@@ -18,13 +18,14 @@ public class UserSummaryDTO
 
   public string? Image { get; set; }
 
-  public UserRole Role { get; set; }
+  public UserRole UserRole { get; set; }
+  public ClubRole? ClubRole { get; set; }
 }
 
 public class UserDTO : UserSummaryDTO
 {
   public List<ClubSummaryDTO> Clubs { get; set; } = new List<ClubSummaryDTO>();
-  public List<EventDTO> Events { get; set; } = new List<EventDTO>();
+  public List<EventSummaryDTO> Events { get; set; } = new List<EventSummaryDTO>();
 }
 
 public class DepartmentDTO

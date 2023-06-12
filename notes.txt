@@ -16,3 +16,5 @@ DONE 2- Login Oauth thingy
 6- Event Join Approval Controller
   6.1- Approve Join
   6.2- Reject Join
+7- Club
+  7.1- Club Edit

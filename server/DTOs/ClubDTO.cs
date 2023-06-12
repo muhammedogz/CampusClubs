@@ -12,7 +12,7 @@ public class ClubSummaryDTO
 public class ClubDTO : ClubSummaryDTO
 {
   public UserSummaryDTO? Advisor { get; set; }
-  public List<EventDTO>? Events { get; set; }
+  public List<EventSummaryDTO>? Events { get; set; }
   public List<AnnouncementDTO>? Announcements { get; set; }
   public List<UserSummaryDTO>? Users { get; set; }
 }
