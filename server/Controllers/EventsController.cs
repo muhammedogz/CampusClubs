@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Constants;
 using Server.Data;
 using Server.DTOs;
+using Server.Helpers;
 using Server.Models;
 
 namespace Server.Controllers;
@@ -58,7 +59,7 @@ public class EventsController : ControllerBase
       return Unauthorized(new ApiResponse(false, "User not found", null));
     }
 
-    var currentUser = await GetUserFromDb(userId.ToString());
+    var currentUser = await UserHelper.GetUserFromDb(_context, int.Parse(userId.ToString()));
     if (currentUser == null)
     {
       return NotFound(new ApiResponse(false, "User not found", null));
@@ -140,7 +141,7 @@ public class EventsController : ControllerBase
       return Unauthorized(new ApiResponse(false, "User not found", null));
     }
 
-    var currentUser = await GetUserFromDb(userId.ToString());
+    var currentUser = await UserHelper.GetUserFromDb(_context, int.Parse(userId.ToString()));
     if (currentUser == null)
     {
       return NotFound(new ApiResponse(false, "User not found", null));
@@ -164,54 +165,6 @@ public class EventsController : ControllerBase
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "Joined event successfully", _mapper.Map<EventDTO>(eventModel)));
-  }
-
-  private async Task<Event> GetEventFromDb(int id)
-  {
-    var eventEntity = await _context.Events.FindAsync(id);
-    if (eventEntity == null)
-    {
-      throw new ArgumentException($"Event with id {id} not found.");
-    }
-    return eventEntity;
-  }
-
-  private async Task<List<UserSummaryDTO>> GetEventUsers(int eventId, UserApprovalStatus approvalStatus)
-  {
-    var userEvents = await _context.UserEvents
-        .Where(ue => ue.EventId == eventId && ue.ApprovalStatus == approvalStatus)
-        .Include(ue => ue.User)
-        .ToListAsync();
-
-    return _mapper.Map<List<UserSummaryDTO>>(userEvents.Select(ue => ue.User));
-  }
-
-
-  private async Task<User> GetUserFromDb(string id)
-  {
-    var intId = int.Parse(id);
-
-    var userEntity = await _context.Users.FindAsync(intId);
-    if (userEntity == null)
-    {
-      throw new ArgumentException($"User with id {id} not found.");
-    }
-    return userEntity;
-  }
-
-  private async Task<ActionResult<ApiResponse>?> CheckUserAuthorization(int clubId)
-  {
-    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-    var userClub = await _context.UserClubs
-        .FirstOrDefaultAsync(uc => uc.UserId.ToString() == userId && uc.ClubId == clubId);
-
-    if (userClub?.ClubRole != ClubRole.Admin)
-    {
-      return Unauthorized(new ApiResponse(false, "You are not authorized to edit/delete events in this club", null));
-    }
-
-    return null;
   }
 
   [HttpGet("{id}")]
@@ -284,4 +237,38 @@ public class EventsController : ControllerBase
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
   }
 
+  private async Task<Event> GetEventFromDb(int id)
+  {
+    var eventEntity = await _context.Events.FindAsync(id);
+    if (eventEntity == null)
+    {
+      throw new ArgumentException($"Event with id {id} not found.");
+    }
+    return eventEntity;
+  }
+
+  private async Task<List<UserSummaryDTO>> GetEventUsers(int eventId, UserApprovalStatus approvalStatus)
+  {
+    var userEvents = await _context.UserEvents
+        .Where(ue => ue.EventId == eventId && ue.ApprovalStatus == approvalStatus)
+        .Include(ue => ue.User)
+        .ToListAsync();
+
+    return _mapper.Map<List<UserSummaryDTO>>(userEvents.Select(ue => ue.User));
+  }
+
+  private async Task<ActionResult<ApiResponse>?> CheckUserAuthorization(int clubId)
+  {
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    var userClub = await _context.UserClubs
+        .FirstOrDefaultAsync(uc => uc.UserId.ToString() == userId && uc.ClubId == clubId);
+
+    if (userClub?.ClubRole != ClubRole.Admin)
+    {
+      return Unauthorized(new ApiResponse(false, "You are not authorized to edit/delete events in this club", null));
+    }
+
+    return null;
+  }
 }
