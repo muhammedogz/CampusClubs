@@ -1,6 +1,8 @@
 import { Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import CampusClubCard from 'src/components/cards/CampusClubCard';
+import CampusClubCard, {
+  CampusClubCardLoading,
+} from 'src/components/cards/CampusClubCard';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
 import { getAllTeachersFetcher } from 'src/fetch/userFetchers';
@@ -29,7 +31,7 @@ const index = () => {
   }, [getAllTeachers]);
 
   return (
-    <Layout loading={loading}>
+    <Layout>
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
@@ -43,15 +45,26 @@ const index = () => {
           flexWrap="wrap"
           justifyContent="center"
         >
-          {allTeachers.map((teacher) => (
-            <CampusClubCard
-              key={teacher.firstName + teacher.lastName}
-              link={`${Routes.ADVISOR}/${teacher.userId}`}
-              image={getRemoteImage(teacher.image)}
-              title={teacher.firstName + ' ' + teacher.lastName}
-              description={teacher.department.name}
-            />
-          ))}
+          {loading ? (
+            <>
+              <CampusClubCardLoading />
+              <CampusClubCardLoading />
+              <CampusClubCardLoading />
+              <CampusClubCardLoading />
+            </>
+          ) : (
+            <>
+              {allTeachers.map((teacher) => (
+                <CampusClubCard
+                  key={teacher.firstName + teacher.lastName}
+                  link={`${Routes.ADVISOR}/${teacher.userId}`}
+                  image={getRemoteImage(teacher.image)}
+                  title={teacher.firstName + ' ' + teacher.lastName}
+                  description={teacher.department.name}
+                />
+              ))}
+            </>
+          )}
         </Stack>
       </Stack>
     </Layout>

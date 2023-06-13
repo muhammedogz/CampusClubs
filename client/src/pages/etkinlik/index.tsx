@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import CampusClubCard from 'src/components/cards/CampusClubCard';
+import CampusClubCard, { CampusClubCardLoading } from 'src/components/cards/CampusClubCard';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
@@ -31,7 +31,7 @@ const index = () => {
   }, [getAllEvents]);
 
   return (
-    <Layout loading={loading}>
+    <Layout>
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
@@ -46,48 +46,59 @@ const index = () => {
           justifyContent="center"
           alignItems="stretch"
         >
-          {events.map((event) => (
-            <CampusClubCard
-              key={event.name + event.description}
-              link={`${Routes.EVENT}/${event.eventId}`}
-              image={getRemoteImage(event.image)}
-              topLeftText={event.type}
-              title={event.name}
-              description={event.description}
-              topRightText={formatDate(event.eventDate)}
-              rightDownElement={
-                <Link to={`${Routes.CLUB}/${event.club.clubId}`}>
-                  <Stack
-                    id="organizer-kulup"
-                    justifyContent="center"
-                    alignItems="center"
-                    gap="2px"
-                    sx={{
-                      backgroundColor: '#00AF8E',
-                      borderRadius: '20px',
-                      p: '6px',
-                      color: '#ffffff',
-                    }}
-                  >
-                    <Image
-                      src={getRemoteImage(event.club.image)}
-                      alt={event.club.name}
-                      width="50px"
-                      height="50px"
-                      variant="circular"
-                    />
-                    <Typography
-                      maxWidth="100px"
-                      textAlign="center"
-                      variant="body2"
-                    >
-                      {event.club.name}
-                    </Typography>
-                  </Stack>
-                </Link>
-              }
-            />
-          ))}
+          {loading ? (
+            <>
+              <CampusClubCardLoading />
+              <CampusClubCardLoading />
+              <CampusClubCardLoading />
+              <CampusClubCardLoading />
+            </>
+          ) : (
+            <>
+              {events.map((event) => (
+                <CampusClubCard
+                  key={event.name + event.description}
+                  link={`${Routes.EVENT}/${event.eventId}`}
+                  image={getRemoteImage(event.image)}
+                  topLeftText={event.type}
+                  title={event.name}
+                  description={event.description}
+                  topRightText={formatDate(event.eventDate)}
+                  rightDownElement={
+                    <Link to={`${Routes.CLUB}/${event.club.clubId}`}>
+                      <Stack
+                        id="organizer-kulup"
+                        justifyContent="center"
+                        alignItems="center"
+                        gap="2px"
+                        sx={{
+                          backgroundColor: '#00AF8E',
+                          borderRadius: '20px',
+                          p: '6px',
+                          color: '#ffffff',
+                        }}
+                      >
+                        <Image
+                          src={getRemoteImage(event.club.image)}
+                          alt={event.club.name}
+                          width="50px"
+                          height="50px"
+                          variant="circular"
+                        />
+                        <Typography
+                          maxWidth="100px"
+                          textAlign="center"
+                          variant="body2"
+                        >
+                          {event.club.name}
+                        </Typography>
+                      </Stack>
+                    </Link>
+                  }
+                />
+              ))}
+            </>
+          )}
         </Stack>
       </Stack>
     </Layout>

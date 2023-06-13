@@ -1,5 +1,6 @@
 import {
   Divider,
+  Skeleton,
   Stack,
   Typography,
   useMediaQuery,
@@ -158,6 +159,60 @@ const CampusClubCard = ({
         </Stack>
       </Stack>
     </Link>
+  );
+};
+
+export const CampusClubCardLoading = () => {
+  return (
+    <Stack
+      id="kulup-kart"
+      sx={{
+        backgroundColor: '#e7e5e57a',
+        color: '#ffffff',
+        pt: '20px',
+        boxShadow:
+          'rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px',
+        borderRadius: '10px',
+        width: { xs: '250px', md: '350px' },
+      }}
+    >
+      <Stack gap="30px" flex={1}>
+        <Stack justifyContent="center" alignItems="center">
+          <Skeleton
+            variant="rectangular"
+            sx={{
+              width: { xs: '150px', md: '200px' },
+              height: { xs: '100px', md: '150px' },
+            }}
+          />
+        </Stack>
+        <Stack id="test" flex={1}>
+          <Divider color="#d9d9d9" />
+          <Stack
+            px="14px"
+            flexDirection="row"
+            justifyContent="space-between"
+            gap="6px"
+            flex={1}
+            py="10px"
+            sx={{
+              backgroundColor: '#c5b8b869',
+              borderBottomRightRadius: '10px',
+              borderBottomLeftRadius: '10px',
+            }}
+          >
+            <Stack
+              sx={{
+                maxHeight: '100px',
+              }}
+            >
+              <Skeleton width={200} variant="text" />
+              <Skeleton width={200} variant="text" />
+            </Stack>
+          </Stack>
+        </Stack>
+      </Stack>
+    </Stack>
   );
 };
 
