@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
   private readonly IConfiguration _configuration;
   private readonly IMapper _mapper;
 
-  public AuthController(ApplicationDbContext context, IConfiguration configuration, IMapper mapper) // And this
+  public AuthController(ApplicationDbContext context, IConfiguration configuration, IMapper mapper)
   {
     _context = context;
     _configuration = configuration;

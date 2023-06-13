@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Models;
@@ -24,5 +26,24 @@ public class UserHelper
               .ToListAsync();
 
     return users;
+  }
+
+  public static async Task<ActionResult<ApiResponse>?> CheckAuthUserIsClubAdmin(ClaimsPrincipal User, ApplicationDbContext context, int clubId)
+  {
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    if (userId == null)
+    {
+      return new ApiResponse(false, "User not found", null);
+    }
+
+    var userClub = await context.UserClubs
+        .FirstOrDefaultAsync(uc => uc.UserId.ToString() == userId && uc.ClubId == clubId);
+
+    if (userClub?.ClubRole != ClubRole.Admin)
+    {
+      return new ApiResponse(false, "You are not authorized to edit/delete events in this club", null);
+    }
+
+    return null;
   }
 }

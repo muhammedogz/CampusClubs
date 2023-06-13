@@ -32,7 +32,6 @@ public class UsersController : ControllerBase
 
       if (!users.Any())
       {
-        // empty arr
         return NotFound(new ApiResponse(false, $"No users found with role {role}", new List<UserSummaryDTO>()));
       }
 
@@ -75,7 +74,14 @@ public class UsersController : ControllerBase
       return NotFound(new ApiResponse(false, "User not found", null));
     }
 
-    return Ok(new ApiResponse(true, "User found", _mapper.Map<UserDTO>(user)));
+    var userDto = _mapper.Map<UserDTO>(user);
+
+    userDto.Clubs = user.UserClubs
+      .Where(uc => uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)
+      .Select(uc => _mapper.Map<ClubSummaryDTO>(uc.Club))
+      .ToList();
+
+    return Ok(new ApiResponse(true, "User found", userDto));
   }
 
   [HttpPost]
@@ -99,7 +105,7 @@ public class UsersController : ControllerBase
     var userIdFromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
     if (userIdFromToken != id.ToString())
     {
-      return Forbid(); // or BadRequest, depending on how you want to handle it
+      return Forbid();
     }
 
     var user = await _context.Users.FindAsync(id);

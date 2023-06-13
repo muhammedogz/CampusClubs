@@ -9,12 +9,10 @@ using Server.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddSwaggerGen(); // Add this line to add Swagger services
-builder.Services.AddSwaggerGen(option => // authentication in Swagger
+builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
 {
   option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
   option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -70,19 +68,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
 DotNetEnv.Env.Load();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-  // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
   app.UseHsts();
 }
 
-app.UseSwagger(); // Add this line to enable Swagger
+app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
   c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
   c.RoutePrefix = "swagger";
-}); // Add this line to configure Swagger UI
+});
 
 
 app.UseStaticFiles();

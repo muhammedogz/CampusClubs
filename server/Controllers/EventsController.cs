@@ -42,10 +42,10 @@ public class EventsController : ControllerBase
   [Authorize]
   public async Task<ActionResult<ApiResponse>> CreateEvent(EventCreateDTO eventDTO)
   {
-    var authResponse = await CheckUserAuthorization(eventDTO.ClubId);
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, eventDTO.ClubId);
     if (authResponse != null)
     {
-      return authResponse;
+      return BadRequest(authResponse);
     }
 
     var eventModel = _mapper.Map<Event>(eventDTO);
@@ -91,13 +91,13 @@ public class EventsController : ControllerBase
       return NotFound(new ApiResponse(false, "Event not found", null));
     }
 
-    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, eventModel.ClubId);
     if (authResponse != null)
     {
-      return authResponse;
+      return BadRequest(authResponse);
     }
 
-    _mapper.Map(eventDTO, eventModel); // Apply changes to the eventModel
+    _mapper.Map(eventDTO, eventModel);
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "Event updated successfully", _mapper.Map<EventDTO>(eventModel)));
@@ -113,10 +113,10 @@ public class EventsController : ControllerBase
       return NotFound(new ApiResponse(false, "Event not found", null));
     }
 
-    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, eventModel.ClubId);
     if (authResponse != null)
     {
-      return authResponse;
+      return BadRequest(authResponse);
     }
 
     _context.Events.Remove(eventModel);
@@ -199,10 +199,10 @@ public class EventsController : ControllerBase
       return NotFound(new ApiResponse(false, "Event not found", null));
     }
 
-    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, eventModel.ClubId);
     if (authResponse != null)
     {
-      return authResponse;
+      return BadRequest(authResponse);
     }
 
     var users = await GetEventUsers(id, ApprovalStatus.Pending);
@@ -226,10 +226,10 @@ public class EventsController : ControllerBase
       return NotFound(new ApiResponse(false, "Event not found", null));
     }
 
-    var authResponse = await CheckUserAuthorization(eventModel.ClubId);
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, eventModel.ClubId);
     if (authResponse != null)
     {
-      return authResponse;
+      return BadRequest(authResponse);
     }
 
     userEvent.EventJoinApprovalStatus = status;
@@ -309,18 +309,4 @@ public class EventsController : ControllerBase
     return _mapper.Map<List<UserSummaryDTO>>(userEvents.Select(ue => ue.User));
   }
 
-  private async Task<ActionResult<ApiResponse>?> CheckUserAuthorization(int clubId)
-  {
-    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-    var userClub = await _context.UserClubs
-        .FirstOrDefaultAsync(uc => uc.UserId.ToString() == userId && uc.ClubId == clubId);
-
-    if (userClub?.ClubRole != ClubRole.Admin)
-    {
-      return Unauthorized(new ApiResponse(false, "You are not authorized to edit/delete events in this club", null));
-    }
-
-    return null;
-  }
 }

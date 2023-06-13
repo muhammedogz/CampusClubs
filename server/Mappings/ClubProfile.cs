@@ -13,7 +13,7 @@ public class ClubProfile : Profile
         .ForMember(dest => dest.Events, opt => opt.MapFrom(src => src.Events))
         .ForMember(dest => dest.Announcements, opt => opt.MapFrom(src => src.Announcements))
         .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.UserClubs.Select(uc => uc.User)))
-        .IncludeBase<Club, ClubSummaryDTO>(); // Add this line
+        .IncludeBase<Club, ClubSummaryDTO>();
 
     CreateMap<Club, ClubSummaryDTO>();
 

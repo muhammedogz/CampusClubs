@@ -19,6 +19,6 @@ public class UserClub
   public int ClubId { get; set; }
   public Club? Club { get; set; }
 
-  public ClubRole ClubRole { get; set; }
+  public ClubRole ClubRole { get; set; } = ClubRole.Member;
   public ApprovalStatus ClubJoinApprovalStatus { get; set; } = ApprovalStatus.Pending;
 }
