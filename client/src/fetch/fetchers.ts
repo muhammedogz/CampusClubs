@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
 import { AuthResponse } from 'src/pages/auth';
-import { ApiResponseType, UyeBackendType } from 'src/types/types';
+import { ApiResponseType } from 'src/types/types';
 
 export type UserPayloadType = {
   email: string;

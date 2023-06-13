@@ -42,5 +42,8 @@ public class UserProfile : Profile
         .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.User!.Department))
         .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.User!.Image))
         .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.User!.UserRole));
+
+    CreateMap<Department, DepartmentDTO>();
+    CreateMap<DepartmentDTO, Department>();
   }
 }

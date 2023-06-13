@@ -190,9 +190,6 @@ export const Sidebar = () => {
                   <Link to={Routes.CLUB}>
                     <SidebarMenuItem>Tüm Kulüpler</SidebarMenuItem>
                   </Link>
-                  <Link to={Routes.CLUB}>
-                    <SidebarMenuItem>Kulüp Yöneticileri</SidebarMenuItem>
-                  </Link>
                 </SubMenu>
                 <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
                   <Link to={Routes.EVENT}>
