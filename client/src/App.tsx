@@ -7,7 +7,7 @@ import {
   createBrowserRouter,
 } from 'react-router-dom';
 import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
-import ErrorTest from './ErrorTest';
+import ErrorPage from './ErrorPage';
 
 interface IRoute {
   path: string;
@@ -44,9 +44,17 @@ for (const path of Object.keys(pages)) {
     // @ts-ignore
     action: pages[path]?.action as unknown as ActionFunction | undefined,
     // @ts-ignore
-    ErrorBoundary: pages[path]?.ErrorBoundary as unknown as JSX.Element,
+    ErrorBoundary: ErrorPage,
   });
 }
+
+// get all routes other than defined routes
+routes.push({
+  path: '*',
+  Element: <ErrorPage />,
+  // @ts-ignore
+  ErrorBoundary: ErrorPage,
+});
 
 const router = createBrowserRouter(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -54,14 +62,11 @@ const router = createBrowserRouter(
     ...rest,
     // @ts-ignore
     element: <Element />,
-    errorElement: <ErrorTest />,
+    ErrorBoundary: ErrorPage,
   }))
 );
 
 const App = () => {
-  console.log('routes', routes);
-  console.log('router', router);
-
   // Request interceptor for API calls
   axios.interceptors.request.use(
     async (config) => {
@@ -76,7 +81,7 @@ const App = () => {
     }
   );
 
-  return <RouterProvider router={router} />;
+  return <RouterProvider fallbackElement={<ErrorPage />} router={router} />;
 };
 
 export default App;
