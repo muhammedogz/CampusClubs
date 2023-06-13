@@ -1,31 +1,17 @@
 import { Stack, Typography } from '@mui/material';
-import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
 import Image from 'src/components/common/Image';
-import Table, { Column } from 'src/components/common/Table';
+import Table, { clubColumns, eventColumns } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
 import { emptyUserData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
 import { getUserFromIdFetcher } from 'src/fetch/userFetchers';
-import { ClubBaseType, EventBaseType, UserType } from 'src/types/types';
+import { UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 import { formatDate } from 'src/utils/utils';
-
-const etkinlikColumns: Column<EventBaseType>[] = [
-  { header: ' ', accessor: 'image', align: 'center' },
-  { header: 'Etkinlik Adı', accessor: 'name' },
-  { header: 'Tarih', accessor: 'eventDate', align: 'center' },
-  { header: 'Yer', accessor: 'location', align: 'center' },
-];
-
-const kulupColumns: Column<ClubBaseType>[] = [
-  { header: ' ', accessor: 'image', align: 'center' },
-  { header: 'Kulüp Adı', accessor: 'name' },
-  { header: 'Kulüp Açıklaması', accessor: 'description' },
-];
 
 type UserProps = {
   user: UserType;
@@ -76,9 +62,9 @@ const UyeKulupler = ({ user, loading }: UserProps) => {
         title="Kulüp Üyelikleri"
         data={user.clubs.map((club) => ({
           ...club,
-          href: `${Routes.KULUP}/${club.clubId}`,
+          href: `${Routes.CLUB}/${club.clubId}`,
         }))}
-        columns={kulupColumns}
+        columns={clubColumns}
       />
     </Stack>
   );
@@ -93,9 +79,9 @@ const UyeEtkinlikler = ({ user, loading }: UserProps) => {
         data={user.events.map((event) => ({
           ...event,
           eventDate: formatDate(event.eventDate),
-          href: `${Routes.ETKINLIK}/${event.eventId}`,
+          href: `${Routes.EVENT}/${event.eventId}`,
         }))}
-        columns={etkinlikColumns}
+        columns={eventColumns}
       />
     </Stack>
   );

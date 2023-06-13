@@ -17,8 +17,6 @@ public class ClubDTO : ClubSummaryDTO
   public List<UserSummaryDTO>? Users { get; set; }
 }
 
-
-
 public class CreateClubDTO
 {
   public string? Name { get; set; }

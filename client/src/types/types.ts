@@ -141,4 +141,16 @@ export type ClubBaseType = {
   tag: string;
 };
 
+export type ClubType = ClubBaseType & {
+  advisor: UserBaseType;
+  users: UserBaseType[];
+  events: EventBaseType[];
+  announcements: AnnouncementType[];
+};
 
+export type AnnouncementType = {
+  announcementId: number;
+  title: string;
+  description: string;
+  date: string;
+};

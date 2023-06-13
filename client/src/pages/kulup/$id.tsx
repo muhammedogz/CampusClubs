@@ -1,39 +1,34 @@
-import { Stack, Tab, Tabs, Typography } from '@mui/material';
-import { useState } from 'react';
+import { CircularProgress, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
-import Table, { Column } from 'src/components/common/Table';
+import Table, {
+  announcementColumns,
+  eventColumns,
+  userColumns,
+} from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
+import { getClubFromIdFetcher } from 'src/fetch/clubFetchers';
 import Slides from 'src/slides/Slides';
-import { DuyuruType, EtkinlikType, KulupType, UyeType } from 'src/types/types';
+import { ClubType } from 'src/types/types';
+import { getRemoteImage } from 'src/utils/imageUtils';
+import { formatDate } from 'src/utils/utils';
 import { Layout } from '../../components/layout/Layout';
 
-const etkinlikColumns: Column<EtkinlikType>[] = [
-  { header: ' ', accessor: 'image', align: 'center' },
-  { header: 'Etkinlik Adı', accessor: 'name' },
-  { header: 'Tarih', accessor: 'date', align: 'center' },
-  { header: 'Yer', accessor: 'location', align: 'center' },
-];
-
-const uyeColumns: Column<UyeType>[] = [
-  { header: ' ', accessor: 'image', align: 'center' },
-  { header: 'Üye Adı', accessor: 'name' },
-  { header: 'Bölüm', accessor: 'bolum' },
-];
-
-const duyuruColumns: Column<DuyuruType>[] = [
-  { header: 'Duyuru Başlığı', accessor: 'title' },
-  { header: 'Duyuru Açıklaması', accessor: 'description' },
-  { header: 'Duyuru Tarihi', accessor: 'date' },
-];
-
 type CommonProps = {
-  kulup: KulupType;
+  club: ClubType;
+  loading: boolean;
 };
 
-const KulupInfo = ({ kulup }: CommonProps) => {
+const KulupInfo = ({ club, loading }: CommonProps) => {
+  if (loading) {
+    return <LoadingUserInfo />;
+  }
+
   return (
     <Stack
       id="upper-content-left"
@@ -45,7 +40,7 @@ const KulupInfo = ({ kulup }: CommonProps) => {
       <Image
         width="150px"
         height="150px"
-        src={kulup.image}
+        src={getRemoteImage(club.image)}
         sx={{
           borderRadius: '20px',
           boxShadow:
@@ -54,19 +49,23 @@ const KulupInfo = ({ kulup }: CommonProps) => {
       />
       <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
         <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
-          {kulup.name}
+          {club.name}
         </Typography>
         <Typography variant="h6" color="secondary">
-          @{kulup.name}
+          @{club.clubId}
         </Typography>
-        <Typography variant="h6">{kulup.description}</Typography>
+        <Typography variant="h6">{club.description}</Typography>
       </Stack>
     </Stack>
   );
 };
 
-const KulupOtherInfo = ({ kulup }: CommonProps) => {
-  const danisman = danismanlar[0];
+const KulupOtherInfo = ({ club, loading }: CommonProps) => {
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  const advisor = club.advisor;
 
   return (
     <Stack
@@ -80,7 +79,7 @@ const KulupOtherInfo = ({ kulup }: CommonProps) => {
         color: '#ffffff',
       }}
     >
-      <Link to={`${Routes.DANISMAN}/${danisman.slug}`}>
+      <Link to={`${Routes.ADVISOR}/${advisor.userId}`}>
         <Stack
           flexDirection="row"
           gap="10px"
@@ -95,34 +94,27 @@ const KulupOtherInfo = ({ kulup }: CommonProps) => {
         >
           <Typography fontWeight={600}>
             Danışman:
-            {danisman.name}
+            {advisor.firstName} {advisor.lastName}
           </Typography>
           <Image
             variant="circular"
-            src={danisman.image}
+            src={getRemoteImage(advisor.image)}
             width="30px"
             height="30px"
           />
         </Stack>
       </Link>
-      <Typography fontWeight={600}>
-        {kulup.faaliyetAlanlari?.join(', ')}
-      </Typography>
-      <Typography fontWeight={600}>Üye sayısı: {kulup.uyeCount}</Typography>
+      <Typography fontWeight={600}>{club.tag}</Typography>
+      <Typography fontWeight={600}>Üye sayısı: {club.users.length}</Typography>
     </Stack>
   );
 };
 
-type EtkinlikDuyuruType = {
-  etkinlikler: EtkinlikType[];
-  duyurular: DuyuruType[];
-};
-
-const KulupEtkinlikDuyuru = ({
-  duyurular,
-  etkinlikler,
-}: EtkinlikDuyuruType) => {
+const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
   const [index, setIndex] = useState(0);
+
+  const events = club.events;
+  const announcements = club.announcements;
 
   return (
     <Stack id="middle-content-left" gap={2}>
@@ -134,38 +126,43 @@ const KulupEtkinlikDuyuru = ({
       </Stack>
       <Slides index={index}>
         <Table
+          loading={loading}
           fullWidth
           title="Etkinlikler"
-          data={etkinlikler.map((event) => ({
+          data={events.map((event) => ({
             ...event,
-            slug: `${Routes.ETKINLIK}/${event.slug}`,
+            eventDate: formatDate(event.eventDate),
+            href: `${Routes.EVENT}/${event.eventId}`,
           }))}
-          columns={etkinlikColumns}
+          columns={eventColumns}
         />
         <Table
+          loading={loading}
           fullWidth
           title="Duyurular"
-          data={duyurular}
-          columns={duyuruColumns}
+          data={announcements.map((announcement) => ({
+            ...announcement,
+            date: formatDate(announcement.date),
+          }))}
+          columns={announcementColumns}
         />
       </Slides>
     </Stack>
   );
 };
 
-type KulupUyelerType = {
-  uyeler: UyeType[];
-};
-
-const KulupUyeler = ({ uyeler }: KulupUyelerType) => {
+const KulupUyeler = ({ club, loading }: CommonProps) => {
   return (
     <Stack id="middle-content-right">
       <Table
-        title="Üyeler"
-        columns={uyeColumns}
-        data={uyeler.map((uye) => ({
-          ...uye,
-          slug: `${Routes.KULLANICI}/${uye.slug}`,
+        loading={loading}
+        title="Katılımcılar"
+        columns={userColumns}
+        data={club.users.map((user) => ({
+          bolum: user.department.name,
+          image: getRemoteImage(user.image),
+          name: user.firstName + ' ' + user.lastName,
+          href: `${Routes.USER}/${user.userId}`,
         }))}
       />
     </Stack>
@@ -174,22 +171,34 @@ const KulupUyeler = ({ uyeler }: KulupUyelerType) => {
 
 const Kulup = () => {
   const { id } = useParams();
+  const [club, setClub] = useState<ClubType>(emptyClubData);
+  const [loading, setLoading] = useState(true);
 
-  const tumKulupler = kulupler;
-  const desiredKulup = tumKulupler.find((kulup) => kulup.slug === id);
+  const getClubInfo = useCallback(async () => {
+    try {
+      if (!id) return;
+      const clubResponse = await getClubFromIdFetcher(id);
+      if (clubResponse.status) {
+        setClub(clubResponse.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
-  if (!desiredKulup) return <Layout>404</Layout>;
+  useEffect(() => {
+    getClubInfo();
+  }, [getClubInfo]);
 
   return (
     <Layout>
       <ContentLayout
-        upperBackgroundImage={desiredKulup.image}
-        upperLeft={<KulupInfo kulup={desiredKulup} />}
-        upperRight={<KulupOtherInfo kulup={desiredKulup} />}
-        middleLeft={
-          <KulupEtkinlikDuyuru etkinlikler={events} duyurular={duyurular} />
-        }
-        middleRight={<KulupUyeler uyeler={uyeler} />}
+        upperBackgroundImage={getRemoteImage(club.image)}
+        upperLeft={<KulupInfo club={club} loading={loading} />}
+        upperRight={<KulupOtherInfo club={club} loading={loading} />}
+        middleLeft={<KulupEtkinlikDuyuru club={club} loading={loading} />}
+        middleRight={<KulupUyeler club={club} loading={loading} />}
       />
     </Layout>
   );

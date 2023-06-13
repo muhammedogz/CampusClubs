@@ -3,20 +3,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
 import Image from 'src/components/common/Image';
-import Table, { Column } from 'src/components/common/Table';
+import Table, { clubColumns } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
 import { emptyUserData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
 import { getUserFromIdFetcher } from 'src/fetch/userFetchers';
-import { ClubBaseType, UserType } from 'src/types/types';
+import { UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 import { Layout } from '../../components/layout/Layout';
-
-const kulupColumns: Column<ClubBaseType>[] = [
-  { header: ' ', accessor: 'image', align: 'center' },
-  { header: 'Kulüp Adı', accessor: 'name' },
-  { header: 'Kulüp Açıklaması', accessor: 'description' },
-];
 
 type CommonProps = {
   user: UserType;
@@ -68,9 +62,9 @@ const DanismanKulupler = ({ user, loading }: CommonProps) => {
         title="Danışmanı Olunan Kulupler"
         data={user.clubs.map((club) => ({
           ...club,
-          slug: `${Routes.KULUP}/${club.clubId}`,
+          href: `${Routes.CLUB}/${club.clubId}`,
         }))}
-        columns={kulupColumns}
+        columns={clubColumns}
       />
     </Stack>
   );

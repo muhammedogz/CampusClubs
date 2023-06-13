@@ -1,5 +1,6 @@
 import {
   ApprovalStatusEnum,
+  ClubType,
   EventType,
   UserRoleEnum,
   UserType,
@@ -21,6 +22,18 @@ export const emptyUserData: UserType = {
   userRole: UserRoleEnum.STUDENT,
 };
 
+export const emptyClubData: ClubType = {
+  clubId: 0,
+  name: '',
+  description: '',
+  image: '',
+  tag: '',
+  advisor: emptyUserData,
+  users: [],
+  events: [],
+  announcements: [],
+};
+
 export const emptyEventData: EventType = {
   eventId: 0,
   name: '',
@@ -30,13 +43,7 @@ export const emptyEventData: EventType = {
   type: '',
   approvalStatus: 0,
   eventDate: '',
-  club: {
-    clubId: 0,
-    name: '',
-    description: '',
-    image: '',
-    tag: '',
-  },
+  club: emptyClubData,
   userApprovalStatus: ApprovalStatusEnum.PENDING,
   users: [],
 };

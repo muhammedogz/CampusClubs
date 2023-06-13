@@ -3,8 +3,8 @@ export enum Endpoints {
   USERS_STUDENTS = `${Endpoints.USERS}/students`,
   USERS_TEACHERS = `${Endpoints.USERS}/teachers`,
   EVENTS = '/events',
+  CLUBS = '/clubs',
   AUTH = '/login/auth',
-  CLUB = '/club',
   FILEUPLOAD = '/fileupload',
   SIGNUP = '/login/signup',
 }

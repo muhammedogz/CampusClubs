@@ -22,11 +22,6 @@ export const signUpFetcher = async (data: UserPayloadType) => {
   return responseData;
 };
 
-export const getAllClubsFetcher = async () => {
-  const { data } = await axios.get(getApiEndpoint(Endpoints.CLUB));
-
-  return data;
-};
 
 type UploadFileResponseType = {
   filePath: string;

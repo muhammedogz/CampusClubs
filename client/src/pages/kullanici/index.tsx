@@ -45,7 +45,7 @@ const index = () => {
           {allStudents.map((student) => (
             <CampusClubCard
               key={student.firstName + student.lastName}
-              link={`${Routes.KULLANICI}/${student.userId}`}
+              link={`${Routes.USER}/${student.userId}`}
               image={getRemoteImage(student.image)}
               title={student.firstName + ' ' + student.lastName}
               description={student.department.name}

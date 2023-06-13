@@ -46,7 +46,7 @@ const index = () => {
           {allTeachers.map((teacher) => (
             <CampusClubCard
               key={teacher.firstName + teacher.lastName}
-              link={`${Routes.DANISMAN}/${teacher.userId}`}
+              link={`${Routes.ADVISOR}/${teacher.userId}`}
               image={getRemoteImage(teacher.image)}
               title={teacher.firstName + ' ' + teacher.lastName}
               description={teacher.department.name}

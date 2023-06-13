@@ -1,28 +1,33 @@
 import { Stack, Typography } from '@mui/material';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CampusClubCard from 'src/components/cards/CampusClubCard';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
-import { getAllClubsFetcher } from 'src/fetch/fetchers';
+import { getAllClubsFetcher } from 'src/fetch/clubFetchers';
+import { ClubType } from 'src/types/types';
 
 const index = () => {
-  const kulupler : any = [];
+  const [clubs, setClubs] = useState<ClubType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getAllClubs = useCallback(async () => {
     try {
-      const allClubs = await getAllClubsFetcher();
-      console.log('allClubs', allClubs);
+      const clubsRespone = await getAllClubsFetcher();
+      if (clubsRespone.status) {
+        setClubs(clubsRespone.data);
+        setLoading(false);
+      }
     } catch (error) {
-      console.log('error', error);
+      console.log(error);
     }
   }, []);
 
   useEffect(() => {
     getAllClubs();
-  }, [])
+  }, [getAllClubs]);
 
   return (
-    <Layout>
+    <Layout loading={loading}>
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
@@ -36,22 +41,13 @@ const index = () => {
           flexWrap="wrap"
           justifyContent="center"
         >
-          {kulupler.map((kulup) => (
+          {clubs.map((club) => (
             <CampusClubCard
-              key={kulup.name + kulup.description}
-              link={`${Routes.KULUP}/${kulup.slug}`}
-              image={kulup.image}
-              title={kulup.name}
-              description={kulup.description}
-            />
-          ))}
-          {kulupler.map((kulup) => (
-            <CampusClubCard
-              key={kulup.name + kulup.description}
-              link={`${Routes.KULUP}/${kulup.slug}`}
-              image={kulup.image}
-              title={kulup.name}
-              description={kulup.description}
+              key={club.name + club.description}
+              link={`${Routes.CLUB}/${club.clubId}`}
+              image={club.image}
+              title={club.name}
+              description={club.description}
             />
           ))}
         </Stack>

@@ -34,14 +34,14 @@ const Home = () => {
           </Stack>
         </Stack>
         <Stack id="butonlar" flexDirection="row" gap="20px">
-          <Link to={Routes.KULUP}>
+          <Link to={Routes.CLUB}>
             <Button variant="contained" color="secondary">
               <Typography component="h2" gutterBottom>
                 Tüm kulüpler
               </Typography>
             </Button>
           </Link>
-          <Link to={Routes.KULUP}>
+          <Link to={Routes.CLUB}>
             <Button variant="contained" color="secondary">
               <Typography component="h2" gutterBottom>
                 Tüm Etkinlikler

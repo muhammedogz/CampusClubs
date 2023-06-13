@@ -49,14 +49,14 @@ const index = () => {
           {events.map((event) => (
             <CampusClubCard
               key={event.name + event.description}
-              link={`${Routes.ETKINLIK}/${event.eventId}`}
+              link={`${Routes.EVENT}/${event.eventId}`}
               image={getRemoteImage(event.image)}
               topLeftText={event.type}
               title={event.name}
               description={event.description}
               topRightText={formatDate(event.eventDate)}
               rightDownElement={
-                <Link to={`${Routes.KULUP}/${event.club.clubId}`}>
+                <Link to={`${Routes.CLUB}/${event.club.clubId}`}>
                   <Stack
                     id="organizer-kulup"
                     justifyContent="center"

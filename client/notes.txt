@@ -4,10 +4,10 @@ DONE 1- User
 DONE 2- Event
   2.1- List all
   2.2- Show one
-3- Club
+DONE 3- Club
   3.1- List all
   3.2- Show one
-4- Advisor
+DONE 4- Advisor
   4.1- List all
   4.2- Show one
 5- Auth

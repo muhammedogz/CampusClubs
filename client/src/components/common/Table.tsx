@@ -16,6 +16,7 @@ import {
 import React from 'react';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
+import { AnnouncementType, ClubBaseType, EventBaseType } from 'src/types/types';
 
 export type Column<T> = {
   header: string;
@@ -188,5 +189,36 @@ const Table = <T,>({
     </Stack>
   );
 };
+
+type UyeColumnType = {
+  image: string;
+  name: string;
+  bolum: string;
+};
+
+export const userColumns: Column<UyeColumnType>[] = [
+  { header: ' ', accessor: 'image', align: 'center' },
+  { header: 'Üye Adı', accessor: 'name' },
+  { header: 'Bölüm', accessor: 'bolum' },
+];
+
+export const eventColumns: Column<EventBaseType>[] = [
+  { header: ' ', accessor: 'image', align: 'center' },
+  { header: 'Etkinlik Adı', accessor: 'name' },
+  { header: 'Tarih', accessor: 'eventDate', align: 'center' },
+  { header: 'Yer', accessor: 'location', align: 'center' },
+];
+
+export const announcementColumns: Column<AnnouncementType>[] = [
+  { header: 'Duyuru Başlığı', accessor: 'title' },
+  { header: 'Duyuru Açıklaması', accessor: 'description' },
+  { header: 'Duyuru Tarihi', accessor: 'date' },
+];
+
+export const clubColumns: Column<ClubBaseType>[] = [
+  { header: ' ', accessor: 'image', align: 'center' },
+  { header: 'Kulüp Adı', accessor: 'name' },
+  { header: 'Kulüp Açıklaması', accessor: 'description' },
+];
 
 export default Table;

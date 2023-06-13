@@ -4,27 +4,15 @@ import { useParams } from 'react-router-dom';
 import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
-import Table, { Column } from 'src/components/common/Table';
+import Table, { userColumns } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { Layout } from 'src/components/layout/Layout';
 import { emptyEventData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
 import { getEventFromIdFetcher } from 'src/fetch/eventFetchers';
 import { EventType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 import { formatDate } from 'src/utils/utils';
-import { Layout } from '../../components/layout/Layout';
-
-type UyeColumnType = {
-  image: string;
-  name: string;
-  bolum: string;
-};
-
-const uyeColumns: Column<UyeColumnType>[] = [
-  { header: ' ', accessor: 'image', align: 'center' },
-  { header: 'Üye Adı', accessor: 'name' },
-  { header: 'Bölüm', accessor: 'bolum' },
-];
 
 type CommonProps = {
   event: EventType;
@@ -72,7 +60,7 @@ const EtkinlikDuzenleyenKulup = ({ event, loading }: CommonProps) => {
   }
 
   return (
-    <Link to={`${Routes.KULUP}/${event.club.clubId}`}>
+    <Link to={`${Routes.CLUB}/${event.club.clubId}`}>
       <Stack
         id="upper-content-right"
         alignItems="center"
@@ -140,12 +128,12 @@ const EtkinlikKatilimcilar = ({ event, loading }: CommonProps) => {
       <Table
         loading={loading}
         title="Katılımcılar"
-        columns={uyeColumns}
+        columns={userColumns}
         data={event.users.map((user) => ({
           bolum: user.department.name,
           image: getRemoteImage(user.image),
           name: user.firstName + ' ' + user.lastName,
-          href: `${Routes.KULLANICI}/${user.userId}`,
+          href: `${Routes.USER}/${user.userId}`,
         }))}
       />
     </Stack>

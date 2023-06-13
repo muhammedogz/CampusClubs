@@ -187,20 +187,20 @@ export const Sidebar = () => {
               </SidebarMenu>
               <SidebarMenu title="Genel">
                 <SubMenu label="Kulüpler" icon={<PeopleIcon />}>
-                  <Link to={Routes.KULUP}>
+                  <Link to={Routes.CLUB}>
                     <SidebarMenuItem>Tüm Kulüpler</SidebarMenuItem>
                   </Link>
-                  <Link to={Routes.KULUP}>
+                  <Link to={Routes.CLUB}>
                     <SidebarMenuItem>Kulüp Yöneticileri</SidebarMenuItem>
                   </Link>
                 </SubMenu>
                 <SubMenu label="Etkinlikler" icon={<EventSeatIcon />}>
-                  <Link to={Routes.ETKINLIK}>
+                  <Link to={Routes.EVENT}>
                     <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
                   </Link>
                 </SubMenu>
                 <SubMenu label="Kullanicilar" icon={<ContactsSharpIcon />}>
-                  <Link to={Routes.KULLANICI}>
+                  <Link to={Routes.USER}>
                     <SidebarMenuItem>Tüm Kullanicilar</SidebarMenuItem>
                   </Link>
                 </SubMenu>
@@ -208,7 +208,7 @@ export const Sidebar = () => {
                   label="Danismanlar"
                   icon={<SupervisedUserCircleSharpIcon />}
                 >
-                  <Link to={Routes.DANISMAN}>
+                  <Link to={Routes.ADVISOR}>
                     <SidebarMenuItem>Tüm Danışmanlar</SidebarMenuItem>
                   </Link>
                 </SubMenu>
