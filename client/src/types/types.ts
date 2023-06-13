@@ -61,8 +61,7 @@ export type ApiResponseType<T> = {
   data: T;
   message: string;
   status: boolean;
-}
-
+};
 
 // Backend Types
 
@@ -74,4 +73,40 @@ export type UyeBackendType = {
   image: string;
   email: string;
   clubsRegistered: KulupType[];
+};
+
+export enum UserRoleEnum {
+  ADMIN,
+  TEACHER,
+  STUDENT,
+}
+
+export enum ClubRoleEnum {
+  ADVISOR,
+  ADMIN,
+  MEMBER,
+}
+
+export enum ApprovalStatusEnum {
+  PENDING,
+  APPROVED,
+  DECLINED,
+}
+
+export type DepartmentType = {
+  departmentId: number;
+  name: string;
+};
+
+export type UserType = {
+  userId: number;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  department: DepartmentType;
+  image: string;
+  userRole: UserRoleEnum;
+  clubRole?: ClubRoleEnum;
+  eventJoinApprovalStatus?: ApprovalStatusEnum;
 };

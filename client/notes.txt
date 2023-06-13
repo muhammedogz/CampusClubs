@@ -1,0 +1,26 @@
+1- User
+  1.1- List all
+  1.2- Show one
+2- Event
+  2.1- List all
+  2.2- Show one
+3- Club
+  3.1- List all
+  3.2- Show one
+4- Advisor
+  4.1- List all
+  4.2- Show one
+5- Auth
+  5.1- Login
+  5.2- Register
+6- Edit User
+7- Edit Event
+8- Edit Club
+9- Edit Advisor
+10- Join Club (Student)
+11- Join Event (Student)
+12- Create Event (Admin)
+13- Approve Event Create (Advisor)
+14- Approve Join Club (Admin)
+15- Approve Join Event (Admin)
+16- Create Club (Super Admin)

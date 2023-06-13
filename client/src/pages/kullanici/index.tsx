@@ -3,20 +3,20 @@ import { useCallback, useEffect, useState } from 'react';
 import CampusClubCard from 'src/components/cards/CampusClubCard';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
-import { getAllUsersFetcher } from 'src/fetch/fetchers';
-import { UyeBackendType } from 'src/types/types';
+import { getAllStudentsFetcher } from 'src/fetch/userFetchers';
+import { UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 
 const index = () => {
   const [loading, setLoading] = useState(false);
-  const [allUsers, setAllUsers] = useState<UyeBackendType[]>([]);
+  const [allStudents, setAllStudents] = useState<UserType[]>([]);
 
-  const getAllUsers = useCallback(async () => {
+  const getAllStudents = useCallback(async () => {
     try {
-      const allUsersResponse = await getAllUsersFetcher();
+      const allUsersResponse = await getAllStudentsFetcher();
 
       if (allUsersResponse.status) {
-        setAllUsers(allUsersResponse.data);
+        setAllStudents(allUsersResponse.data);
         setLoading(false);
       }
     } catch (error) {
@@ -25,8 +25,8 @@ const index = () => {
   }, []);
 
   useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
+    getAllStudents();
+  }, [getAllStudents]);
 
   return (
     <Layout loading={loading}>
@@ -36,20 +36,19 @@ const index = () => {
             Tüm Kullanıcılar
           </Typography>
         </Stack>
-
         <Stack
           flexDirection="row"
           gap="30px"
           flexWrap="wrap"
           justifyContent="center"
         >
-          {allUsers.map((uye) => (
+          {allStudents.map((student) => (
             <CampusClubCard
-              key={uye.firstName + uye.lastName}
-              link={`${Routes.KULLANICI}/${uye.userId}`}
-              image={getRemoteImage(uye.image)}
-              title={uye.firstName + ' ' + uye.lastName}
-              description={'Bilgisayar Mühendisliği'}
+              key={student.firstName + student.lastName}
+              link={`${Routes.KULLANICI}/${student.userId}`}
+              image={getRemoteImage(student.image)}
+              title={student.firstName + ' ' + student.lastName}
+              description={student.department.name}
             />
           ))}
         </Stack>

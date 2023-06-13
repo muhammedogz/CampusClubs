@@ -64,16 +64,16 @@ export const authFetcher = async (payload: AuthPayloadType) => {
 
 export const getUserInfoFromIdfetcher = async (id: string) => {
   const { data } = await axios.get<ApiResponseType<UyeBackendType>>(
-    `${getApiEndpoint(Endpoints.USER)}/${id}`
+    `${getApiEndpoint(Endpoints.USERS)}/${id}`
   );
 
   return data;
-}
+};
 
 export const getAllUsersFetcher = async () => {
   const { data } = await axios.get<ApiResponseType<UyeBackendType[]>>(
-    getApiEndpoint(Endpoints.USER)
+    getApiEndpoint(Endpoints.USERS)
   );
 
   return data;
-}
+};

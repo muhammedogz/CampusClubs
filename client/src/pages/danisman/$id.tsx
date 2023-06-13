@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom';
 import Image from 'src/components/common/Image';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
-import { danismanlar } from 'src/data/danismanlar';
-import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
 import { DanismanType, KulupType } from 'src/types/types';
 import { Layout } from '../../components/layout/Layout';

@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import axios from 'axios';
 import {
   ActionFunction,
   LoaderFunction,
   RouterProvider,
   createBrowserRouter,
 } from 'react-router-dom';
+import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
 import ErrorTest from './ErrorTest';
 
 interface IRoute {
@@ -59,6 +61,20 @@ const router = createBrowserRouter(
 const App = () => {
   console.log('routes', routes);
   console.log('router', router);
+
+  // Request interceptor for API calls
+  axios.interceptors.request.use(
+    async (config) => {
+      const userStorage = getLocalStorageItem(StorageKeyEnum.USER_STORAGE);
+      if (userStorage?.token) {
+        config.headers['Authorization'] = `Bearer ${userStorage.token}`;
+      }
+      return config;
+    },
+    (error) => {
+      Promise.reject(error);
+    }
+  );
 
   return <RouterProvider router={router} />;
 };

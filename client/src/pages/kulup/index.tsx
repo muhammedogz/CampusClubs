@@ -2,11 +2,12 @@ import { Stack, Typography } from '@mui/material';
 import { useCallback, useEffect } from 'react';
 import CampusClubCard from 'src/components/cards/CampusClubCard';
 import { Layout } from 'src/components/layout/Layout';
-import { kulupler } from 'src/data/kulupler';
 import { Routes } from 'src/data/routes';
 import { getAllClubsFetcher } from 'src/fetch/fetchers';
 
 const index = () => {
+  const kulupler : any = [];
+
   const getAllClubs = useCallback(async () => {
     try {
       const allClubs = await getAllClubsFetcher();

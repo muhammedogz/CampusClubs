@@ -4,9 +4,7 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
-import { events } from 'src/data/etkinlikler';
 import { Routes } from 'src/data/routes';
-import { uyeler } from 'src/data/uyeler';
 import { EtkinlikType, UyeType } from 'src/types/types';
 import { Layout } from '../../components/layout/Layout';
 
