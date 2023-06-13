@@ -1,4 +1,10 @@
-import { Grid, Stack, TextField, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Box, Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +12,7 @@ import CCButton from 'src/components/common/CCButton';
 import Image from 'src/components/common/Image';
 import FileUpload from 'src/components/form/FileUpload';
 import { Layout } from 'src/components/layout/Layout';
+import { departmentData } from 'src/data/departmentData';
 import { Routes } from 'src/data/routes';
 import { signUpFetcher } from 'src/fetch/authFetchers';
 import { uploadFileFetcher } from 'src/fetch/fetchers';
@@ -24,7 +31,7 @@ type UserSignUpType = {
   firstName: string;
   lastName: string;
   file: File | null;
-  departmentId: number;
+  departmentId: number | null;
 };
 
 const SignUp = () => {
@@ -38,7 +45,7 @@ const SignUp = () => {
     firstName: '',
     lastName: '',
     file: null,
-    departmentId: 1,
+    departmentId: null,
   });
 
   const handleSubmit = async () => {
@@ -171,6 +178,27 @@ const SignUp = () => {
                   fullWidth
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  options={departmentData}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Bölüm"
+                      name="department"
+                      required
+                      fullWidth
+                    />
+                  )}
+                  onChange={(e, value) => {
+                    setUser({
+                      ...user,
+                      departmentId: value?.departmentId ?? null,
+                    });
+                  }}
+                  getOptionLabel={(option) => option.name}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <FileUpload
                   onSelectComplete={(file) => setUser({ ...user, file })}
@@ -181,7 +209,9 @@ const SignUp = () => {
               <Stack justifyContent="center" alignItems="center">
                 <CCButton
                   loading={loadingSignup}
-                  disabled={!user.firstName || !user.lastName}
+                  disabled={
+                    !user.departmentId || !user.firstName || !user.lastName
+                  }
                   onClick={handleSubmit}
                   fullWidth
                   variant="contained"

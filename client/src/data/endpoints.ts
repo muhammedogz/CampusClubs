@@ -7,6 +7,7 @@ export enum Endpoints {
   AUTH = '/auth/auth',
   SIGNUP = '/auth/register',
   FILEUPLOAD = '/fileupload',
+  DEPARTMENT = '/department',
 }
 
 export const getApiEndpoint = (endpoint: Endpoints) => {
