@@ -28,6 +28,7 @@ public class EventsController : ControllerBase
   public async Task<ActionResult<ApiResponse>> GetEvents()
   {
     var events = await _context.Events
+        .Where(e => e.EventCreateApprovalStatus == ApprovalStatus.Approved)
         .Include(e => e.Club)
         .Include(e => e.UserEvents)
             .ThenInclude(ue => ue.User)
@@ -188,7 +189,7 @@ public class EventsController : ControllerBase
     return Ok(new ApiResponse(true, "Event retrieved successfully", eventDTO));
   }
 
-  [HttpGet("{id}/pending")]
+  [HttpGet("user/{id}/pending")]
   [Authorize]
   public async Task<ActionResult<ApiResponse>> GetPendingUsers(int id)
   {
@@ -209,7 +210,7 @@ public class EventsController : ControllerBase
     return Ok(new ApiResponse(true, "Pending users retrieved successfully", users));
   }
 
-  [HttpPost("approval/{eventId}/{userId}")]
+  [HttpPost("/approval/{eventId}/user/{userId}")]
   [Authorize]
   public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] ApprovalStatus status)
   {
@@ -235,6 +236,57 @@ public class EventsController : ControllerBase
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
+  }
+
+  [HttpGet("pending")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> GetPendingEventsForAdvisor()
+  {
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (userId == null)
+    {
+      return Unauthorized(new ApiResponse(false, "User not found", null));
+    }
+
+    var advisorClubs = await _context.Clubs
+        .Where(c => c.AdvisorId == int.Parse(userId))
+        .Select(c => c.ClubId)
+        .ToListAsync();
+
+    var pendingEvents = await _context.Events
+        .Where(e => advisorClubs.Contains(e.ClubId) && e.EventCreateApprovalStatus == ApprovalStatus.Pending)
+        .ToListAsync();
+
+    return Ok(new ApiResponse(true, "Pending events retrieved successfully", _mapper.Map<List<EventDTO>>(pendingEvents)));
+  }
+
+  [HttpPatch("approval/{eventId}")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> UpdateEventApprovalStatus(int eventId, [FromBody] ApprovalStatus status)
+  {
+    var eventModel = await _context.Events.
+              Include(e => e.Club).
+              FirstOrDefaultAsync(e => e.EventId == eventId);
+    if (eventModel == null)
+    {
+      return NotFound(new ApiResponse(false, "Event not found", null));
+    }
+
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (userId == null)
+    {
+      return Unauthorized(new ApiResponse(false, "User not found", null));
+    }
+
+    if (eventModel?.Club?.AdvisorId != int.Parse(userId))
+    {
+      return BadRequest(new ApiResponse(false, "You are not authorized to edit this event", null));
+    }
+
+    eventModel.EventCreateApprovalStatus = status;
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Event approval status updated successfully", null));
   }
 
   private async Task<Event> GetEventFromDb(int id)
