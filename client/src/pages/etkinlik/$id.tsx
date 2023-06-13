@@ -1,24 +1,41 @@
-import { Stack, Typography } from '@mui/material';
+import { CircularProgress, Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { emptyEventData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
-import { EtkinlikType, UyeType } from 'src/types/types';
+import { getEventFromIdFetcher } from 'src/fetch/eventFetchers';
+import { EventType } from 'src/types/types';
+import { getRemoteImage } from 'src/utils/imageUtils';
+import { formatDate } from 'src/utils/utils';
 import { Layout } from '../../components/layout/Layout';
 
-const uyeColumns: Column<UyeType>[] = [
+type UyeColumnType = {
+  image: string;
+  name: string;
+  bolum: string;
+};
+
+const uyeColumns: Column<UyeColumnType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Üye Adı', accessor: 'name' },
   { header: 'Bölüm', accessor: 'bolum' },
 ];
 
 type CommonProps = {
-  etkinlik: EtkinlikType;
+  event: EventType;
+  loading: boolean;
 };
 
-const EtkinlikInfo = ({ etkinlik }: CommonProps) => {
+const EtkinlikInfo = ({ event, loading }: CommonProps) => {
+  if (loading) {
+    return <LoadingUserInfo />;
+  }
+
   return (
     <Stack
       id="upper-content-left"
@@ -30,7 +47,7 @@ const EtkinlikInfo = ({ etkinlik }: CommonProps) => {
       <Image
         width="150px"
         height="150px"
-        src={etkinlik.image}
+        src={getRemoteImage(event.image)}
         sx={{
           borderRadius: '20px',
           boxShadow:
@@ -39,19 +56,23 @@ const EtkinlikInfo = ({ etkinlik }: CommonProps) => {
       />
       <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
         <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
-          {etkinlik.name}
+          {event.name}
         </Typography>
         <Typography variant="h6" color="secondary">
-          @{etkinlik.name}
+          {event.club.name}
         </Typography>
       </Stack>
     </Stack>
   );
 };
 
-const EtkinlikDuzenleyenKulup = ({ etkinlik }: CommonProps) => {
+const EtkinlikDuzenleyenKulup = ({ event, loading }: CommonProps) => {
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
-    <Link to={`${Routes.KULUP}/${etkinlik.kulup.slug}`}>
+    <Link to={`${Routes.KULUP}/${event.club.clubId}`}>
       <Stack
         id="upper-content-right"
         alignItems="center"
@@ -69,20 +90,24 @@ const EtkinlikDuzenleyenKulup = ({ etkinlik }: CommonProps) => {
         </Typography>
         <Image
           variant="circular"
-          src={etkinlik.kulup.image}
+          src={getRemoteImage(event.club.image)}
           width="80px"
           height="80px"
         />
 
         <Typography fontWeight={600} textAlign="center">
-          {etkinlik.kulup.name}
+          {event.club.name}
         </Typography>
       </Stack>
     </Link>
   );
 };
 
-const EtkinlikotherInfo = ({ etkinlik }: CommonProps) => {
+const EtkinlikotherInfo = ({ event, loading }: CommonProps) => {
+  if (loading) {
+    return <CircularProgress size={50} />;
+  }
+
   return (
     <Stack
       id="middle-content-left"
@@ -95,33 +120,32 @@ const EtkinlikotherInfo = ({ etkinlik }: CommonProps) => {
     >
       <Stack>
         <Typography variant="h5">Açıklama</Typography>
-        <Typography variant="body2">{etkinlik.description}</Typography>
+        <Typography variant="body2">{event.description}</Typography>
       </Stack>
       <Stack>
         <Typography variant="h5">Tarih</Typography>
-        <Typography variant="body2">{etkinlik.date}</Typography>
+        <Typography variant="body2">{formatDate(event.eventDate)}</Typography>
       </Stack>
       <Stack>
         <Typography variant="h5">Yer</Typography>
-        <Typography variant="body2">{etkinlik.location}</Typography>
+        <Typography variant="body2">{event.location}</Typography>
       </Stack>
     </Stack>
   );
 };
 
-type EtkinlikKatilimcilarProps = {
-  uyeler: UyeType[];
-};
-
-const EtkinlikKatilimcilar = ({ uyeler }: EtkinlikKatilimcilarProps) => {
+const EtkinlikKatilimcilar = ({ event, loading }: CommonProps) => {
   return (
     <Stack id="middle-content-right">
       <Table
+        loading={loading}
         title="Katılımcılar"
         columns={uyeColumns}
-        data={uyeler.map((uye) => ({
-          ...uye,
-          slug: `${Routes.KULLANICI}/${uye.slug}`,
+        data={event.users.map((user) => ({
+          bolum: user.department.name,
+          image: getRemoteImage(user.image),
+          name: user.firstName + ' ' + user.lastName,
+          href: `${Routes.KULLANICI}/${user.userId}`,
         }))}
       />
     </Stack>
@@ -130,21 +154,34 @@ const EtkinlikKatilimcilar = ({ uyeler }: EtkinlikKatilimcilarProps) => {
 
 const Etkinlik = () => {
   const { id } = useParams();
-  const tumEtkinlikler = events;
-  const bulunanEtkinlik = tumEtkinlikler.find(
-    (etkinlik) => etkinlik.slug === id
-  );
+  const [event, setEvent] = useState<EventType>(emptyEventData);
+  const [loading, setLoading] = useState(true);
 
-  if (!bulunanEtkinlik) return <Layout>404</Layout>;
+  const getEvent = useCallback(async () => {
+    try {
+      if (!id) return;
+      const eventResponse = await getEventFromIdFetcher(id);
+      if (eventResponse.status) {
+        setEvent(eventResponse.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    getEvent();
+  }, [getEvent]);
 
   return (
     <Layout>
       <ContentLayout
-        upperBackgroundImage={bulunanEtkinlik.image}
-        upperLeft={<EtkinlikInfo etkinlik={bulunanEtkinlik} />}
-        upperRight={<EtkinlikDuzenleyenKulup etkinlik={bulunanEtkinlik} />}
-        middleLeft={<EtkinlikotherInfo etkinlik={bulunanEtkinlik} />}
-        middleRight={<EtkinlikKatilimcilar uyeler={uyeler} />}
+        upperBackgroundImage={getRemoteImage(event.image)}
+        upperLeft={<EtkinlikInfo event={event} loading={loading} />}
+        upperRight={<EtkinlikDuzenleyenKulup event={event} loading={loading} />}
+        middleLeft={<EtkinlikotherInfo event={event} loading={loading} />}
+        middleRight={<EtkinlikKatilimcilar event={event} loading={loading} />}
       />
     </Layout>
   );

@@ -1,13 +1,37 @@
 import { Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import CampusClubCard from 'src/components/cards/CampusClubCard';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
+import { getAllEventsFetcher } from 'src/fetch/eventFetchers';
+import { EventType } from 'src/types/types';
+import { getRemoteImage } from 'src/utils/imageUtils';
+import { formatDate } from 'src/utils/utils';
 
 const index = () => {
+  const [events, setEvents] = useState<EventType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getAllEvents = useCallback(async () => {
+    try {
+      const eventsResponse = await getAllEventsFetcher();
+      if (eventsResponse.status) {
+        setEvents(eventsResponse.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllEvents();
+  }, [getAllEvents]);
+
   return (
-    <Layout>
+    <Layout loading={loading}>
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
@@ -25,14 +49,14 @@ const index = () => {
           {events.map((event) => (
             <CampusClubCard
               key={event.name + event.description}
-              link={`${Routes.ETKINLIK}/${event.slug}`}
-              image={event.image}
+              link={`${Routes.ETKINLIK}/${event.eventId}`}
+              image={getRemoteImage(event.image)}
               topLeftText={event.type}
               title={event.name}
               description={event.description}
-              topRightText={event.date}
+              topRightText={formatDate(event.eventDate)}
               rightDownElement={
-                <Link to={`${Routes.KULUP}/${event.kulup.slug}`}>
+                <Link to={`${Routes.KULUP}/${event.club.clubId}`}>
                   <Stack
                     id="organizer-kulup"
                     justifyContent="center"
@@ -46,14 +70,18 @@ const index = () => {
                     }}
                   >
                     <Image
-                      src={event.kulup.image}
-                      alt={event.kulup.name}
+                      src={getRemoteImage(event.club.image)}
+                      alt={event.club.name}
                       width="50px"
                       height="50px"
                       variant="circular"
                     />
-                    <Typography textAlign="center" variant="body2">
-                      {event.kulup.shortName}
+                    <Typography
+                      maxWidth="100px"
+                      textAlign="center"
+                      variant="body2"
+                    >
+                      {event.club.name}
                     </Typography>
                   </Stack>
                 </Link>

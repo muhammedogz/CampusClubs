@@ -1,7 +1,7 @@
 DONE 1- User
   1.1- List all
   1.2- Show one
-2- Event
+DONE 2- Event
   2.1- List all
   2.2- Show one
 3- Club

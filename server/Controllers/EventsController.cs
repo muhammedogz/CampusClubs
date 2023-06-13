@@ -310,6 +310,7 @@ public class EventsController : ControllerBase
     var userEvents = await _context.UserEvents
         .Where(ue => ue.EventId == eventId && ue.EventJoinApprovalStatus == approvalStatus)
         .Include(ue => ue.User)
+        .Include(ue => ue!.User!.Department)
         .ToListAsync();
 
     return _mapper.Map<List<UserSummaryDTO>>(userEvents.Select(ue => ue.User));

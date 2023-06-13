@@ -43,6 +43,7 @@ public class ClubsController : ControllerBase
         .Include(c => c.Announcements)
         .Include(c => c.UserClubs)
             .ThenInclude(uc => uc.User)
+            .ThenInclude(u => u!.Department)
         .AsSplitQuery()
         .FirstOrDefaultAsync(c => c.ClubId == id);
 
@@ -56,6 +57,7 @@ public class ClubsController : ControllerBase
     // Map UserClubs to Users
     clubDto.Users = club.UserClubs
         .Where(uc => uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)
+
         .Select(uc => _mapper.Map<UserSummaryDTO>(uc))
         .ToList();
 

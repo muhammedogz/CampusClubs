@@ -1,5 +1,3 @@
-import { Moment } from "moment";
-
 export type KulupType = {
   id: number;
   slug: string;
@@ -100,7 +98,7 @@ export type DepartmentType = {
   name: string;
 };
 
-export type UserType = {
+export type UserBaseType = {
   userId: number;
   userName: string;
   firstName: string;
@@ -108,19 +106,14 @@ export type UserType = {
   email: string;
   department: DepartmentType;
   image: string;
-  clubs: ClubBaseType[];
-  events: EventBaseType[];
   userRole: UserRoleEnum;
   clubRole?: ClubRoleEnum;
   eventJoinApprovalStatus?: ApprovalStatusEnum;
 };
 
-export type ClubBaseType = {
-  clubId: number;
-  name: string;
-  description: string;
-  image: string;
-  tag: string;
+export type UserType = UserBaseType & {
+  clubs: ClubBaseType[];
+  events: EventBaseType[];
 };
 
 export type EventBaseType = {
@@ -135,3 +128,17 @@ export type EventBaseType = {
   club: ClubBaseType;
   userApprovalStatus: ApprovalStatusEnum;
 };
+
+export type EventType = EventBaseType & {
+  users: UserBaseType[];
+};
+
+export type ClubBaseType = {
+  clubId: number;
+  name: string;
+  description: string;
+  image: string;
+  tag: string;
+};
+
+

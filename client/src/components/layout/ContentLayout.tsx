@@ -25,6 +25,8 @@ const ContentLayout = ({
   loadingMiddleLeft,
   loadingMiddleRight,
 }: ContentLayoutProps) => {
+  console.log(upperBackgroundImage);
+
   return (
     <Stack gap="20px">
       <Stack
@@ -34,9 +36,9 @@ const ContentLayout = ({
           position: 'absolute',
           left: 0,
           right: 0,
-          backgroundImage: `url(${
-            upperBackgroundImage ?? getLocalImage('/images/gtu-1.jpg')
-          })`,
+          backgroundImage: `url(${upperBackgroundImage}), url(${getLocalImage(
+            '/images/gtu-1.jpg'
+          )})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

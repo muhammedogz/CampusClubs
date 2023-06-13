@@ -12,6 +12,7 @@ import { Routes } from 'src/data/routes';
 import { getUserFromIdFetcher } from 'src/fetch/userFetchers';
 import { ClubBaseType, EventBaseType, UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
+import { formatDate } from 'src/utils/utils';
 
 const etkinlikColumns: Column<EventBaseType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
@@ -91,7 +92,7 @@ const UyeEtkinlikler = ({ user, loading }: UserProps) => {
         title="Etkinlik Kayıtları"
         data={user.events.map((event) => ({
           ...event,
-          eventDate: moment(event.eventDate).format('DD/MM/YYYY'),
+          eventDate: formatDate(event.eventDate),
           href: `${Routes.ETKINLIK}/${event.eventId}`,
         }))}
         columns={etkinlikColumns}
