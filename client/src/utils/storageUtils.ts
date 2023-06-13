@@ -1,5 +1,5 @@
 import { AuthResponse } from 'src/pages/auth';
-import { UyeBackendType } from 'src/types/types';
+import { UserBaseType } from 'src/types/types';
 
 export enum StorageKeyEnum {
   AUTH_TOKEN_STORAGE = 'AuthTokenStorage',
@@ -14,7 +14,7 @@ type AuthTokenStorageType = {
 };
 
 type UserStorageType = {
-  user: UyeBackendType;
+  user: UserBaseType;
   token: string;
 };
 

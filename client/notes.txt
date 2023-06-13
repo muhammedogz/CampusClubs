@@ -10,7 +10,7 @@ DONE 3- Club
 DONE 4- Advisor
   4.1- List all
   4.2- Show one
-5- Auth
+DONE 5- Auth
   5.1- Login
   5.2- Register
 6- Edit User

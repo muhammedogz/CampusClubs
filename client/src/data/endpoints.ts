@@ -4,9 +4,9 @@ export enum Endpoints {
   USERS_TEACHERS = `${Endpoints.USERS}/teachers`,
   EVENTS = '/events',
   CLUBS = '/clubs',
-  AUTH = '/login/auth',
+  AUTH = '/auth/auth',
+  SIGNUP = '/auth/register',
   FILEUPLOAD = '/fileupload',
-  SIGNUP = '/login/signup',
 }
 
 export const getApiEndpoint = (endpoint: Endpoints) => {

@@ -7,7 +7,8 @@ import Image from 'src/components/common/Image';
 import FileUpload from 'src/components/form/FileUpload';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
-import { signUpFetcher, uploadFileFetcher } from 'src/fetch/fetchers';
+import { signUpFetcher } from 'src/fetch/authFetchers';
+import { uploadFileFetcher } from 'src/fetch/fetchers';
 import { getLocalImage } from 'src/utils/imageUtils';
 import {
   StorageKeyEnum,
@@ -23,6 +24,7 @@ type UserSignUpType = {
   firstName: string;
   lastName: string;
   file: File | null;
+  departmentId: number;
 };
 
 const SignUp = () => {
@@ -36,6 +38,7 @@ const SignUp = () => {
     firstName: '',
     lastName: '',
     file: null,
+    departmentId: 1,
   });
 
   const handleSubmit = async () => {
@@ -65,7 +68,7 @@ const SignUp = () => {
         const token = data.token as string;
         updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
           token,
-          user: data.userInfo,
+          user: data.user,
         });
         removeLocalStorageItem(StorageKeyEnum.SIGNUP_STORAGE);
         naviagte(generateRoute(Routes.HOME));

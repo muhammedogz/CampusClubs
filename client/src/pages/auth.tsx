@@ -2,7 +2,7 @@ import { Backdrop, CircularProgress } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Routes } from 'src/data/routes';
-import { AuthExistingResponseType, authFetcher } from 'src/fetch/fetchers';
+import { AuthExistingResponseType, authFetcher } from 'src/fetch/authFetchers';
 import {
   StorageKeyEnum,
   getLocalStorageItem,
@@ -44,7 +44,7 @@ const Auth = () => {
       const data = authResponse.data as AuthExistingResponseType;
       updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
         token: data.token as string,
-        user: data.existingUser,
+        user: data.user,
       });
       removeLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE);
       navigate(generateRoute(Routes.HOME));
