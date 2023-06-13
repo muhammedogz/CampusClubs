@@ -25,6 +25,12 @@ public class ApplicationDbContext : DbContext
   {
     base.OnModelCreating(modelBuilder);
 
+    // Ignore deleted entities
+    modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
+    modelBuilder.Entity<Club>().HasQueryFilter(c => c.DeletedAt == null);
+    modelBuilder.Entity<Event>().HasQueryFilter(e => e.DeletedAt == null);
+    modelBuilder.Entity<Announcement>().HasQueryFilter(a => a.DeletedAt == null);
+
     modelBuilder.Entity<UserClub>()
         .HasKey(uc => new { uc.UserId, uc.ClubId });
 

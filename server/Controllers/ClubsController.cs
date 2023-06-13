@@ -178,4 +178,41 @@ public class ClubsController : ControllerBase
 
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
   }
+
+  [HttpDelete("{id}")]
+  [Authorize(Policy = "Admin")]
+  public async Task<ActionResult<ApiResponse>> DeleteClub(int id)
+  {
+    var club = await _context.Clubs.FindAsync(id);
+    if (club == null)
+    {
+      return NotFound(new ApiResponse(false, "Club not found", null));
+    }
+
+    club.DeletedAt = DateTime.UtcNow;
+    _context.Entry(club).State = EntityState.Modified;
+
+    try
+    {
+      await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+      if (!ClubExists(id))
+      {
+        return NotFound(new ApiResponse(false, "Club not found", null));
+      }
+      else
+      {
+        throw;
+      }
+    }
+    return Ok(new ApiResponse(true, "Club deleted successfully", null));
+  }
+
+  private bool ClubExists(int id)
+  {
+    return _context.Clubs.Any(e => e.ClubId == id);
+  }
+
 }

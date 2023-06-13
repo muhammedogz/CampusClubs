@@ -107,7 +107,7 @@ public class EventsController : ControllerBase
   [Authorize]
   public async Task<ActionResult<ApiResponse>> DeleteEvent(int id)
   {
-    var eventModel = await GetEventFromDb(id);
+    var eventModel = await _context.Events.Include(e => e.Club).FirstOrDefaultAsync(e => e.EventId == id);
     if (eventModel == null)
     {
       return NotFound(new ApiResponse(false, "Event not found", null));
@@ -119,7 +119,7 @@ public class EventsController : ControllerBase
       return BadRequest(authResponse);
     }
 
-    _context.Events.Remove(eventModel);
+    eventModel.DeletedAt = DateTime.UtcNow;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "Event deleted successfully", null));

@@ -74,4 +74,27 @@ public class AnnouncementController : ControllerBase
     return Ok(new ApiResponse(true, "Announcement updated successfully", _mapper.Map<AnnouncementDTO>(announcement)));
   }
 
+  [HttpDelete("{id}")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> DeleteAnnouncement(int id)
+  {
+    var announcement = await _context.Announcements.FindAsync(id);
+    if (announcement == null)
+    {
+      return NotFound(new ApiResponse(false, "Announcement not found", null));
+    }
+
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, announcement.ClubId);
+    if (authResponse != null)
+    {
+      return BadRequest(authResponse);
+    }
+
+    announcement.DeletedAt = DateTime.UtcNow;
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Announcement deleted successfully", null));
+  }
+
+
 }

@@ -39,7 +39,6 @@ public class UsersController : ControllerBase
     }
     catch (Exception)
     {
-
       return StatusCode(StatusCodes.Status500InternalServerError,
           new ApiResponse(false, $"An error occurred while retrieving users with role {role}", null));
     }
@@ -127,6 +126,38 @@ public class UsersController : ControllerBase
     }
 
     return Ok(new ApiResponse(true, "User updated successfully", _mapper.Map<UserDTO>(user)));
+  }
+
+  [HttpDelete("{id}")]
+  [Authorize(Policy = "Admin")]
+  public async Task<ActionResult<ApiResponse>> DeleteUser(int id)
+  {
+    var user = await _context.Users.FindAsync(id);
+    if (user == null)
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
+
+    user.DeletedAt = DateTime.UtcNow;
+    _context.Entry(user).State = EntityState.Modified;
+
+    try
+    {
+      await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+      if (!UserExists(id))
+      {
+        return NotFound(new ApiResponse(false, "User not found", null));
+      }
+      else
+      {
+        throw;
+      }
+    }
+
+    return Ok(new ApiResponse(true, "User deleted successfully", null));
   }
 
   private bool UserExists(int id)
