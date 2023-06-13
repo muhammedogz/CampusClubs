@@ -18,8 +18,8 @@ Done 7- Event Approval (Advisor) Controller
 DONE 8- Event Join Approval (User) Controller
   8.1- Approve Join
   8.2- Reject Join
-9- Club
-  9.1- Club Edit
-DONE 10- User Club Join Approval
-  10.1- Approve Join
-  10.2- Reject Join
+DONE 9- User Club Join Approval
+  9.1- Approve Join
+  9.2- Reject Join
+10- Club
+  10.1- Club Edit
