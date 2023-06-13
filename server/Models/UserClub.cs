@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models;
@@ -21,4 +22,7 @@ public class UserClub
 
   public ClubRole ClubRole { get; set; } = ClubRole.Member;
   public ApprovalStatus ClubJoinApprovalStatus { get; set; } = ApprovalStatus.Pending;
+
+  [DataType(DataType.Date)]
+  public DateTime? DeletedAt { get; set; }
 }

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models;
@@ -20,4 +21,7 @@ public class UserEvent
   public Event? Event { get; set; }
 
   public ApprovalStatus EventJoinApprovalStatus { get; set; } = ApprovalStatus.Pending;
+
+  [DataType(DataType.Date)]
+  public DateTime? DeletedAt { get; set; }
 }

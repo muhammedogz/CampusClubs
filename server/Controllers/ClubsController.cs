@@ -189,6 +189,12 @@ public class ClubsController : ControllerBase
       return NotFound(new ApiResponse(false, "Club not found", null));
     }
 
+    var userClubs = await _context.UserClubs.Where(uc => uc.ClubId == id).ToListAsync();
+    foreach (var userClub in userClubs)
+    {
+      userClub.DeletedAt = DateTime.UtcNow;
+    }
+
     club.DeletedAt = DateTime.UtcNow;
     _context.Entry(club).State = EntityState.Modified;
 

@@ -119,6 +119,12 @@ public class EventsController : ControllerBase
       return BadRequest(authResponse);
     }
 
+    var userEvents = await _context.UserEvents.Where(ue => ue.EventId == id).ToListAsync();
+    foreach (var userEvent in userEvents)
+    {
+      userEvent.DeletedAt = DateTime.UtcNow;
+    }
+
     eventModel.DeletedAt = DateTime.UtcNow;
     await _context.SaveChangesAsync();
 

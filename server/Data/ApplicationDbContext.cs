@@ -30,6 +30,9 @@ public class ApplicationDbContext : DbContext
     modelBuilder.Entity<Club>().HasQueryFilter(c => c.DeletedAt == null);
     modelBuilder.Entity<Event>().HasQueryFilter(e => e.DeletedAt == null);
     modelBuilder.Entity<Announcement>().HasQueryFilter(a => a.DeletedAt == null);
+    modelBuilder.Entity<UserEvent>().HasQueryFilter(ue => ue.DeletedAt == null);
+    modelBuilder.Entity<UserClub>().HasQueryFilter(uc => uc.DeletedAt == null);
+
 
     modelBuilder.Entity<UserClub>()
         .HasKey(uc => new { uc.UserId, uc.ClubId });
