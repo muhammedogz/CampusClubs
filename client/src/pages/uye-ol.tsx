@@ -66,6 +66,7 @@ const SignUp = () => {
 
       const signUpUsrResponse = await signUpFetcher({
         ...user,
+        departmentId: user.departmentId as number,
         image: imageUrl,
       });
 
