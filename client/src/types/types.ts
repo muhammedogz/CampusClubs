@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 export type KulupType = {
   id: number;
   slug: string;
@@ -106,7 +108,30 @@ export type UserType = {
   email: string;
   department: DepartmentType;
   image: string;
+  clubs: ClubBaseType[];
+  events: EventBaseType[];
   userRole: UserRoleEnum;
   clubRole?: ClubRoleEnum;
   eventJoinApprovalStatus?: ApprovalStatusEnum;
+};
+
+export type ClubBaseType = {
+  clubId: number;
+  name: string;
+  description: string;
+  image: string;
+  tag: string;
+};
+
+export type EventBaseType = {
+  eventId: number;
+  name: string;
+  description: string;
+  image: string;
+  location: string;
+  type: string;
+  approvalStatus: ApprovalStatusEnum;
+  eventDate: string;
+  club: ClubBaseType;
+  userApprovalStatus: ApprovalStatusEnum;
 };

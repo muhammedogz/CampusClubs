@@ -1,5 +1,6 @@
 import ZoomOutSharpIcon from '@mui/icons-material/ZoomOutSharp';
 import {
+  CircularProgress,
   Divider,
   Table as MuiTable,
   Paper,
@@ -20,7 +21,7 @@ export type Column<T> = {
   header: string;
   align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
   accessor: keyof T | ((data: T) => React.ReactNode);
-  slug?: string;
+  href?: string;
 };
 
 type TableContentColumnContentProps<T> = {
@@ -51,10 +52,10 @@ const TableContentColumnContent = <T,>({
     );
   };
 
-  const slug = (data as any)?.slug;
+  const href = (data as any)?.href;
 
-  return slug ? (
-    <Link to={slug}>
+  return href ? (
+    <Link to={href}>
       <Content />
     </Link>
   ) : (
@@ -124,10 +125,29 @@ const EmptyTable = () => {
   );
 };
 
+const LoadingTable = () => {
+  return (
+    <Stack alignContent="center" justifyContent="center" p="50px" gap="20px">
+      <Typography variant="h6" fontWeight={600} color="main" textAlign="center">
+        Yükleniyor...
+      </Typography>
+      <CircularProgress
+        color="primary"
+        sx={{
+          width: '100px',
+          height: '100px',
+          alignSelf: 'center',
+        }}
+      />
+    </Stack>
+  );
+};
+
 type TableProps<T> = TableContentProps<T> & {
   title: string;
   tableDivSx?: SxProps;
   fullWidth?: boolean;
+  loading?: boolean;
 };
 
 const Table = <T,>({
@@ -136,6 +156,7 @@ const Table = <T,>({
   title,
   tableDivSx,
   fullWidth,
+  loading,
 }: TableProps<T>) => {
   return (
     <Stack id="table-wrapper">
@@ -156,7 +177,9 @@ const Table = <T,>({
           ...tableDivSx,
         }}
       >
-        {data.length === 0 ? (
+        {loading ? (
+          <LoadingTable />
+        ) : data.length === 0 ? (
           <EmptyTable />
         ) : (
           <TableContent data={data} columns={columns} />

@@ -1,23 +1,33 @@
 import { Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
 import Image from 'src/components/common/Image';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { emptyUserData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
-import { DanismanType, KulupType } from 'src/types/types';
+import { getUserFromIdFetcher } from 'src/fetch/userFetchers';
+import { ClubBaseType, UserType } from 'src/types/types';
+import { getRemoteImage } from 'src/utils/imageUtils';
 import { Layout } from '../../components/layout/Layout';
 
-const kulupColumns: Column<KulupType>[] = [
+const kulupColumns: Column<ClubBaseType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Kulüp Adı', accessor: 'name' },
   { header: 'Kulüp Açıklaması', accessor: 'description' },
 ];
 
 type CommonProps = {
-  danisman: DanismanType;
+  user: UserType;
+  loading: boolean;
 };
 
-const DanismanInfo = ({ danisman }: CommonProps) => {
+const DanismanInfo = ({ user, loading }: CommonProps) => {
+  if (loading) {
+    return <LoadingUserInfo />;
+  }
+
   return (
     <Stack
       id="upper-content-left"
@@ -29,7 +39,7 @@ const DanismanInfo = ({ danisman }: CommonProps) => {
       <Image
         width="150px"
         height="150px"
-        src={danisman.image}
+        src={getRemoteImage(user.image)}
         sx={{
           borderRadius: '20px',
           boxShadow:
@@ -38,30 +48,27 @@ const DanismanInfo = ({ danisman }: CommonProps) => {
       />
       <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
         <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
-          {danisman.name}
+          {user.firstName} {user.lastName}
         </Typography>
         <Typography variant="h6" color="secondary">
-          @{danisman.slug}
+          {user.email}
         </Typography>
-        <Typography variant="h6">{danisman.depertman}</Typography>
+        <Typography variant="h6">{user.department.name}</Typography>
       </Stack>
     </Stack>
   );
 };
 
-type DanismanKulupler = {
-  kulupler: KulupType[];
-};
-
-const DanismanKulupler = ({ kulupler }: DanismanKulupler) => {
+const DanismanKulupler = ({ user, loading }: CommonProps) => {
   return (
     <Stack id="middle-content-right">
       <Table
+        loading={loading}
         fullWidth
         title="Danışmanı Olunan Kulupler"
-        data={kulupler.map((kulup) => ({
-          ...kulup,
-          slug: `${Routes.KULUP}/${kulup.slug}`,
+        data={user.clubs.map((club) => ({
+          ...club,
+          slug: `${Routes.KULUP}/${club.clubId}`,
         }))}
         columns={kulupColumns}
       />
@@ -70,21 +77,35 @@ const DanismanKulupler = ({ kulupler }: DanismanKulupler) => {
 };
 
 const Danisman = () => {
+  const [user, setUser] = useState<UserType>(emptyUserData);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
-  const tumDanismanlar = danismanlar;
-  const bulunanDanisman = tumDanismanlar.find(
-    (danisman) => danisman.slug === id
-  );
+  const getUserInfo = useCallback(async () => {
+    try {
+      if (!id) return;
+      setLoading(true);
+      const userResponse = await getUserFromIdFetcher(id);
+      if (userResponse.status) {
+        setUser(userResponse.data);
+        setLoading(false);
+      }
+      console.log(userResponse);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [id]);
 
-  if (!bulunanDanisman) return <Layout>404</Layout>;
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
 
   return (
     <Layout>
       <ContentLayout
-        upperLeft={<DanismanInfo danisman={bulunanDanisman} />}
+        upperLeft={<DanismanInfo user={user} loading={loading} />}
         upperRight={<Stack> </Stack>}
-        middleLeft={<DanismanKulupler kulupler={kulupler} />}
+        middleLeft={<DanismanKulupler user={user} loading={loading} />}
         middleRight={<Stack></Stack>}
       />
     </Layout>

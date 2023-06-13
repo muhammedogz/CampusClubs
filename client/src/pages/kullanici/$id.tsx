@@ -1,34 +1,41 @@
 import { Stack, Typography } from '@mui/material';
+import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
 import Image from 'src/components/common/Image';
 import Table, { Column } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { Layout } from 'src/components/layout/Layout';
+import { emptyUserData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
-import { getUserInfoFromIdfetcher } from 'src/fetch/fetchers';
-import { EtkinlikType, KulupType, UyeBackendType } from 'src/types/types';
+import { getUserFromIdFetcher } from 'src/fetch/userFetchers';
+import { ClubBaseType, EventBaseType, UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
-import { Layout } from '../../components/layout/Layout';
 
-const etkinlikColumns: Column<EtkinlikType>[] = [
+const etkinlikColumns: Column<EventBaseType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Etkinlik Adı', accessor: 'name' },
-  { header: 'Tarih', accessor: 'date', align: 'center' },
+  { header: 'Tarih', accessor: 'eventDate', align: 'center' },
   { header: 'Yer', accessor: 'location', align: 'center' },
 ];
 
-const kulupColumns: Column<KulupType>[] = [
+const kulupColumns: Column<ClubBaseType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Kulüp Adı', accessor: 'name' },
   { header: 'Kulüp Açıklaması', accessor: 'description' },
 ];
 
 type UserProps = {
-  uye: UyeBackendType;
+  user: UserType;
+  loading: boolean;
 };
 
-const UyeInfo = ({ uye }: UserProps) => {
-  console.log('uye', uye);
+const UyeInfo = ({ user, loading }: UserProps) => {
+  if (loading) {
+    return <LoadingUserInfo />;
+  }
+
   return (
     <Stack
       id="upper-content-left"
@@ -40,7 +47,7 @@ const UyeInfo = ({ uye }: UserProps) => {
       <Image
         width="150px"
         height="150px"
-        src={getRemoteImage(uye.image)}
+        src={getRemoteImage(user.image)}
         sx={{
           borderRadius: '20px',
           boxShadow:
@@ -49,29 +56,26 @@ const UyeInfo = ({ uye }: UserProps) => {
       />
       <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
         <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
-          {uye.firstName} {uye.lastName}
+          {user.firstName} {user.lastName}
         </Typography>
         <Typography variant="h6" color="secondary">
-          {uye.email}
+          {user.email}
         </Typography>
-        <Typography variant="h6">Bilgisayar Mühendisliği</Typography>
+        <Typography variant="h6">{user.department.name}</Typography>
       </Stack>
     </Stack>
   );
 };
 
-type UyeKuluplerType = {
-  kulupler: KulupType[];
-};
-
-const UyeKulupler = ({ kulupler }: UyeKuluplerType) => {
+const UyeKulupler = ({ user, loading }: UserProps) => {
   return (
     <Stack id="middle-content-right">
       <Table
+        loading={loading}
         title="Kulüp Üyelikleri"
-        data={kulupler.map((kulup) => ({
-          ...kulup,
-          slug: `${Routes.KULUP}/${kulup.slug}`,
+        data={user.clubs.map((club) => ({
+          ...club,
+          href: `${Routes.KULUP}/${club.clubId}`,
         }))}
         columns={kulupColumns}
       />
@@ -79,18 +83,16 @@ const UyeKulupler = ({ kulupler }: UyeKuluplerType) => {
   );
 };
 
-type UyeEtkinliklerType = {
-  etkinlikler: EtkinlikType[];
-};
-
-const UyeEtkinlikler = ({ etkinlikler }: UyeEtkinliklerType) => {
+const UyeEtkinlikler = ({ user, loading }: UserProps) => {
   return (
     <Stack id="middle-content-right">
       <Table
+        loading={loading}
         title="Etkinlik Kayıtları"
-        data={etkinlikler.map((event) => ({
+        data={user.events.map((event) => ({
           ...event,
-          slug: `${Routes.ETKINLIK}/${event.slug}`,
+          eventDate: moment(event.eventDate).format('DD/MM/YYYY'),
+          href: `${Routes.ETKINLIK}/${event.eventId}`,
         }))}
         columns={etkinlikColumns}
       />
@@ -99,7 +101,7 @@ const UyeEtkinlikler = ({ etkinlikler }: UyeEtkinliklerType) => {
 };
 
 const Kullanici = () => {
-  const [user, setUser] = useState<UyeBackendType | null>(null);
+  const [user, setUser] = useState<UserType>(emptyUserData);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
@@ -107,7 +109,7 @@ const Kullanici = () => {
     try {
       if (!id) return;
       setLoading(true);
-      const userResponse = await getUserInfoFromIdfetcher(id);
+      const userResponse = await getUserFromIdFetcher(id);
       if (userResponse.status) {
         setUser(userResponse.data);
         setLoading(false);
@@ -122,20 +124,16 @@ const Kullanici = () => {
     getUserInfo();
   }, [getUserInfo]);
 
-  if (loading || !user) {
-    <Layout loading={loading}>Yükleniyor...</Layout>;
-  } else {
-    return (
-      <Layout>
-        <ContentLayout
-          upperLeft={<UyeInfo uye={user} />}
-          upperRight={<Stack> </Stack>}
-          middleLeft={<UyeEtkinlikler etkinlikler={[]} />}
-          middleRight={<UyeKulupler kulupler={user.clubsRegistered} />}
-        />
-      </Layout>
-    );
-  }
+  return (
+    <Layout>
+      <ContentLayout
+        upperLeft={<UyeInfo loading={loading} user={user} />}
+        upperRight={<Stack> </Stack>}
+        middleLeft={<UyeEtkinlikler loading={loading} user={user} />}
+        middleRight={<UyeKulupler loading={loading} user={user} />}
+      />
+    </Layout>
+  );
 };
 
 export default Kullanici;

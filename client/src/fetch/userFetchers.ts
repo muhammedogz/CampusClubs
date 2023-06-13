@@ -17,3 +17,11 @@ export const getAllTeachersFetcher = async () => {
 
   return data;
 };
+
+export const getUserFromIdFetcher = async (id: string) => {
+  const { data } = await axios.get<ApiResponseType<UserType>>(
+    `${getApiEndpoint(Endpoints.USERS)}/${id}`
+  );
+
+  return data;
+};
