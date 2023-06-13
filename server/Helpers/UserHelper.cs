@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Models;
 
@@ -13,5 +14,15 @@ public class UserHelper
       throw new ArgumentException($"User with id {id} not found.");
     }
     return userEntity;
+  }
+
+  public static Task<List<User>> GetUsersFromDbByRole(ApplicationDbContext context, UserRole role)
+  {
+    var users = context.Users
+              .Where(u => u.UserRole == role)
+              .Include(u => u.Department)
+              .ToListAsync();
+
+    return users;
   }
 }

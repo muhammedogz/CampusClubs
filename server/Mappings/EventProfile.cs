@@ -28,9 +28,9 @@ public class EventProfile : Profile
       .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Event!.Image))
       .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Event!.Location))
       .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Event!.Type))
-      .ForMember(dest => dest.ApprovalStatus, opt => opt.MapFrom(src => src.Event!.ApprovalStatus))
+      .ForMember(dest => dest.ApprovalStatus, opt => opt.MapFrom(src => src.Event!.EventCreateApprovalStatus))
       .ForMember(dest => dest.EventDate, opt => opt.MapFrom(src => src.Event!.EventDate))
       .ForMember(dest => dest.Club, opt => opt.MapFrom(src => src.Event!.Club))
-      .ForMember(dest => dest.UserApprovalStatus, opt => opt.MapFrom(src => src.ApprovalStatus));
+      .ForMember(dest => dest.UserApprovalStatus, opt => opt.MapFrom(src => src.EventJoinApprovalStatus));
   }
 }

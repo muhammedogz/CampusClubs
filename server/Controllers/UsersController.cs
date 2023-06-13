@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Constants;
 using Server.Data;
 using Server.DTOs;
+using Server.Helpers;
 using Server.Models;
 
 namespace Server.Controllers;
@@ -27,14 +28,12 @@ public class UsersController : ControllerBase
   {
     try
     {
-      var users = await _context.Users
-            .Where(u => u.UserRole == role)
-            .Include(u => u.Department)
-            .ToListAsync();
+      var users = await UserHelper.GetUsersFromDbByRole(_context, role);
 
       if (!users.Any())
       {
-        return NotFound(new ApiResponse(false, $"No users found with role {role}", null));
+        // empty arr
+        return NotFound(new ApiResponse(false, $"No users found with role {role}", new List<UserSummaryDTO>()));
       }
 
       return Ok(new ApiResponse(true, message, _mapper.Map<List<UserSummaryDTO>>(users)));
@@ -53,10 +52,10 @@ public class UsersController : ControllerBase
     return await GetUsersByRole(UserRole.Student, "Student users retrieved successfully");
   }
 
-  [HttpGet("advisors")]
-  public async Task<ActionResult<ApiResponse>> GetAdvisorUsers()
+  [HttpGet("teachers")]
+  public async Task<ActionResult<ApiResponse>> GetTeacherUsers()
   {
-    return await GetUsersByRole(UserRole.Advisor, "Advisor users retrieved successfully");
+    return await GetUsersByRole(UserRole.Teacher, "Teachers users retrieved successfully");
   }
 
   [HttpGet("{id}")]

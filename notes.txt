@@ -7,7 +7,7 @@ DONE 3.3- Delete Event
 DONE 3.5- List Event Users for Related Club Admin
 
 4- List Pending Events for Related Club Advisor
-5- Show EventApprovalStatus in getUser
+5- Show ApprovalStatus in getUser
 6- Announcement Controller
   6.1- Create Announcement
   6.2- Edit Announcement

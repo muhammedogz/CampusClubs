@@ -21,7 +21,7 @@ public class UserSummaryDTO
   public UserRole UserRole { get; set; }
   public ClubRole? ClubRole { get; set; }
 
-  public UserApprovalStatus? UserApprovalStatus { get; set; }
+  public ApprovalStatus? EventJoinApprovalStatus { get; set; }
 }
 
 public class UserDTO : UserSummaryDTO

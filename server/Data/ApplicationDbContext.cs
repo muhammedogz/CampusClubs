@@ -1,6 +1,5 @@
 // using Server.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Server.Models;
 
 namespace Server.Data;
@@ -63,6 +62,18 @@ public class ApplicationDbContext : DbContext
 
     modelBuilder.Entity<User>()
       .Property(u => u.UserRole)
+      .HasConversion<string>();
+
+    modelBuilder.Entity<UserEvent>()
+      .Property(u => u.EventJoinApprovalStatus)
+      .HasConversion<string>();
+
+    modelBuilder.Entity<UserClub>()
+      .Property(u => u.ClubJoinApprovalStatus)
+      .HasConversion<string>();
+
+    modelBuilder.Entity<Event>()
+      .Property(u => u.EventCreateApprovalStatus)
       .HasConversion<string>();
 
     modelBuilder.Entity<UserClub>()

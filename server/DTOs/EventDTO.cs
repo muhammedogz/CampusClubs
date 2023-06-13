@@ -10,11 +10,11 @@ public class EventSummaryDTO
   public string? Image { get; set; }
   public string? Location { get; set; }
   public string? Type { get; set; }
-  public EventApprovalStatus ApprovalStatus { get; set; }
+  public ApprovalStatus ApprovalStatus { get; set; }
   public DateTime EventDate { get; set; }
   public ClubSummaryDTO? Club { get; set; }
 
-  public UserApprovalStatus? UserApprovalStatus { get; set; }
+  public ApprovalStatus? UserApprovalStatus { get; set; }
 }
 
 public class EventDTO : EventSummaryDTO

@@ -70,7 +70,7 @@ public class EventsController : ControllerBase
     {
       User = currentUser,
       Event = eventModel,
-      ApprovalStatus = UserApprovalStatus.Approved
+      EventJoinApprovalStatus = ApprovalStatus.Approved
     };
 
     _context.UserEvents.Add(userEvent);
@@ -158,7 +158,7 @@ public class EventsController : ControllerBase
     {
       User = currentUser,
       Event = eventModel,
-      ApprovalStatus = UserApprovalStatus.Pending,
+      EventJoinApprovalStatus = ApprovalStatus.Pending,
     };
     _context.UserEvents.Add(userEvent);
 
@@ -183,7 +183,7 @@ public class EventsController : ControllerBase
 
     var eventDTO = _mapper.Map<EventDTO>(eventModel);
 
-    eventDTO.Users = await GetEventUsers(id, UserApprovalStatus.Approved);
+    eventDTO.Users = await GetEventUsers(id, ApprovalStatus.Approved);
 
     return Ok(new ApiResponse(true, "Event retrieved successfully", eventDTO));
   }
@@ -204,14 +204,14 @@ public class EventsController : ControllerBase
       return authResponse;
     }
 
-    var users = await GetEventUsers(id, UserApprovalStatus.Pending);
+    var users = await GetEventUsers(id, ApprovalStatus.Pending);
 
     return Ok(new ApiResponse(true, "Pending users retrieved successfully", users));
   }
 
   [HttpPost("approval/{eventId}/{userId}")]
   [Authorize]
-  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] UserApprovalStatus status)
+  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] ApprovalStatus status)
   {
     var userEvent = await _context.UserEvents.FirstOrDefaultAsync(ue => ue.EventId == eventId && ue.UserId == userId);
     if (userEvent == null)
@@ -231,7 +231,7 @@ public class EventsController : ControllerBase
       return authResponse;
     }
 
-    userEvent.ApprovalStatus = status;
+    userEvent.EventJoinApprovalStatus = status;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
@@ -247,10 +247,10 @@ public class EventsController : ControllerBase
     return eventEntity;
   }
 
-  private async Task<List<UserSummaryDTO>> GetEventUsers(int eventId, UserApprovalStatus approvalStatus)
+  private async Task<List<UserSummaryDTO>> GetEventUsers(int eventId, ApprovalStatus approvalStatus)
   {
     var userEvents = await _context.UserEvents
-        .Where(ue => ue.EventId == eventId && ue.ApprovalStatus == approvalStatus)
+        .Where(ue => ue.EventId == eventId && ue.EventJoinApprovalStatus == approvalStatus)
         .Include(ue => ue.User)
         .ToListAsync();
 

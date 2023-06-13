@@ -6,7 +6,7 @@ namespace Server.Models;
 public enum UserRole
 {
   Admin,
-  Advisor,
+  Teacher,
   Student
 }
 

@@ -9,7 +9,7 @@ public class UserProfile : Profile
     CreateMap<User, UserDTO>()
         .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
         .ForMember(dest => dest.Clubs, opt => opt.MapFrom(src => src.UserClubs.Select(uc => uc.Club)))
-        .ForMember(dest => dest.Events, opt => opt.MapFrom(src => src.UserEvents.Select(ue => ue.Event)))
+        .ForMember(dest => dest.Events, opt => opt.MapFrom(src => src.UserEvents.Select(ue => ue)))
         .IncludeBase<User, UserSummaryDTO>();
 
     CreateMap<User, UserSummaryDTO>()
@@ -33,7 +33,7 @@ public class UserProfile : Profile
         .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.User!.UserRole));
 
     CreateMap<UserEvent, UserSummaryDTO>()
-        .ForMember(dest => dest.UserApprovalStatus, opt => opt.MapFrom(src => src.ApprovalStatus))
+        .ForMember(dest => dest.EventJoinApprovalStatus, opt => opt.MapFrom(src => src.EventJoinApprovalStatus))
         .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User!.UserId))
         .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!.UserName))
         .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User!.FirstName))

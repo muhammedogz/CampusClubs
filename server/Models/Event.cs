@@ -23,7 +23,7 @@ public class Event
   [Required]
   public string? Type { get; set; }
 
-  public EventApprovalStatus ApprovalStatus { get; set; } = EventApprovalStatus.Pending;
+  public ApprovalStatus EventCreateApprovalStatus { get; set; } = ApprovalStatus.Pending;
 
   public DateTime EventDate { get; set; }
 
@@ -36,11 +36,4 @@ public class Event
   public Club? Club { get; set; }
   public List<UserEvent> UserEvents { get; set; } = new List<UserEvent>();
 
-}
-
-public enum EventApprovalStatus
-{
-  Pending,
-  Approved,
-  Declined
 }
