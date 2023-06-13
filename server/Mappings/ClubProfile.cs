@@ -19,5 +19,7 @@ public class ClubProfile : Profile
 
     CreateMap<ClubDTO, Club>();
     CreateMap<CreateClubDTO, Club>();
+    CreateMap<UpdateClubDTO, Club>();
+
   }
 }

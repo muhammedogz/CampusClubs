@@ -75,6 +75,32 @@ public class ClubsController : ControllerBase
     return CreatedAtAction(nameof(GetClub), new { id = club.ClubId }, new ApiResponse(true, "Club created successfully", _mapper.Map<ClubDTO>(club)));
   }
 
+  [HttpPut("{id}")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> EditClub(int id, UpdateClubDTO updateClubDTO)
+  {
+    var club = await _context.Clubs.FindAsync(id);
+    if (club == null)
+    {
+      return NotFound(new ApiResponse(false, "Club not found", null));
+    }
+
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, id);
+    if (authResponse != null)
+    {
+      return BadRequest(authResponse);
+    }
+
+    club.Name = updateClubDTO.Name ?? club.Name;
+    club.Description = updateClubDTO.Description ?? club.Description;
+    club.Image = updateClubDTO.Image ?? club.Image;
+    club.Tag = updateClubDTO.Tag ?? club.Tag;
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Club updated successfully", _mapper.Map<ClubDTO>(club)));
+  }
+
   [HttpPost("{clubId}/join")]
   [Authorize]
   public async Task<ActionResult<ApiResponse>> JoinClub(int clubId)

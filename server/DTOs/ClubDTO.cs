@@ -27,3 +27,11 @@ public class CreateClubDTO
   public string? Tag { get; set; }
   public int AdvisorId { get; set; }
 }
+
+public class UpdateClubDTO
+{
+  public string? Name { get; set; }
+  public string? Description { get; set; }
+  public string? Image { get; set; }
+  public string? Tag { get; set; }
+}
