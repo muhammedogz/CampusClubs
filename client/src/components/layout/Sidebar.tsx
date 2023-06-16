@@ -172,8 +172,8 @@ export const Sidebar = () => {
         const response = notificationResponse.data;
         setNotificationCount(
           response.clubJoinRequest.length +
-            response.clubJoinRequest.length +
-            response.clubJoinRequest.length
+            response.eventCreateRequest.length +
+            response.eventJoinRequest.length
         );
       }
     } catch (error) {
@@ -182,7 +182,7 @@ export const Sidebar = () => {
   }, []);
 
   useEffect(() => {
-    if (isUserLoggedIn()) {
+    if (userLoggedIn) {
       getNotifications();
     }
   }, [getNotifications]);
