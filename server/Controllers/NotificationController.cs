@@ -22,7 +22,7 @@ public class NotificationController : ControllerBase
     _mapper = mapper;
   }
 
-  [HttpPost]
+  [HttpGet]
   [Authorize]
   public async Task<ActionResult<ApiResponse>> GetNotifications()
   {

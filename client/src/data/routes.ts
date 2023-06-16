@@ -6,4 +6,5 @@ export enum Routes {
   EVENT = '/etkinlik',
   ADVISOR = '/danisman',
   USER = '/kullanici',
+  NOTIFICATION = '/bildirimler',
 }

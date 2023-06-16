@@ -1,3 +1,4 @@
+import { NotificationAddTwoTone } from '@mui/icons-material';
 import ContactsSharpIcon from '@mui/icons-material/ContactsSharp';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import HomeIcon from '@mui/icons-material/Home';
@@ -6,7 +7,14 @@ import PeopleIcon from '@mui/icons-material/People';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SupervisedUserCircleSharpIcon from '@mui/icons-material/SupervisedUserCircleSharp';
-import { Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Badge,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Menu,
   MenuItem,
@@ -18,6 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Routes } from 'src/data/routes';
+import { getNotificationFetcher } from 'src/fetch/userFetchers';
 import { getLocalImage } from 'src/utils/imageUtils';
 import {
   StorageKeyEnum,
@@ -150,10 +159,33 @@ const SidebarMenuItem = ({ ...rest }: SidebarMenuItemProps) => {
 
 export const Sidebar = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
-
+  const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
   const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
   const userLoggedIn = !!user?.firstName;
+
+  const getNotifications = useCallback(async () => {
+    try {
+      const notificationResponse = await getNotificationFetcher();
+      console.log(notificationResponse);
+      if (notificationResponse.status) {
+        const response = notificationResponse.data;
+        setNotificationCount(
+          response.clubJoinRequest.length +
+            response.clubJoinRequest.length +
+            response.clubJoinRequest.length
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isUserLoggedIn()) {
+      getNotifications();
+    }
+  }, [getNotifications]);
 
   return (
     <Stack
@@ -220,6 +252,17 @@ export const Sidebar = () => {
                   <Link to={`${Routes.USER}/${user.userId}`}>
                     <SidebarMenuItem icon={<PersonPinIcon />}>
                       Profilim
+                    </SidebarMenuItem>
+                  </Link>
+                  <Link to={Routes.NOTIFICATION}>
+                    <SidebarMenuItem icon={<NotificationAddTwoTone />}>
+                      <Stack flexDirection="row" alignItems="center" gap="20px">
+                        <Stack>Bildirimler</Stack>
+                        <Badge
+                          badgeContent={notificationCount}
+                          color="secondary"
+                        />
+                      </Stack>
                     </SidebarMenuItem>
                   </Link>
                   <SidebarMenuItem
