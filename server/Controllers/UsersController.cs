@@ -76,12 +76,21 @@ public class UsersController : ControllerBase
     var userDto = _mapper.Map<UserDTO>(user);
 
     userDto.Clubs = user.UserClubs
-      .Where(uc => uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)
-      .Select(uc => _mapper.Map<ClubSummaryDTO>(uc.Club))
-      .ToList();
+        .Where(uc => uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)
+        .Select(uc => new ClubSummaryDTO
+        {
+          ClubId = uc.Club!.ClubId,
+          Name = uc.Club.Name,
+          Description = uc.Club.Description,
+          Image = uc.Club.Image,
+          Tag = uc.Club.Tag,
+          ClubRole = uc.ClubRole,
+        })
+        .ToList();
 
     return Ok(new ApiResponse(true, "User found", userDto));
   }
+
 
   [HttpPost]
   public async Task<ActionResult<ApiResponse>> CreateUser(UserCreateDTO userDTO)
