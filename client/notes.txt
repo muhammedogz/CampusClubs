@@ -13,15 +13,15 @@ DONE 4- Advisor
 DONE 5- Auth
   5.1- Login
   5.2- Register
-6- Edit User
-7- Edit Event
-8- Edit Club
-9- Edit Advisor
-10- Join Club (Student)
-11- Join Event (Student)
-12- Create Event (Admin)
-13- Approve Event Create (Advisor)
-14- Approve Join Club (Admin)
-15- Approve Join Event (Admin)
-16- Create Club (Super Admin)
-17- Export Joined Events
+6- Join Club (Student)
+7- Create Event (Admin)
+8- Join Event (Student)
+9- Approve Event Create (Advisor)
+10- Approve Join Club (Admin)
+11- Approve Join Event (Admin)
+12- Create Club (Super Admin)
+13- Export Joined Events (Maybe backend)
+14- Edit User (Me)
+15- Edit Advisor (Me)
+16- Edit Event (Admin)
+17- Edit Club (Super Admin)
