@@ -19,7 +19,11 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Routes } from 'src/data/routes';
 import { getLocalImage } from 'src/utils/imageUtils';
-import { StorageKeyEnum, removeLocalStorageItem } from 'src/utils/storageUtils';
+import {
+  StorageKeyEnum,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from 'src/utils/storageUtils';
 import { isUserLoggedIn } from 'src/utils/utils';
 
 const SidebarHeader = () => {
@@ -146,9 +150,10 @@ const SidebarMenuItem = ({ ...rest }: SidebarMenuItemProps) => {
 
 export const Sidebar = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
-  const loggedIn = isUserLoggedIn();
 
   const navigate = useNavigate();
+  const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
+  const userLoggedIn = !!user?.firstName;
 
   return (
     <Stack
@@ -210,20 +215,20 @@ export const Sidebar = () => {
                   </Link>
                 </SubMenu>
               </SidebarMenu>
-              {loggedIn && (
+              {userLoggedIn && (
                 <SidebarMenu title="Kullanıcı">
-                  <Link to={'/kullanici/muhammed-oguz'}>
+                  <Link to={`${Routes.USER}/${user.userId}`}>
                     <SidebarMenuItem icon={<PersonPinIcon />}>
                       Profilim
                     </SidebarMenuItem>
                   </Link>
-                  <SidebarMenuItem icon={<SettingsIcon />}>
-                    Ayarlar
-                  </SidebarMenuItem>
                   <SidebarMenuItem
                     onClick={() => {
-                      removeLocalStorageItem(StorageKeyEnum.USER_STORAGE);
-                      // reload page
+                      // remove all stroages and logout
+                      const storageKeysToRemove = Object.values(StorageKeyEnum);
+                      storageKeysToRemove.forEach((key) => {
+                        removeLocalStorageItem(key);
+                      });
                       navigate(0);
                     }}
                     icon={<LogoutIcon />}

@@ -11,6 +11,7 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CCButton from 'src/components/common/CCButton';
 import Image from 'src/components/common/Image';
+import { Routes } from 'src/data/routes';
 import { generateRedirectUrl } from 'src/utils/authUtils';
 import { getRemoteImage } from 'src/utils/imageUtils';
 import {
@@ -19,6 +20,7 @@ import {
   removeLocalStorageItem,
   updateLocalStorageItem,
 } from 'src/utils/storageUtils';
+import { generateRoute } from 'src/utils/urlUtils';
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -75,7 +77,12 @@ function ResponsiveAppBar() {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            <MenuItem onClick={handleCloseUserMenu}>
+            <MenuItem
+              onClick={() => {
+                navigate(generateRoute(`${Routes.USER}/${user?.userId}`));
+                handleCloseUserMenu();
+              }}
+            >
               <Typography textAlign="center">Profilim</Typography>
             </MenuItem>
             <MenuItem
