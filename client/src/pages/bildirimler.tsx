@@ -1,11 +1,8 @@
 import {
-  ApprovalOutlined,
   CheckCircleOutlined,
-  ClosedCaptionOffTwoTone,
-  RemoveCircleOutline,
   RemoveCircleOutlineOutlined,
-  RemoveShoppingCartTwoTone,
 } from '@mui/icons-material';
+import ZoomOutSharpIcon from '@mui/icons-material/ZoomOutSharp';
 import {
   CircularProgress,
   Divider,
@@ -20,15 +17,15 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
+import { considerJoinClubFetcher } from 'src/fetch/clubFetchers';
 import {
   NotificationType,
   getNotificationFetcher,
 } from 'src/fetch/userFetchers';
+import { ApprovalStatusEnum } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
 import { generateRoute } from 'src/utils/urlUtils';
-import ZoomOutSharpIcon from '@mui/icons-material/ZoomOutSharp';
-
 type NotificationItemType = {
   id: string;
   name: string;
@@ -37,11 +34,16 @@ type NotificationItemType = {
   type: 'join club' | 'create event' | 'join event';
 };
 
+type OnClickParamType = {
+  leftId: string;
+  rightId: string;
+};
+
 type NotificationItemProps = {
   leftItem: NotificationItemType;
   rightItem: NotificationItemType;
-  onClickApprove: (id: string) => void;
-  onClickDecline: (id: string) => void;
+  onClickApprove: () => void;
+  onClickDecline: () => void;
 };
 
 const NotificationItem = ({
@@ -106,7 +108,7 @@ const NotificationItem = ({
           <IconButton
             onClick={() => {
               setLoadingApprove(true);
-              onClickApprove(leftItem.id);
+              onClickApprove();
             }}
           >
             {loadingApprove ? (
@@ -130,7 +132,7 @@ const NotificationItem = ({
           <IconButton
             onClick={() => {
               setLoadingDecline(true);
-              onClickDecline(leftItem.id);
+              onClickDecline();
             }}
           >
             {loadingDecline ? (
@@ -180,11 +182,33 @@ const Notifications = () => {
     }
   }, []);
 
+  const considerJoiningClubRequest = useCallback(
+    async (
+      { leftId: userId, rightId: clubId }: OnClickParamType,
+      status: ApprovalStatusEnum
+    ) => {
+      try {
+        const requestResponse = await considerJoinClubFetcher({
+          approveStatus: status,
+          clubId,
+          userId,
+        });
+
+        if (requestResponse.status) {
+          navigate(0);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [navigate]
+  );
+
   useEffect(() => {
     if (userLoggedIn) {
       getNotifications();
     }
-  }, [getNotifications]);
+  }, [getNotifications, userLoggedIn]);
 
   useEffect(() => {
     if (!userLoggedIn) {
@@ -266,8 +290,24 @@ const Notifications = () => {
                         type: 'join club',
                         link: `${Routes.CLUB}/${item.club.clubId}`,
                       }}
-                      onClickApprove={(id) => console.log(id)}
-                      onClickDecline={(id) => console.log(id)}
+                      onClickApprove={async () => {
+                        await considerJoiningClubRequest(
+                          {
+                            leftId: item.user.userId.toString(),
+                            rightId: item.club.clubId.toString(),
+                          },
+                          ApprovalStatusEnum.APPROVED
+                        );
+                      }}
+                      onClickDecline={async () => {
+                        await considerJoiningClubRequest(
+                          {
+                            leftId: item.user.userId.toString(),
+                            rightId: item.club.clubId.toString(),
+                          },
+                          ApprovalStatusEnum.DECLINED
+                        );
+                      }}
                     />
                     <Divider />
                   </>
@@ -297,8 +337,8 @@ const Notifications = () => {
                         type: 'join event',
                         link: `${Routes.CLUB}/${item.event.eventId}`,
                       }}
-                      onClickApprove={(id) => console.log(id)}
-                      onClickDecline={(id) => console.log(id)}
+                      onClickApprove={() => console.log('id')}
+                      onClickDecline={() => console.log('id')}
                     />
                     <Divider />
                   </>

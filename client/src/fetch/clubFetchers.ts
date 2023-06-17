@@ -24,7 +24,7 @@ type ApprovalJoinClubFuncType = {
   approveStatus: ApprovalStatusEnum;
 };
 
-export const approveCreatingEventFetcher = async ({
+export const considerJoinClubFetcher = async ({
   clubId,
   userId,
   approveStatus,
