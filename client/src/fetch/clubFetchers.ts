@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
-import { ApiResponseType, ApprovalStatusEnum, ClubType } from 'src/types/types';
+import { ApiResponseType, ApprovalStatusEnum, ClubRoleEnum, ClubType } from 'src/types/types';
 
 export const getAllClubsFetcher = async () => {
   const { data } = await axios.get<ApiResponseType<ClubType[]>>(
@@ -105,6 +105,24 @@ export const updateClubFetcher = async (
   const { data } = await axios.put<ApiResponseType<null>>(
     `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}`,
     club
+  );
+
+  return data;
+};
+
+
+export interface UserToAddPayload {
+  userId: number;
+  role: ClubRoleEnum;
+}
+
+export const addUserToClubFetcher = async (
+  clubId: number,
+  user: UserToAddPayload
+) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}/users`,
+    user
   );
 
   return data;

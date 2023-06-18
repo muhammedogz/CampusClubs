@@ -74,7 +74,7 @@ public class ClubsController : ControllerBase
 
     // Map UserClubs to Users
     clubDto.Users = club.UserClubs
-        .Where(uc => uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)
+        .Where(uc => uc.ClubJoinApprovalStatus == ApprovalStatus.Approved && uc.ClubRole != ClubRole.Advisor)
         .OrderByDescending(uc => uc.ClubRole == ClubRole.Admin)
         .ThenBy(uc => uc.ClubRole)
         .Select(uc => _mapper.Map<UserSummaryDTO>(uc))
@@ -244,6 +244,57 @@ public class ClubsController : ControllerBase
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
   }
 
+  [HttpPost("{clubId}/users")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> AddUser(int clubId, [FromBody] UserToAddDTO userToAddDTO)
+  {
+    var club = await _context.Clubs.FindAsync(clubId);
+    if (club == null)
+    {
+      return NotFound(new ApiResponse(false, "Club not found", null));
+    }
+
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, clubId);
+    if (authResponse != null)
+    {
+      return BadRequest(authResponse);
+    }
+
+    var existingUserClub = await _context.UserClubs
+        .FirstOrDefaultAsync(uc => uc.UserId == userToAddDTO.UserId && uc.ClubId == clubId);
+    if (existingUserClub != null)
+    {
+      return BadRequest(new ApiResponse(false, $"User {userToAddDTO.UserId} is already a member of the club", null));
+    }
+
+    var userClub = new UserClub
+    {
+      UserId = userToAddDTO.UserId,
+      ClubId = clubId,
+      ClubRole = userToAddDTO.Role,
+      ClubJoinApprovalStatus = ApprovalStatus.Approved
+    };
+
+    if (userToAddDTO.Role == ClubRole.Advisor && userToAddDTO.UserId != club.AdvisorId)
+    {
+      //Remove the current advisor from the club
+      var currentAdvisor = await _context.UserClubs
+          .FirstOrDefaultAsync(uc => uc.UserId == club.AdvisorId && uc.ClubId == clubId);
+      if (currentAdvisor != null)
+      {
+        _context.UserClubs.Remove(currentAdvisor);
+      }
+
+      //Update the advisor Id in club model
+      club.AdvisorId = userToAddDTO.UserId;
+    }
+    _context.UserClubs.Add(userClub);
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "User added to club successfully", null));
+  }
+
   [HttpDelete("{id}")]
   [Authorize(Policy = "Admin")]
   public async Task<ActionResult<ApiResponse>> DeleteClub(int id)
@@ -286,8 +337,15 @@ public class ClubsController : ControllerBase
     return _context.Clubs.Any(e => e.ClubId == id);
   }
 
-public class ApproveDTO
-{
-  public ApprovalStatus Status { get; set; }
-}
+  public class ApproveDTO
+  {
+    public ApprovalStatus Status { get; set; }
+  }
+
+  public class UserToAddDTO
+  {
+    public int UserId { get; set; }
+    public ClubRole Role { get; set; }
+  }
+
 }

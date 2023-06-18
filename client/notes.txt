@@ -24,7 +24,7 @@ DONE 13- Export Joined Events (Maybe backend)
 DONE 14- Edit User (Me)
 DONE 15- Edit Advisor (Me)
 DONE 16- Edit Event (Admin)
-17- Edit Club
+DONE 17- Edit Club
   17.1- Edit Club (Super Admin)
   17.2- Edit Club (Admin)
 DONE 18- Show Role in Kulup and Event Type

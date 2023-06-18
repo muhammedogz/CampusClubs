@@ -165,7 +165,6 @@ const ClubCreateModal = ({ open, onClose }: ClubCreateModalProps) => {
                 >
                   Kapat
                 </CCButton>
-                AC
               </Stack>
             </Stack>
           </form>
