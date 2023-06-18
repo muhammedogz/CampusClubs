@@ -38,3 +38,22 @@ export const considerJoinEventFetcher = async ({
 
   return data;
 };
+
+type ApprovalCreateEventType = {
+  eventId: string;
+  approveStatus: ApprovalStatusEnum;
+};
+
+export const considerCreateEventFetcher = async ({
+  eventId,
+  approveStatus,
+}: ApprovalCreateEventType) => {
+  const { data } = await axios.patch<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.EVENTS)}/approval/${eventId}`,
+    {
+      status: approveStatus,
+    }
+  );
+
+  return data;
+}
