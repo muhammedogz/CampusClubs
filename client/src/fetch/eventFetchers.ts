@@ -33,7 +33,7 @@ export const considerJoinEventFetcher = async ({
   userId,
   approveStatus,
 }: ApprovalJoinEventType) => {
-  const { data } = await axios.patch<ApiResponseType<null>>(
+  const { data } = await axios.post<ApiResponseType<null>>(
     `${getApiEndpoint(Endpoints.EVENTS)}/approval/${eventId}/user/${userId}`,
     {
       status: approveStatus,
@@ -97,7 +97,6 @@ export const createEventFetcher = async (event: EventCreatePayload) => {
   return data;
 };
 
-
 export type EventUpdatePayload = {
   name?: string;
   description?: string;
@@ -106,7 +105,7 @@ export type EventUpdatePayload = {
   type?: string;
   eventDate?: string;
   clubId?: number;
-}
+};
 
 export const updateEventFetcher = async (
   eventId: string,

@@ -91,6 +91,7 @@ const UyeKulupler = ({ user, loading }: UserProps) => {
         title="Kulüp Üyelikleri"
         data={user.clubs.map((club) => ({
           ...club,
+          image: getRemoteImage(club.image),
           href: `${Routes.CLUB}/${club.clubId}`,
         }))}
         columns={clubColumns}
@@ -135,6 +136,7 @@ const UyeEtkinlikler = ({ user, loading }: UserProps) => {
         data={user.events.map((event) => ({
           ...event,
           eventDate: formatDate(event.eventDate),
+          image: getRemoteImage(event.image),
           href: `${Routes.EVENT}/${event.eventId}`,
         }))}
         columns={eventColumns}

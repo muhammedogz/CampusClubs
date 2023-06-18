@@ -356,6 +356,7 @@ public class EventsController : ControllerBase
       LastName = ue.User?.LastName,
       Email = ue.User?.Email!,
       Department = _mapper.Map<DepartmentDTO>(ue.User?.Department),
+      Image = ue.User?.Image,
       ClubRole = ue.User?.UserClubs?.FirstOrDefault(uc => uc.ClubId == ue?.Event!.ClubId && uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)?.ClubRole
     });
 
