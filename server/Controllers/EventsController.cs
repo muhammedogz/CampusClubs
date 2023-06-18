@@ -191,7 +191,6 @@ public class EventsController : ControllerBase
     var eventDTO = _mapper.Map<EventDTO>(eventModel);
 
     eventDTO.Users = await GetEventUsers(id, ApprovalStatus.Approved);
-
     // Get the current user ID from the token
     var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
     if (!string.IsNullOrEmpty(userId))
@@ -201,6 +200,7 @@ public class EventsController : ControllerBase
       if (userEvent != null)
       {
         eventDTO.UserApprovalStatus = userEvent.EventJoinApprovalStatus;
+        eventDTO.Club!.ClubRole = _context.UserClubs.FirstOrDefault(uc => uc.UserId == int.Parse(userId) && uc.ClubId == eventModel.ClubId && uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)?.ClubRole;
       }
     }
 
@@ -322,10 +322,21 @@ public class EventsController : ControllerBase
     var userEvents = await _context.UserEvents
         .Where(ue => ue.EventId == eventId && ue.EventJoinApprovalStatus == approvalStatus)
         .Include(ue => ue.User)
-        .Include(ue => ue!.User!.Department)
+            .ThenInclude(u => u!.UserClubs) // Include the UserClubs table
+        .Include(ue => ue.User!.Department)
         .ToListAsync();
 
-    return _mapper.Map<List<UserSummaryDTO>>(userEvents.Select(ue => ue.User));
+    var userSummaries = userEvents.Select(ue => new UserSummaryDTO
+    {
+      UserId = ue.UserId,
+      FirstName = ue.User?.FirstName,
+      LastName = ue.User?.LastName,
+      Email = ue.User?.Email!,
+      Department = _mapper.Map<DepartmentDTO>(ue.User?.Department),
+      ClubRole = ue.User?.UserClubs?.FirstOrDefault(uc => uc.ClubId == ue?.Event!.ClubId && uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)?.ClubRole
+    });
+
+    return _mapper.Map<List<UserSummaryDTO>>(userSummaries.OrderBy(us => us.ClubRole == ClubRole.Admin ? 0 : us.ClubRole == ClubRole.Member ? 1 : 2));
   }
 
 }
