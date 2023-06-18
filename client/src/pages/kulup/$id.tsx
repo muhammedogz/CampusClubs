@@ -7,14 +7,14 @@ import { Link } from 'src/components/common/Link';
 import Table, {
   announcementColumns,
   eventColumns,
-  userColumns,
+  userColumnsClub,
 } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
 import { getClubFromIdFetcher } from 'src/fetch/clubFetchers';
 import Slides from 'src/slides/Slides';
-import { ClubType } from 'src/types/types';
+import { ClubRoleEnum, ClubType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 import { formatDate } from 'src/utils/utils';
 import { Layout } from '../../components/layout/Layout';
@@ -157,12 +157,13 @@ const KulupUyeler = ({ club, loading }: CommonProps) => {
       <Table
         loading={loading}
         title="Katılımcılar"
-        columns={userColumns}
+        columns={userColumnsClub}
         data={club.users.map((user) => ({
           bolum: user.department.name,
           image: getRemoteImage(user.image),
           name: user.firstName + ' ' + user.lastName,
           href: `${Routes.USER}/${user.userId}`,
+          role: user.clubRole === ClubRoleEnum.ADMIN ? 'Yönetici' : 'Üye',
         }))}
       />
     </Stack>

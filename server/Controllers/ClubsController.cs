@@ -73,6 +73,8 @@ public class ClubsController : ControllerBase
     // Map UserClubs to Users
     clubDto.Users = club.UserClubs
         .Where(uc => uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)
+        .OrderByDescending(uc => uc.ClubRole == ClubRole.Admin)
+        .ThenBy(uc => uc.ClubRole)
         .Select(uc => _mapper.Map<UserSummaryDTO>(uc))
         .ToList();
 
