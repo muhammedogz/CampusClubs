@@ -10,12 +10,13 @@ import { EventType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 import { formatDate } from 'src/utils/utils';
 
-const index = () => {
+const Index = () => {
   const [events, setEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const getAllEvents = useCallback(async () => {
     try {
+      setLoading(true);
       const eventsResponse = await getAllEventsFetcher();
       if (eventsResponse.status) {
         setEvents(eventsResponse.data);
@@ -105,4 +106,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

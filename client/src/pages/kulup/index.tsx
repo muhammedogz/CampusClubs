@@ -15,6 +15,7 @@ const Index = () => {
 
   const getAllClubs = useCallback(async () => {
     try {
+      setLoading(true);
       const clubsRespone = await getAllClubsFetcher();
       if (clubsRespone.status) {
         setClubs(clubsRespone.data);

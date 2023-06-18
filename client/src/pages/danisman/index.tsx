@@ -15,6 +15,7 @@ const Index = () => {
 
   const getAllTeachers = useCallback(async () => {
     try {
+      setLoading(true);
       const allUsersResponse = await getAllTeachersFetcher();
 
       if (allUsersResponse.status) {

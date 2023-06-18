@@ -61,7 +61,11 @@ public class UsersController : ControllerBase
   {
     try
     {
-      var users = await _context.Users.ToListAsync();
+      var users = await _context.Users
+          .OrderByDescending(u => u.UserRole == UserRole.Admin)
+          .ThenByDescending(u => u.UserRole == UserRole.Teacher)
+          .ThenBy(u => u.UserRole == UserRole.Student)
+          .ToListAsync();
 
       if (!users.Any())
       {
