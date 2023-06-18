@@ -13,16 +13,18 @@ DONE 4- Advisor
 DONE 5- Auth
   5.1- Login
   5.2- Register
-6- Join Club (Student)
+DONE 6- Join Club (Student)
 7- Create Event (Admin)
 8- Join Event (Student)
-9- Approve Event Create (Advisor)
-10- Approve Join Club (Admin)
-11- Approve Join Event (Admin)
+DONE 9- Approve Event Create (Advisor)
+DONE 10- Approve Join Club (Admin)
+DONE 11- Approve Join Event (Admin)
 12- Create Club (Super Admin)
 13- Export Joined Events (Maybe backend)
 14- Edit User (Me)
 15- Edit Advisor (Me)
 16- Edit Event (Admin)
 17- Edit Club (Super Admin)
-18- Show Role in Kulup and Event Type
+DONE 18- Show Role in Kulup and Event Type
+19- Leave Club (Student)
+20- Leave Event (Student)

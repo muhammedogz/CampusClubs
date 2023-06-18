@@ -46,3 +46,11 @@ export const joinClubFetcher = async (clubId: string) => {
 
   return data;
 }
+
+export const leaveClubFetcher = async (clubId: string) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}/leave`
+  );
+
+  return data;
+}

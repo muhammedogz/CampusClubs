@@ -157,6 +157,35 @@ public class ClubsController : ControllerBase
     return Ok(new ApiResponse(true, "Request to join club has been sent", null));
   }
 
+  [HttpPost("{clubId}/leave")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> LeaveClub(int clubId)
+  {
+    var club = await _context.Clubs.FindAsync(clubId);
+    if (club == null)
+    {
+      return NotFound(new ApiResponse(false, "Club not found", null));
+    }
+
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (userId == null)
+    {
+      return Unauthorized(new ApiResponse(false, "User not found", null));
+    }
+
+    var userClub = await _context.UserClubs
+        .FirstOrDefaultAsync(uc => uc.UserId == int.Parse(userId) && uc.ClubId == clubId);
+    if (userClub == null)
+    {
+      return BadRequest(new ApiResponse(false, "User is not a member of the club", null));
+    }
+
+    _context.UserClubs.Remove(userClub);
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "User has left the club", null));
+  }
+
   [HttpGet("{clubId}/pending")]
   [Authorize]
   public async Task<ActionResult<ApiResponse>> GetPendingUsers(int clubId)

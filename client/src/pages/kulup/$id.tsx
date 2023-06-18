@@ -14,7 +14,11 @@ import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
-import { getClubFromIdFetcher, joinClubFetcher } from 'src/fetch/clubFetchers';
+import {
+  getClubFromIdFetcher,
+  joinClubFetcher,
+  leaveClubFetcher,
+} from 'src/fetch/clubFetchers';
 import Slides from 'src/slides/Slides';
 import { ApprovalStatusEnum, ClubRoleEnum, ClubType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
@@ -27,6 +31,7 @@ type CommonProps = {
 
 const KulupActionButton = ({ club }: CommonProps) => {
   const [loadingJoin, setLoadingJoin] = useState(false);
+  const [loadingLeave, setLoadingLeave] = useState(false);
   const isUserApproved =
     club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.APPROVED;
   const isUserClubAdmin = club.user?.clubRole === ClubRoleEnum.ADMIN;
@@ -46,11 +51,35 @@ const KulupActionButton = ({ club }: CommonProps) => {
     }
   }, [club.clubId, navigate]);
 
+  const handleLeaveClub = useCallback(async () => {
+    try {
+      setLoadingLeave(true);
+      const leaveResponse = await leaveClubFetcher(club.clubId.toString());
+      if (leaveResponse.status) {
+        navigate(0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [club.clubId, navigate]);
+
   if (isLoggedIn) {
     if (isUserApproved && isUserClubAdmin) {
       return (
         <Stack>
           <CCButton variant="contained">Kulübü Düzenle</CCButton>
+        </Stack>
+      );
+    } else if (isUserApproved) {
+      return (
+        <Stack>
+          <CCButton
+            loading={loadingLeave}
+            onClick={handleLeaveClub}
+            variant="contained"
+          >
+            Kulüpten Ayrıl
+          </CCButton>
         </Stack>
       );
     } else if (
