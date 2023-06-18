@@ -89,3 +89,23 @@ export const createClubFetcher = async (club: CreateClubPayload) => {
 
   return data;
 }
+
+
+export type UpdateClubPayload = {
+  name?: string;
+  description?: string;
+  image?: string;
+  tag?: string;
+}
+
+export const updateClubFetcher = async (
+  clubId: number,
+  club: UpdateClubPayload
+) => {
+  const { data } = await axios.put<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}`,
+    club
+  );
+
+  return data;
+};

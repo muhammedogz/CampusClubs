@@ -96,7 +96,6 @@ const Demo = () => {
               {allUsers.map((user) => (
                 <Stack key={user.firstName + user.lastName}>
                   <CampusClubCard
-                    link={`${Routes.DEMO}`}
                     image={getRemoteImage(user.image)}
                     title={user.firstName + ' ' + user.lastName}
                     description={

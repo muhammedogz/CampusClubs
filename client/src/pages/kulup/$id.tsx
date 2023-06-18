@@ -14,6 +14,7 @@ import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
 import AnnouncementCreateModal from 'src/components/modals/AnnouncementCreateModal';
 import EventCreateModal from 'src/components/modals/EventCreateModal';
+import ClubUpdateModal from 'src/components/modals/UpdateClubModal';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
 import {
@@ -34,6 +35,7 @@ type CommonProps = {
 const KulupActionButton = ({ club }: CommonProps) => {
   const [loadingJoin, setLoadingJoin] = useState(false);
   const [loadingLeave, setLoadingLeave] = useState(false);
+  const [openUpdateClubDialog, setOpenUpdateClubDialog] = useState(false);
   const isUserApproved =
     club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.APPROVED;
   const isUserClubAdmin = club.user?.clubRole === ClubRoleEnum.ADMIN;
@@ -69,7 +71,17 @@ const KulupActionButton = ({ club }: CommonProps) => {
     if (isUserApproved && isUserClubAdmin) {
       return (
         <Stack>
-          <CCButton variant="contained">Kulübü Düzenle</CCButton>
+          <ClubUpdateModal
+            open={openUpdateClubDialog}
+            onClose={() => navigate(0)}
+            club={club}
+          />
+          <CCButton
+            onClick={() => setOpenUpdateClubDialog(true)}
+            variant="contained"
+          >
+            Kulübü Düzenle
+          </CCButton>
         </Stack>
       );
     } else if (isUserApproved) {
