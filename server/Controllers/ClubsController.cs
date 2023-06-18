@@ -52,6 +52,8 @@ public class ClubsController : ControllerBase
       return NotFound(new ApiResponse(false, "Club not found", null));
     }
 
+    club.Announcements = club.Announcements.OrderByDescending(a => a.Date).ToList();
+
     var clubDto = _mapper.Map<ClubDTO>(club);
 
     // Get the current user ID from the token

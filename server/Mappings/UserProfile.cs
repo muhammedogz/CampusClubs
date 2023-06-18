@@ -45,5 +45,10 @@ public class UserProfile : Profile
 
     CreateMap<Department, DepartmentDTO>();
     CreateMap<DepartmentDTO, Department>();
+
+    CreateMap<CreateAnnouncementDTO, Announcement>();
+    CreateMap<UpdateAnnouncementDTO, Announcement>();
+    CreateMap<AnnouncementDTO, Announcement>();
+    CreateMap<Announcement, AnnouncementDTO>();
   }
 }

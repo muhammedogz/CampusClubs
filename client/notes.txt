@@ -14,7 +14,7 @@ DONE 5- Auth
   5.1- Login
   5.2- Register
 DONE 6- Join Club (Student)
-7- Create Event (Admin)
+DONE 7- Create Event (Admin)
 DONE 8- Join Event (Student)
 DONE 9- Approve Event Create (Advisor)
 DONE 10- Approve Join Club (Admin)
@@ -35,4 +35,4 @@ DONE 20- Leave Event (Student)
 25- Remove Club Member (Admin or Super Admin)
 26- Remove Club (Super Admin)
 27- Remove Event (Admin or Super Admin)
-28- Create Announcement (Admin)
+DONE 28- Create Announcement (Admin)

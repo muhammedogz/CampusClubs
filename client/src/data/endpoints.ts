@@ -9,6 +9,7 @@ export enum Endpoints {
   FILEUPLOAD = '/fileupload',
   DEPARTMENT = '/department',
   NOTIFICATION = '/notification',
+  ANNOUNCEMENT = '/announcement',
 }
 
 export const getApiEndpoint = (endpoint: Endpoints) => {

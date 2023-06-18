@@ -45,7 +45,7 @@ export const joinClubFetcher = async (clubId: string) => {
   );
 
   return data;
-}
+};
 
 export const leaveClubFetcher = async (clubId: string) => {
   const { data } = await axios.post<ApiResponseType<null>>(
@@ -53,4 +53,22 @@ export const leaveClubFetcher = async (clubId: string) => {
   );
 
   return data;
+};
+
+export interface CreateAnnouncementPayload {
+  title?: string;
+  description?: string;
+  date: Date;
+  clubId: number;
 }
+
+export const createAnnouncementFetcher = async (
+  announcement: CreateAnnouncementPayload
+) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.ANNOUNCEMENT)}`,
+    announcement
+  );
+
+  return data;
+};

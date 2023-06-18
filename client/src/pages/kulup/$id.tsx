@@ -12,6 +12,7 @@ import Table, {
 } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
+import AnnouncementCreateModal from 'src/components/modals/AnnouncementCreateModal';
 import EventCreateModal from 'src/components/modals/EventCreateModal';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
@@ -209,6 +210,8 @@ const KulupOtherInfo = ({ club, loading }: CommonProps) => {
 const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
   const [index, setIndex] = useState(0);
   const [openCreateEventDialog, setOpenCreateEventDialog] = useState(false);
+  const [openCreateAnnouncementDialog, setOpenCreateAnnouncementDialog] =
+    useState(false);
   const events = club.events;
   const announcements = club.announcements;
 
@@ -221,6 +224,11 @@ const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
     <>
       <EventCreateModal
         open={openCreateEventDialog}
+        onClose={() => navigate(0)}
+        club={club}
+      />
+      <AnnouncementCreateModal
+        open={openCreateAnnouncementDialog}
         onClose={() => navigate(0)}
         club={club}
       />
@@ -259,7 +267,12 @@ const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
           <Stack gap="20px">
             {isUserApprovedClubAdmin && (
               <Stack px="100px">
-                <CCButton variant="contained">Duyuru oluştur</CCButton>
+                <CCButton
+                  onClick={() => setOpenCreateAnnouncementDialog(true)}
+                  variant="contained"
+                >
+                  Duyuru oluştur
+                </CCButton>
               </Stack>
             )}
             <Table
