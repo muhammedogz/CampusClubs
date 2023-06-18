@@ -96,3 +96,26 @@ export const createEventFetcher = async (event: EventCreatePayload) => {
 
   return data;
 };
+
+
+export type EventUpdatePayload = {
+  name?: string;
+  description?: string;
+  image?: string;
+  location?: string;
+  type?: string;
+  eventDate?: string;
+  clubId?: number;
+}
+
+export const updateEventFetcher = async (
+  eventId: string,
+  event: EventUpdatePayload
+) => {
+  const { data } = await axios.put<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.EVENTS)}/${eventId}`,
+    event
+  );
+
+  return data;
+};

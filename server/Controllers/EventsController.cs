@@ -253,7 +253,7 @@ public class EventsController : ControllerBase
 
   [HttpPost("/approval/{eventId}/user/{userId}")]
   [Authorize]
-  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] ApprovalStatus status)
+  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] ApproveDTO approveDTO)
   {
     var userEvent = await _context.UserEvents.FirstOrDefaultAsync(ue => ue.EventId == eventId && ue.UserId == userId);
     if (userEvent == null)
@@ -273,7 +273,7 @@ public class EventsController : ControllerBase
       return BadRequest(authResponse);
     }
 
-    userEvent.EventJoinApprovalStatus = status;
+    userEvent.EventJoinApprovalStatus = approveDTO.Status;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
@@ -303,7 +303,7 @@ public class EventsController : ControllerBase
 
   [HttpPatch("approval/{eventId}")]
   [Authorize]
-  public async Task<ActionResult<ApiResponse>> UpdateEventApprovalStatus(int eventId, [FromBody] ApprovalStatus status)
+  public async Task<ActionResult<ApiResponse>> UpdateEventApprovalStatus(int eventId, [FromBody] ApproveDTO approveDTO)
   {
     var eventModel = await _context.Events.
               Include(e => e.Club).
@@ -324,7 +324,7 @@ public class EventsController : ControllerBase
       return BadRequest(new ApiResponse(false, "You are not authorized to edit this event", null));
     }
 
-    eventModel.EventCreateApprovalStatus = status;
+    eventModel.EventCreateApprovalStatus = approveDTO.Status;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "Event approval status updated successfully", null));
@@ -362,4 +362,8 @@ public class EventsController : ControllerBase
     return _mapper.Map<List<UserSummaryDTO>>(userSummaries.OrderBy(us => us.ClubRole == ClubRole.Admin ? 0 : us.ClubRole == ClubRole.Member ? 1 : 2));
   }
 
+  public class ApproveDTO
+  {
+    public ApprovalStatus Status { get; set; }
+  }
 }

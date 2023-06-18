@@ -8,6 +8,7 @@ import { Link } from 'src/components/common/Link';
 import Table, { userColumns } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
+import EventUpdateModal from 'src/components/modals/UpdateEventModal';
 import { emptyEventData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
 import {
@@ -27,6 +28,7 @@ type CommonProps = {
 const EtkinlikActionButton = ({ event }: CommonProps) => {
   const [loadingJoin, setLoadingJoin] = useState(false);
   const [loadingLeave, setLoadingLeave] = useState(false);
+  const [openUpdateEventDialog, setOpenUpdateEventDialog] = useState(false);
   const isUserApproved =
     event.userApprovalStatus === ApprovalStatusEnum.APPROVED;
   const isUserClubAdmin = event.club.clubRole === ClubRoleEnum.ADMIN;
@@ -62,7 +64,17 @@ const EtkinlikActionButton = ({ event }: CommonProps) => {
     if (isUserApproved && isUserClubAdmin) {
       return (
         <Stack>
-          <CCButton variant="contained">Etkinliği Düzenle</CCButton>
+          <EventUpdateModal
+            onClose={() => navigate(0)}
+            open={openUpdateEventDialog}
+            event={event}
+          />
+          <CCButton
+            onClick={() => setOpenUpdateEventDialog(true)}
+            variant="contained"
+          >
+            Etkinliği Düzenle
+          </CCButton>
         </Stack>
       );
     } else if (isUserApproved) {

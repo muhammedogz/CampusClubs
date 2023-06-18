@@ -419,14 +419,14 @@ const Notifications = () => {
                         id: item.club.clubId.toString(),
                         name: item.club.name,
                         image: item.club.image,
-                        type: 'join event',
+                        type: 'create event',
                         link: `${Routes.CLUB}/${item.club.clubId}`,
                       }}
                       rightItem={{
                         id: item.event.eventId.toString(),
                         name: item.event.name,
                         image: item.event.image,
-                        type: 'join event',
+                        type: 'create event',
                         link: `${Routes.CLUB}/${item.event.eventId}`,
                       }}
                       onClickApprove={async () => {

@@ -38,7 +38,7 @@ public class ClubsController : ControllerBase
   {
     var club = await _context.Clubs
         .Include(c => c.Advisor)
-        .Include(c => c.Events)
+        .Include(c => c.Events.Where(e => e.EventCreateApprovalStatus == ApprovalStatus.Approved))
             .ThenInclude(e => e.UserEvents)
         .Include(c => c.Announcements)
         .Include(c => c.UserClubs)
@@ -224,7 +224,7 @@ public class ClubsController : ControllerBase
 
   [HttpPatch("{clubId}/approval/{userId}")]
   [Authorize]
-  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int clubId, int userId, [FromBody] ApprovalStatus status)
+  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int clubId, int userId, [FromBody] ApproveDTO approveDTO)
   {
     var userClub = await _context.UserClubs.FirstOrDefaultAsync(uc => uc.ClubId == clubId && uc.UserId == userId);
     if (userClub == null)
@@ -238,7 +238,7 @@ public class ClubsController : ControllerBase
       return BadRequest(authResponse);
     }
 
-    userClub.ClubJoinApprovalStatus = status;
+    userClub.ClubJoinApprovalStatus = approveDTO.Status;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
@@ -286,4 +286,8 @@ public class ClubsController : ControllerBase
     return _context.Clubs.Any(e => e.ClubId == id);
   }
 
+public class ApproveDTO
+{
+  public ApprovalStatus Status { get; set; }
+}
 }
