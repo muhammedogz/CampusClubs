@@ -18,6 +18,7 @@ import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
 import { considerJoinClubFetcher } from 'src/fetch/clubFetchers';
+import { considerJoinEventFetcher } from 'src/fetch/eventFetchers';
 import {
   NotificationType,
   getNotificationFetcher,
@@ -204,6 +205,27 @@ const Notifications = () => {
     [navigate]
   );
 
+  const considerJoinEventRequest = useCallback(
+    async (
+      { leftId: userId, rightId: eventId }: OnClickParamType,
+      status: ApprovalStatusEnum
+    ) => {
+      try {
+        const requestResponse = await considerJoinEventFetcher({
+          approveStatus: status,
+          eventId,
+          userId,
+        });
+        if (requestResponse.status) {
+          navigate(0);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [navigate]
+  );
+
   useEffect(() => {
     if (userLoggedIn) {
       getNotifications();
@@ -337,8 +359,24 @@ const Notifications = () => {
                         type: 'join event',
                         link: `${Routes.CLUB}/${item.event.eventId}`,
                       }}
-                      onClickApprove={() => console.log('id')}
-                      onClickDecline={() => console.log('id')}
+                      onClickApprove={async () => {
+                        await considerJoinEventRequest(
+                          {
+                            leftId: item.user.userId.toString(),
+                            rightId: item.event.eventId.toString(),
+                          },
+                          ApprovalStatusEnum.APPROVED
+                        );
+                      }}
+                      onClickDecline={async () => {
+                        await considerJoinEventRequest(
+                          {
+                            leftId: item.user.userId.toString(),
+                            rightId: item.event.eventId.toString(),
+                          },
+                          ApprovalStatusEnum.DECLINED
+                        );
+                      }}
                     />
                     <Divider />
                   </>

@@ -29,7 +29,7 @@ export const considerJoinClubFetcher = async ({
   userId,
   approveStatus,
 }: ApprovalJoinClubFuncType) => {
-  const { data } = await axios.patch<ApiResponseType<ClubType>>(
+  const { data } = await axios.patch<ApiResponseType<null>>(
     `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}/approval/${userId}`,
     {
       status: approveStatus,
