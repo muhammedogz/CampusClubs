@@ -192,6 +192,18 @@ public class EventsController : ControllerBase
 
     eventDTO.Users = await GetEventUsers(id, ApprovalStatus.Approved);
 
+    // Get the current user ID from the token
+    var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+    if (!string.IsNullOrEmpty(userId))
+    {
+      // Check the user role from the UserClubs table
+      var userEvent = eventModel.UserEvents.FirstOrDefault(uc => uc.UserId == int.Parse(userId));
+      if (userEvent != null)
+      {
+        eventDTO.UserApprovalStatus = userEvent.EventJoinApprovalStatus;
+      }
+    }
+
     return Ok(new ApiResponse(true, "Event retrieved successfully", eventDTO));
   }
 
