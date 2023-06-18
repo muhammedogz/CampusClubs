@@ -194,16 +194,10 @@ type UyeColumnType = {
   image: string;
   name: string;
   bolum: string;
-  role?: string;
+  role: string;
 };
 
 export const userColumns: Column<UyeColumnType>[] = [
-  { header: ' ', accessor: 'image', align: 'center' },
-  { header: 'Üye Adı', accessor: 'name' },
-  { header: 'Bölüm', accessor: 'bolum' },
-];
-
-export const userColumnsClub: Column<UyeColumnType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Üye Adı', accessor: 'name' },
   { header: 'Bölüm', accessor: 'bolum' },

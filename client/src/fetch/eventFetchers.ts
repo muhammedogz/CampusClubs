@@ -57,3 +57,19 @@ export const considerCreateEventFetcher = async ({
 
   return data;
 }
+
+export const eventJoinFetcher = async (eventId: string) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.EVENTS)}/${eventId}/join`
+  );
+
+  return data;
+}
+
+export const eventLeaveFetcher = async (eventId: string) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.EVENTS)}/${eventId}/leave`
+  );
+
+  return data;
+}

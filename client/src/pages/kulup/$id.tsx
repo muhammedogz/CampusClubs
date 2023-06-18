@@ -8,7 +8,7 @@ import { Link } from 'src/components/common/Link';
 import Table, {
   announcementColumns,
   eventColumns,
-  userColumnsClub,
+  userColumns,
 } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
@@ -252,13 +252,13 @@ const KulupUyeler = ({ club, loading }: CommonProps) => {
       <Table
         loading={loading}
         title="Katılımcılar"
-        columns={userColumnsClub}
+        columns={userColumns}
         data={club.users.map((user) => ({
           bolum: user.department.name,
           image: getRemoteImage(user.image),
           name: user.firstName + ' ' + user.lastName,
-          href: `${Routes.USER}/${user.userId}`,
           role: user.clubRole === ClubRoleEnum.ADMIN ? 'Yönetici' : 'Üye',
+          href: `${Routes.USER}/${user.userId}`,
         }))}
       />
     </Stack>

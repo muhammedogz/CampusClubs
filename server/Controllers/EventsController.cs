@@ -174,6 +174,29 @@ public class EventsController : ControllerBase
     return Ok(new ApiResponse(true, "Joined event successfully", _mapper.Map<EventDTO>(eventModel)));
   }
 
+  [HttpPost("{eventId}/leave")]
+  public async Task<ActionResult<ApiResponse>> EventLeave(int eventId)
+  {
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var currentUser = await UserHelper.GetUserFromDb(_context, int.Parse(userId.ToString()));
+    if (currentUser == null)
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
+
+    var userEvent = await _context.UserEvents
+        .FirstOrDefaultAsync(ue => ue.UserId == currentUser.UserId && ue.EventId == eventId);
+    if (userEvent == null)
+    {
+      return BadRequest(new ApiResponse(false, "User has not joined the event", null));
+    }
+
+    _context.UserEvents.Remove(userEvent);
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Left event successfully", null));
+  }
+
   [HttpGet("{id}")]
   public async Task<ActionResult<ApiResponse>> GetEvent(int id)
   {
