@@ -62,6 +62,7 @@ const DanismanKulupler = ({ user, loading }: CommonProps) => {
         title="Danışmanı Olunan Kulupler"
         data={user.clubs.map((club) => ({
           ...club,
+          image: getRemoteImage(club.image),
           href: `${Routes.CLUB}/${club.clubId}`,
         }))}
         columns={clubColumns}
@@ -84,7 +85,7 @@ const Danisman = () => {
         setUser(userResponse.data);
         setLoading(false);
       }
-      (userResponse);
+      userResponse;
     } catch (error) {
       console.error(error);
     }

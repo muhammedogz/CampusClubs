@@ -72,3 +72,20 @@ export const createAnnouncementFetcher = async (
 
   return data;
 };
+
+export type CreateClubPayload = {
+  name?: string;
+  description?: string;
+  image?: string;
+  tag?: string;
+  advisorId: number;
+}
+
+export const createClubFetcher = async (club: CreateClubPayload) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.CLUBS)}`,
+    club
+  );
+
+  return data;
+}

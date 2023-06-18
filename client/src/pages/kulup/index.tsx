@@ -7,6 +7,7 @@ import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
 import { getAllClubsFetcher } from 'src/fetch/clubFetchers';
 import { ClubType } from 'src/types/types';
+import { getRemoteImage } from 'src/utils/imageUtils';
 
 const Index = () => {
   const [clubs, setClubs] = useState<ClubType[]>([]);
@@ -56,7 +57,7 @@ const Index = () => {
                 <CampusClubCard
                   key={club.name + club.description}
                   link={`${Routes.CLUB}/${club.clubId}`}
-                  image={club.image}
+                  image={getRemoteImage(club.image)}
                   title={club.name}
                   description={club.description}
                 />

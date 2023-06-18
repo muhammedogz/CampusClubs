@@ -93,6 +93,21 @@ public class ClubsController : ControllerBase
     await _context.Clubs.AddAsync(club);
     await _context.SaveChangesAsync();
 
+    var advisor = await _context.Users.FindAsync(clubDTO.AdvisorId);
+    if (advisor != null)
+    {
+      var userClub = new UserClub
+      {
+        UserId = advisor.UserId,
+        ClubId = club.ClubId,
+        ClubRole = ClubRole.Advisor,
+        ClubJoinApprovalStatus = ApprovalStatus.Approved
+      };
+
+      await _context.UserClubs.AddAsync(userClub);
+      await _context.SaveChangesAsync();
+    }
+
     return CreatedAtAction(nameof(GetClub), new { id = club.ClubId }, new ApiResponse(true, "Club created successfully", _mapper.Map<ClubDTO>(club)));
   }
 

@@ -7,4 +7,5 @@ export enum Routes {
   ADVISOR = '/danisman',
   USER = '/kullanici',
   NOTIFICATION = '/bildirimler',
+  ADMIN_PANEL = '/yonetim-paneli',
 }

@@ -1,4 +1,7 @@
-import { NotificationAddTwoTone } from '@mui/icons-material';
+import {
+  AdminPanelSettings,
+  NotificationAddTwoTone,
+} from '@mui/icons-material';
 import ContactsSharpIcon from '@mui/icons-material/ContactsSharp';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import HomeIcon from '@mui/icons-material/Home';
@@ -26,6 +29,7 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Routes } from 'src/data/routes';
 import { getNotificationFetcher } from 'src/fetch/userFetchers';
+import { UserRoleEnum } from 'src/types/types';
 import { getLocalImage } from 'src/utils/imageUtils';
 import {
   StorageKeyEnum,
@@ -251,6 +255,13 @@ export const Sidebar = () => {
                       Profilim
                     </SidebarMenuItem>
                   </Link>
+                  {user.userRole === UserRoleEnum.ADMIN && (
+                    <Link to={Routes.ADMIN_PANEL}>
+                      <SidebarMenuItem icon={<AdminPanelSettings />}>
+                        Admin İşlemleri
+                      </SidebarMenuItem>
+                    </Link>
+                  )}
                   <Link to={Routes.NOTIFICATION}>
                     <SidebarMenuItem icon={<NotificationAddTwoTone />}>
                       <Stack flexDirection="row" alignItems="center" gap="20px">

@@ -86,6 +86,7 @@ const AnnouncementCreateModal = ({ club, open, onClose }: AnnouncementCreateModa
               <Stack gap="10px" justifyContent="center" px="100px">
                 <CCButton
                   loading={loading}
+                  disabled={announcement.title === '' || announcement.description === ''}
                   variant="contained"
                   color="primary"
                   type="submit"

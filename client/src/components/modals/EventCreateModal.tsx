@@ -128,6 +128,7 @@ const EventCreateModal = ({ club, open, onClose }: EventCreateModalProps) => {
               <Stack gap="10px" justifyContent="center" px="100px">
                 <CCButton
                   loading={loading}
+                  disabled={event.name === '' || event.description === ''}
                   variant="contained"
                   color="primary"
                   type="submit"
