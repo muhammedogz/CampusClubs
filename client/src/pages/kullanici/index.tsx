@@ -9,7 +9,7 @@ import { getAllStudentsFetcher } from 'src/fetch/userFetchers';
 import { UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 
-const index = () => {
+const Index = () => {
   const [loading, setLoading] = useState(false);
   const [allStudents, setAllStudents] = useState<UserType[]>([]);
 
@@ -70,4 +70,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

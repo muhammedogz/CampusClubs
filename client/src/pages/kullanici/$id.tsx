@@ -1,7 +1,9 @@
 import { Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
+import { CSVLink } from 'react-csv';
 import { useParams } from 'react-router-dom';
 import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
+import CCButton from 'src/components/common/CCButton';
 import Image from 'src/components/common/Image';
 import Table, { clubColumns, eventColumns } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
@@ -11,6 +13,7 @@ import { Routes } from 'src/data/routes';
 import { getUserFromIdFetcher } from 'src/fetch/userFetchers';
 import { UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
+import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
 import { formatDate } from 'src/utils/utils';
 
 type UserProps = {
@@ -71,8 +74,35 @@ const UyeKulupler = ({ user, loading }: UserProps) => {
 };
 
 const UyeEtkinlikler = ({ user, loading }: UserProps) => {
+  const localUser = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
+  const isMe = localUser?.userId === user.userId;
+
   return (
-    <Stack id="middle-content-right">
+    <Stack id="middle-content-right" gap="20px">
+      {isMe && (
+        <Stack px="100px">
+          <CSVLink
+            data={user.events.map((event) => ({
+              etkinlik_adi: event.name,
+              etkinlik_tarihi: formatDate(event.eventDate),
+              etlinlik_yeri: event.location,
+              etkinlik_duzenleyen_kulup: event.club.name,
+              etkinlik_aciklama: event.description,
+            }))}
+            filename={'etlinlik-kayıtları.csv'}
+            style={{
+              textDecoration: 'none',
+              textAlign: 'center',
+              border: '1px solid #ccc',
+            }}
+            target="_blank"
+          >
+            <CCButton fullWidth variant="contained">
+              Etlinlik Katılım Raporu İndir
+            </CCButton>
+          </CSVLink>
+        </Stack>
+      )}
       <Table
         loading={loading}
         title="Etkinlik Kayıtları"
