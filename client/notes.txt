@@ -22,7 +22,7 @@ DONE 11- Approve Join Event (Admin)
 DONE 12- Create Club (Super Admin)
 DONE 13- Export Joined Events (Maybe backend)
 DONE 14- Edit User (Me)
-15- Edit Advisor (Me)
+DONE 15- Edit Advisor (Me)
 16- Edit Event (Admin)
 17- Edit Club (Super Admin)
 DONE 18- Show Role in Kulup and Event Type
