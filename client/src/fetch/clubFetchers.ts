@@ -38,3 +38,11 @@ export const considerJoinClubFetcher = async ({
 
   return data;
 };
+
+export const joinClubFetcher = async (clubId: string) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}/join`
+  );
+
+  return data;
+}

@@ -1,7 +1,8 @@
 import { CircularProgress, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
+import CCButton from 'src/components/common/CCButton';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import Table, {
@@ -10,18 +11,80 @@ import Table, {
   userColumnsClub,
 } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { Layout } from 'src/components/layout/Layout';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
-import { getClubFromIdFetcher } from 'src/fetch/clubFetchers';
+import { getClubFromIdFetcher, joinClubFetcher } from 'src/fetch/clubFetchers';
 import Slides from 'src/slides/Slides';
-import { ClubRoleEnum, ClubType } from 'src/types/types';
+import { ApprovalStatusEnum, ClubRoleEnum, ClubType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
-import { formatDate } from 'src/utils/utils';
-import { Layout } from '../../components/layout/Layout';
+import { formatDate, isUserLoggedIn } from 'src/utils/utils';
 
 type CommonProps = {
   club: ClubType;
   loading: boolean;
+};
+
+const KulupActionButton = ({ club }: CommonProps) => {
+  const [loadingJoin, setLoadingJoin] = useState(false);
+  const isUserApproved =
+    club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.APPROVED;
+  const isUserClubAdmin = club.user?.clubRole === ClubRoleEnum.ADMIN;
+  const isLoggedIn = isUserLoggedIn();
+
+  const navigate = useNavigate();
+
+  const handleJoinClub = useCallback(async () => {
+    try {
+      setLoadingJoin(true);
+      const joinResponse = await joinClubFetcher(club.clubId.toString());
+      if (joinResponse.status) {
+        navigate(0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [club.clubId, navigate]);
+
+  if (isLoggedIn) {
+    if (isUserApproved && isUserClubAdmin) {
+      return (
+        <Stack>
+          <CCButton variant="contained">Kulübü Düzenle</CCButton>
+        </Stack>
+      );
+    } else if (
+      club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.DECLINED
+    ) {
+      return (
+        <Stack>
+          <CCButton disabled>Üyelik başvurunuz reddedildi</CCButton>
+        </Stack>
+      );
+    } else if (
+      club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.PENDING
+    ) {
+      return (
+        <Stack>
+          <CCButton disabled>Üyelik başvurunuz onay bekliyor</CCButton>
+        </Stack>
+      );
+    } else {
+      return (
+        <Stack>
+          <CCButton
+            onClick={handleJoinClub}
+            loading={loadingJoin}
+            variant="contained"
+          >
+            Kulübe başvur
+          </CCButton>
+        </Stack>
+      );
+    }
+  }
+
+  return null;
 };
 
 const KulupInfo = ({ club, loading }: CommonProps) => {
@@ -30,32 +93,35 @@ const KulupInfo = ({ club, loading }: CommonProps) => {
   }
 
   return (
-    <Stack
-      id="upper-content-left"
-      justifyContent="center"
-      alignItems="center"
-      flexDirection={{ xs: 'column', sm: 'row' }}
-      gap="30px"
-    >
-      <Image
-        width="150px"
-        height="150px"
-        src={getRemoteImage(club.image)}
-        sx={{
-          borderRadius: '20px',
-          boxShadow:
-            'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
-        }}
-      />
-      <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
-        <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
-          {club.name}
-        </Typography>
-        <Typography variant="h6" color="secondary">
-          @{club.clubId}
-        </Typography>
-        <Typography variant="h6">{club.description}</Typography>
+    <Stack gap="30px">
+      <Stack
+        id="upper-content-left"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        gap="30px"
+      >
+        <Image
+          width="150px"
+          height="150px"
+          src={getRemoteImage(club.image)}
+          sx={{
+            borderRadius: '20px',
+            boxShadow:
+              'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
+          }}
+        />
+        <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
+          <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
+            {club.name}
+          </Typography>
+          <Typography variant="h6" color="secondary">
+            @{club.clubId}
+          </Typography>
+          <Typography variant="h6">{club.description}</Typography>
+        </Stack>
       </Stack>
+      <KulupActionButton club={club} loading={loading} />
     </Stack>
   );
 };
@@ -186,7 +252,7 @@ const Kulup = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     getClubInfo();

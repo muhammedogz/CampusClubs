@@ -5,7 +5,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
-import SettingsIcon from '@mui/icons-material/Settings';
 import SupervisedUserCircleSharpIcon from '@mui/icons-material/SupervisedUserCircleSharp';
 import {
   Badge,
@@ -33,7 +32,6 @@ import {
   getLocalStorageItem,
   removeLocalStorageItem,
 } from 'src/utils/storageUtils';
-import { isUserLoggedIn } from 'src/utils/utils';
 
 const SidebarHeader = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -185,7 +183,7 @@ export const Sidebar = () => {
     if (userLoggedIn) {
       getNotifications();
     }
-  }, [getNotifications]);
+  }, [getNotifications, userLoggedIn]);
 
   return (
     <Stack
