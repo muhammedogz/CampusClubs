@@ -5,6 +5,7 @@ export enum Endpoints {
   EVENTS = '/events',
   CLUBS = '/clubs',
   AUTH = '/auth/auth',
+  AUTH_TOKEN = '/auth/token',
   SIGNUP = '/auth/register',
   FILEUPLOAD = '/fileupload',
   DEPARTMENT = '/department',

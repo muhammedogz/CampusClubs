@@ -36,3 +36,5 @@ DONE 20- Leave Event (Student)
 26- Remove Club (Super Admin)
 27- Remove Event (Admin or Super Admin)
 DONE 28- Create Announcement (Admin)
+DONE 29- Create Demo Page
+    29.1- Login with button

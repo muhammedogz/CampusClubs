@@ -35,7 +35,7 @@ const Index = () => {
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
-            Tüm Kullanıcılar
+            Tüm Öğrenciler
           </Typography>
         </Stack>
         <Stack

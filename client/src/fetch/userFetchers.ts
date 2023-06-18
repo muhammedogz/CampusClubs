@@ -8,6 +8,14 @@ import {
   UserType,
 } from 'src/types/types';
 
+export const getAllUsersFetcher = async () => {
+  const { data } = await axios.get<ApiResponseType<UserType[]>>(
+    getApiEndpoint(Endpoints.USERS)
+  );
+
+  return data;
+};
+
 export const getAllStudentsFetcher = async () => {
   const { data } = await axios.get<ApiResponseType<UserType[]>>(
     getApiEndpoint(Endpoints.USERS_STUDENTS)

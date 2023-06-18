@@ -8,4 +8,5 @@ export enum Routes {
   USER = '/kullanici',
   NOTIFICATION = '/bildirimler',
   ADMIN_PANEL = '/yonetim-paneli',
+  DEMO = '/demo',
 }

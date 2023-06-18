@@ -38,3 +38,11 @@ export const authFetcher = async (payload: AuthPayloadType) => {
   return data;
 };
 
+export const authTokenFetcher = async (username: string) => {
+  const { data } = await axios.post<ApiResponseType<AuthExistingResponseType>>(
+    getApiEndpoint(Endpoints.AUTH_TOKEN),
+    { username: username }
+  );
+
+  return data;
+}
