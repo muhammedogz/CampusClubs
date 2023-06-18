@@ -51,18 +51,14 @@ const SignUp = () => {
   const handleSubmit = async () => {
     try {
       setLoadingSignup(true);
-      console.log({ user });
 
       let imageUrl: string | null = null;
 
       if (user.file) {
         const uploadResponse = await uploadFileFetcher(user.file);
 
-        console.log(uploadResponse);
         imageUrl = uploadResponse.data.filePath;
       }
-
-      console.log(imageUrl);
 
       const signUpUsrResponse = await signUpFetcher({
         ...user,
@@ -71,7 +67,6 @@ const SignUp = () => {
       });
 
       if (signUpUsrResponse.status) {
-        console.log('signUpUsrResponse', signUpUsrResponse);
         const data = signUpUsrResponse.data;
         const token = data.token as string;
         updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
@@ -81,22 +76,18 @@ const SignUp = () => {
         removeLocalStorageItem(StorageKeyEnum.SIGNUP_STORAGE);
         naviagte(generateRoute(Routes.HOME));
       }
-
-      console.log(signUpUsrResponse);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoadingSignup(false);
     }
   };
 
   useEffect(() => {
-    console.log('auth', auth);
     if (!auth) {
-      console.log('here');
       naviagte(generateRoute(Routes.HOME));
     }
-  }, []);
+  }, [auth, naviagte]);
 
   if (!auth) {
     return null;

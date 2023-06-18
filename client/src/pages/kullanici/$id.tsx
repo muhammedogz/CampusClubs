@@ -101,7 +101,6 @@ const Kullanici = () => {
         setUser(userResponse.data);
         setLoading(false);
       }
-      console.log(userResponse);
     } catch (error) {
       console.error(error);
     }

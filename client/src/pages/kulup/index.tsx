@@ -8,7 +8,7 @@ import { Routes } from 'src/data/routes';
 import { getAllClubsFetcher } from 'src/fetch/clubFetchers';
 import { ClubType } from 'src/types/types';
 
-const index = () => {
+const Index = () => {
   const [clubs, setClubs] = useState<ClubType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -20,7 +20,7 @@ const index = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 
@@ -69,4 +69,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

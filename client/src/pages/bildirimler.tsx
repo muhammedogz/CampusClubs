@@ -175,14 +175,13 @@ const Notifications = () => {
     try {
       setLoading(true);
       const notificationResponse = await getNotificationFetcher();
-      console.log(notificationResponse);
       if (notificationResponse.status) {
         const response = notificationResponse.data;
         setNotifications(response);
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 

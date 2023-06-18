@@ -5,6 +5,5 @@ export const getLocalImage = (image: string) => {
 };
 
 export const getRemoteImage = (image: string) => {
-  console.log('full path', `${import.meta.env.VITE_PUBLIC_IMAGE_PATH}${image}`);
   return `${import.meta.env.VITE_PUBLIC_IMAGE_PATH}${image}`;
 };

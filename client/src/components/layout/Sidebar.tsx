@@ -165,7 +165,6 @@ export const Sidebar = () => {
   const getNotifications = useCallback(async () => {
     try {
       const notificationResponse = await getNotificationFetcher();
-      console.log(notificationResponse);
       if (notificationResponse.status) {
         const response = notificationResponse.data;
         setNotificationCount(
@@ -175,7 +174,7 @@ export const Sidebar = () => {
         );
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 

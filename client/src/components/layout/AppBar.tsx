@@ -32,10 +32,6 @@ function ResponsiveAppBar() {
   const handleSignin = useCallback(() => {
     setLoadingSigninButton(true);
     const { url, code_verifier, state, code_challenge } = generateRedirectUrl();
-    console.log('url', url);
-    console.log('code_verifier', code_verifier);
-    console.log('state', state);
-    console.log('code_challenge', code_challenge);
     updateLocalStorageItem(StorageKeyEnum.AUTHORIZE_STORAGE, {
       code_verifier,
       code_challenge,

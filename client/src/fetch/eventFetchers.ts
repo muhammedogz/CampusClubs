@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
-import { ApiResponseType, ApprovalStatusEnum, EventType } from 'src/types/types';
+import {
+  ApiResponseType,
+  ApprovalStatusEnum,
+  EventType,
+} from 'src/types/types';
 
 export const getAllEventsFetcher = async () => {
   const { data } = await axios.get<ApiResponseType<EventType[]>>(
@@ -56,7 +60,7 @@ export const considerCreateEventFetcher = async ({
   );
 
   return data;
-}
+};
 
 export const eventJoinFetcher = async (eventId: string) => {
   const { data } = await axios.post<ApiResponseType<null>>(
@@ -64,7 +68,7 @@ export const eventJoinFetcher = async (eventId: string) => {
   );
 
   return data;
-}
+};
 
 export const eventLeaveFetcher = async (eventId: string) => {
   const { data } = await axios.post<ApiResponseType<null>>(
@@ -72,4 +76,23 @@ export const eventLeaveFetcher = async (eventId: string) => {
   );
 
   return data;
-}
+};
+
+export type EventCreatePayload = {
+  name: string;
+  description: string;
+  image?: string;
+  location: string;
+  type: string;
+  eventDate: Date;
+  clubId: number;
+};
+
+export const createEventFetcher = async (event: EventCreatePayload) => {
+  const { data } = await axios.post<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.EVENTS)}`,
+    event
+  );
+
+  return data;
+};

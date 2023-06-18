@@ -12,6 +12,7 @@ import Table, {
 } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
+import EventCreateModal from 'src/components/modals/EventCreateModal';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
 import {
@@ -207,42 +208,74 @@ const KulupOtherInfo = ({ club, loading }: CommonProps) => {
 
 const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
   const [index, setIndex] = useState(0);
-
+  const [openCreateEventDialog, setOpenCreateEventDialog] = useState(false);
   const events = club.events;
   const announcements = club.announcements;
 
+  const isUserApprovedClubAdmin =
+    club.user?.clubRole === ClubRoleEnum.ADMIN &&
+    club.user.clubJoinApprovalStatus === ApprovalStatusEnum.APPROVED;
+  const navigate = useNavigate();
+
   return (
-    <Stack id="middle-content-left" gap={2}>
-      <Stack alignItems="center" alignSelf="flex-start">
-        <Tabs value={index} onChange={(e, value) => setIndex(value)}>
-          <Tab label="Etkinlikler" value={0} />
-          <Tab label="Duyurular" value={1} />
-        </Tabs>
+    <>
+      <EventCreateModal
+        open={openCreateEventDialog}
+        onClose={() => navigate(0)}
+        club={club}
+      />
+      <Stack id="middle-content-left" gap={2}>
+        <Stack alignItems="center" alignSelf="flex-start">
+          <Tabs value={index} onChange={(e, value) => setIndex(value)}>
+            <Tab label="Etkinlikler" value={0} />
+            <Tab label="Duyurular" value={1} />
+          </Tabs>
+        </Stack>
+        <Slides index={index}>
+          <Stack gap="20px">
+            {isUserApprovedClubAdmin && (
+              <Stack px="100px">
+                <CCButton
+                  onClick={() => setOpenCreateEventDialog(true)}
+                  variant="contained"
+                >
+                  Etkinlik Oluştur
+                </CCButton>
+              </Stack>
+            )}
+            <Table
+              loading={loading}
+              fullWidth
+              title="Etkinlikler"
+              data={events.map((event) => ({
+                ...event,
+                image: getRemoteImage(event.image),
+                eventDate: formatDate(event.eventDate),
+                href: `${Routes.EVENT}/${event.eventId}`,
+              }))}
+              columns={eventColumns}
+            />
+          </Stack>
+          <Stack gap="20px">
+            {isUserApprovedClubAdmin && (
+              <Stack px="100px">
+                <CCButton variant="contained">Duyuru oluştur</CCButton>
+              </Stack>
+            )}
+            <Table
+              loading={loading}
+              fullWidth
+              title="Duyurular"
+              data={announcements.map((announcement) => ({
+                ...announcement,
+                date: formatDate(announcement.date),
+              }))}
+              columns={announcementColumns}
+            />
+          </Stack>
+        </Slides>
       </Stack>
-      <Slides index={index}>
-        <Table
-          loading={loading}
-          fullWidth
-          title="Etkinlikler"
-          data={events.map((event) => ({
-            ...event,
-            eventDate: formatDate(event.eventDate),
-            href: `${Routes.EVENT}/${event.eventId}`,
-          }))}
-          columns={eventColumns}
-        />
-        <Table
-          loading={loading}
-          fullWidth
-          title="Duyurular"
-          data={announcements.map((announcement) => ({
-            ...announcement,
-            date: formatDate(announcement.date),
-          }))}
-          columns={announcementColumns}
-        />
-      </Slides>
-    </Stack>
+    </>
   );
 };
 
@@ -279,7 +312,7 @@ const Kulup = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [id]);
 

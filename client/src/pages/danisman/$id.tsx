@@ -84,7 +84,7 @@ const Danisman = () => {
         setUser(userResponse.data);
         setLoading(false);
       }
-      console.log(userResponse);
+      (userResponse);
     } catch (error) {
       console.error(error);
     }
