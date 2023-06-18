@@ -2,6 +2,18 @@ using Server.Models;
 
 namespace Server.DTOs;
 
+public class UserClubGetDTO
+{
+  public UserClubGetDTO(ClubRole clubRole, ApprovalStatus clubJoinApprovalStatus)
+  {
+    ClubRole = clubRole;
+    ClubJoinApprovalStatus = clubJoinApprovalStatus;
+  }
+
+  public ClubRole ClubRole { get; set; }
+  public ApprovalStatus ClubJoinApprovalStatus { get; set; }
+}
+
 public class ClubSummaryDTO
 {
   public int ClubId { get; set; }
@@ -10,7 +22,7 @@ public class ClubSummaryDTO
   public string? Image { get; set; }
   public string? Tag { get; set; }
   public ClubRole? ClubRole { get; set; }
-
+  public UserClubDTO? User { get; set; } = null;
 }
 
 public class ClubDTO : ClubSummaryDTO
