@@ -55,17 +55,20 @@ public class ClubsController : ControllerBase
     var clubDto = _mapper.Map<ClubDTO>(club);
 
     // Get the current user ID from the token
-    var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-    // Check the user role from the UserClubs table
-    var userClub = club.UserClubs.FirstOrDefault(uc => uc.UserId == int.Parse(userId!));
-    if (userClub != null)
+    var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+    if (!string.IsNullOrEmpty(userId))
     {
-      clubDto.User = new UserClubGetDTO(
-          userClub.ClubRole,
-          userClub.ClubJoinApprovalStatus
-      );
+      // Check the user role from the UserClubs table
+      var userClub = club.UserClubs.FirstOrDefault(uc => uc.UserId == int.Parse(userId));
+      if (userClub != null)
+      {
+        clubDto.User = new UserClubGetDTO(
+            userClub.ClubRole,
+            userClub.ClubJoinApprovalStatus
+        );
+      }
     }
+
 
     // Map UserClubs to Users
     clubDto.Users = club.UserClubs

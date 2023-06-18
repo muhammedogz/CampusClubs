@@ -22,7 +22,7 @@ public class ClubSummaryDTO
   public string? Image { get; set; }
   public string? Tag { get; set; }
   public ClubRole? ClubRole { get; set; }
-  public UserClubDTO? User { get; set; } = null;
+  public UserClubGetDTO? User { get; set; } = null;
 }
 
 public class ClubDTO : ClubSummaryDTO
