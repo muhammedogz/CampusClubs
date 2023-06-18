@@ -30,8 +30,8 @@ DONE 17- Edit Club
 DONE 18- Show Role in Kulup and Event Type
 DONE 19- Leave Club (Student)
 DONE 20- Leave Event (Student)
-21- Add Club Admin (Super Admin)
-22- Add Club Advisor (Super Admin)
+DONE 21- Add Club Admin (Super Admin)
+DONE 22- Add Club Advisor (Super Admin)
 23- Remove Club Admin (Super Admin)
 24- Remove Club Advisor (Super Admin)
 25- Remove Club Member (Admin or Super Admin)
