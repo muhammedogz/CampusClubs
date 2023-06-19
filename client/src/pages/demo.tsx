@@ -68,7 +68,7 @@ const Demo = () => {
 
   return (
     <Layout>
-      <Stack gap="20px" pt="60px">
+      <Stack gap="40px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
             Tüm Kullanıcıalr
@@ -102,7 +102,7 @@ const Demo = () => {
                       user.userRole === UserRoleEnum.ADMIN
                         ? 'SKS Admin'
                         : user.userRole === UserRoleEnum.TEACHER
-                        ? 'Öğretmen'
+                        ? 'Öğretim Görevlisi'
                         : 'Öğrenci'
                     }
                   />
