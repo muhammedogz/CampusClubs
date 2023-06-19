@@ -11,8 +11,17 @@ import CCButton from 'src/components/common/CCButton';
 import FileUpload from 'src/components/form/FileUpload';
 import { departmentData } from 'src/data/departmentData';
 import { uploadFileFetcher } from 'src/fetch/fetchers';
-import { UserUpdateDTO, updateUserFetcher } from 'src/fetch/userFetchers';
+import {
+  UserUpdateDTO,
+  getUserFromIdFetcher,
+  updateUserFetcher,
+} from 'src/fetch/userFetchers';
 import { UserType } from 'src/types/types';
+import {
+  StorageKeyEnum,
+  getLocalStorageItem,
+  updateLocalStorageItem,
+} from 'src/utils/storageUtils';
 
 type UserUpdateModalProps = {
   user: UserType;
@@ -48,6 +57,18 @@ const UserUpdateModal = ({ user, open, onClose }: UserUpdateModalProps) => {
         image: imageUrl,
       });
       if (response.status) {
+        const userResponse = await getUserFromIdFetcher(user.userId.toString());
+        if (userResponse.status) {
+          const userData = userResponse.data;
+          const userStorage = getLocalStorageItem(StorageKeyEnum.USER_STORAGE);
+          updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
+            token: userStorage?.token ?? '',
+            user: {
+              ...userStorage?.user,
+              ...userData,
+            },
+          });
+        }
         onClose();
       }
     } catch (error) {

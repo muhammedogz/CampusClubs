@@ -264,7 +264,7 @@ public class ClubsController : ControllerBase
         .FirstOrDefaultAsync(uc => uc.UserId == userToAddDTO.UserId && uc.ClubId == clubId);
     if (existingUserClub != null)
     {
-      return BadRequest(new ApiResponse(false, $"User {userToAddDTO.UserId} is already a member of the club", null));
+      _context.UserClubs.Remove(existingUserClub);
     }
 
     var userClub = new UserClub
