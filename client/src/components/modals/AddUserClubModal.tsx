@@ -48,7 +48,7 @@ const AddUserClubModal = ({ open, onClose, clubId }: UserAddModalProps) => {
   }, [getAllUsers]);
 
   const handleSubmit = async () => {
-    if (selectedUser && selectedRole) {
+    if (selectedUser !== null && selectedRole !== null) {
       try {
         setLoading(true);
         const response = await addUserToClubFetcher(clubId, {
