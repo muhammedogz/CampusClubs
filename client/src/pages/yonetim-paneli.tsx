@@ -20,30 +20,15 @@ import { ClubType, UserRoleEnum } from 'src/types/types';
 import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
 import { generateRoute } from 'src/utils/urlUtils';
 
-const AllClubsEdit = () => {
-  const [clubs, setClubs] = useState<ClubType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+type CommonProps = {
+  clubs: ClubType[];
+  loading: boolean;
+};
+
+const AllClubsEdit = ({ clubs, loading }: CommonProps) => {
   const [openUpdateClubDialog, setOpenUpdateClubDialog] = useState(false);
   const [selectedClub, setSelectedClub] = useState<ClubType | null>(null);
-
   const navigate = useNavigate();
-
-  const getAllClubs = useCallback(async () => {
-    try {
-      setLoading(true);
-      const clubsRespone = await getAllClubsFetcher();
-      if (clubsRespone.status) {
-        setClubs(clubsRespone.data);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    getAllClubs();
-  }, [getAllClubs]);
 
   return (
     <Stack>
@@ -92,30 +77,11 @@ const AllClubsEdit = () => {
   );
 };
 
-const AllClubsAddUser = () => {
-  const [clubs, setClubs] = useState<ClubType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+const AllClubsAddUser = ({ clubs, loading }: CommonProps) => {
   const [openUpdateClubDialog, setOpenUpdateClubDialog] = useState(false);
   const [selectedClub, setSelectedClub] = useState<ClubType | null>(null);
 
   const navigate = useNavigate();
-
-  const getAllClubs = useCallback(async () => {
-    try {
-      setLoading(true);
-      const clubsRespone = await getAllClubsFetcher();
-      if (clubsRespone.status) {
-        setClubs(clubsRespone.data);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    getAllClubs();
-  }, [getAllClubs]);
 
   return (
     <Stack>
@@ -171,6 +137,25 @@ const Panel = () => {
 
   const navigate = useNavigate();
 
+  const [clubs, setClubs] = useState<ClubType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const getAllClubs = useCallback(async () => {
+    try {
+      setLoading(true);
+      const clubsRespone = await getAllClubsFetcher();
+      if (clubsRespone.status) {
+        setClubs(clubsRespone.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllClubs();
+  }, [getAllClubs]);
+
   useEffect(() => {
     if (!userLoggedIn || user.userRole !== UserRoleEnum.ADMIN) {
       navigate(generateRoute(Routes.HOME));
@@ -208,7 +193,7 @@ const Panel = () => {
               <Typography>Kulüpleri düzenle</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <AllClubsEdit />
+              <AllClubsEdit clubs={clubs} loading={loading} />
             </AccordionDetails>
           </Accordion>
         </Stack>
@@ -221,7 +206,20 @@ const Panel = () => {
               <Typography>Kulüplere kullanıcı ekkle</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <AllClubsAddUser />
+              <AllClubsAddUser clubs={clubs} loading={loading} />
+            </AccordionDetails>
+          </Accordion>
+        </Stack>
+        <Stack>
+          <Accordion>
+            <AccordionSummary
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+              <Typography>Kulüplerden Kullanıcı Çıkar</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <AllClubsAddUser clubs={clubs} loading={loading} />
             </AccordionDetails>
           </Accordion>
         </Stack>

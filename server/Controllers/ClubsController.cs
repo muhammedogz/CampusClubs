@@ -295,6 +295,28 @@ public class ClubsController : ControllerBase
     return Ok(new ApiResponse(true, "User added to club successfully", null));
   }
 
+  [HttpDelete("{clubId}/users/{userId}")]
+  [Authorize]
+  public async Task<ActionResult<ApiResponse>> RemoveUser(int clubId, int userId)
+  {
+    var userClub = await _context.UserClubs.FirstOrDefaultAsync(uc => uc.ClubId == clubId && uc.UserId == userId);
+    if (userClub == null)
+    {
+      return NotFound(new ApiResponse(false, "User or club not found", null));
+    }
+
+    var authResponse = await UserHelper.CheckAuthUserIsClubAdmin(User, _context, clubId);
+    if (authResponse != null)
+    {
+      return BadRequest(authResponse);
+    }
+
+    _context.UserClubs.Remove(userClub);
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "User removed from club successfully", null));
+  }
+
   [HttpDelete("{id}")]
   [Authorize(Policy = "Admin")]
   public async Task<ActionResult<ApiResponse>> DeleteClub(int id)
