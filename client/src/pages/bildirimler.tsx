@@ -380,7 +380,7 @@ const Notifications = () => {
                         name: item.event.name,
                         image: item.event.image,
                         type: 'join event',
-                        link: `${Routes.CLUB}/${item.event.eventId}`,
+                        link: `${Routes.EVENT}/${item.event.eventId}`,
                       }}
                       onClickApprove={async () => {
                         await considerJoinEventRequest(

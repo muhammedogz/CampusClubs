@@ -251,7 +251,7 @@ public class EventsController : ControllerBase
     return Ok(new ApiResponse(true, "Pending users retrieved successfully", users));
   }
 
-  [HttpPost("/approval/{eventId}/user/{userId}")]
+  [HttpPost("approval/{eventId}/user/{userId}")]
   [Authorize]
   public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] ApproveDTO approveDTO)
   {

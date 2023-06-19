@@ -224,7 +224,7 @@ public class ClubsController : ControllerBase
 
   [HttpPatch("{clubId}/approval/{userId}")]
   [Authorize]
-  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int clubId, int userId, [FromBody] ApproveDTO approveDTO)
+  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int clubId, int userId, [FromBody] ApproveDTOClub approveDTOClub)
   {
     var userClub = await _context.UserClubs.FirstOrDefaultAsync(uc => uc.ClubId == clubId && uc.UserId == userId);
     if (userClub == null)
@@ -238,7 +238,7 @@ public class ClubsController : ControllerBase
       return BadRequest(authResponse);
     }
 
-    userClub.ClubJoinApprovalStatus = approveDTO.Status;
+    userClub.ClubJoinApprovalStatus = approveDTOClub.Status;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
@@ -337,7 +337,7 @@ public class ClubsController : ControllerBase
     return _context.Clubs.Any(e => e.ClubId == id);
   }
 
-  public class ApproveDTO
+  public class ApproveDTOClub
   {
     public ApprovalStatus Status { get; set; }
   }

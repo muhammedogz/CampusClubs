@@ -1,6 +1,8 @@
 import { Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import CampusClubCard, { CampusClubCardLoading } from 'src/components/cards/CampusClubCard';
+import CampusClubCard, {
+  CampusClubCardLoading,
+} from 'src/components/cards/CampusClubCard';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Layout } from 'src/components/layout/Layout';
@@ -58,7 +60,7 @@ const Index = () => {
             <>
               {events.map((event) => (
                 <CampusClubCard
-                  key={event.name + event.description}
+                  key={event.name + event.description + event.eventId}
                   link={`${Routes.EVENT}/${event.eventId}`}
                   image={getRemoteImage(event.image)}
                   topLeftText={event.type}
