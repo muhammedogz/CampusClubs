@@ -40,16 +40,11 @@ export const generateRedirectUrl = () => {
   // convert url safe base64
   const code_challenge = encodeURIComponent(code_challenge_);
 
-  console.log('code_verifier', code_verifier);
-  console.log('code_challenge', code_challenge);
-
   const state = generateState();
 
   const redirect_uri = import.meta.env.VITE_PUBLIC_AUTH_PATH;
 
   const url = `https://kampus.gtu.edu.tr/oauth/yetki?response_type=${RESPONSE_TYPE}&client_id=${CLIENT_ID}&redirect_uri=${redirect_uri}&state=${state}&code_challenge_method=${CODE_CHALLENGE_METHOD}&code_challenge=${code_challenge}`;
-
-  console.log('url', url);
 
   return { url, code_verifier, code_challenge, state };
 };

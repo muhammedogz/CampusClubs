@@ -33,6 +33,7 @@ public class AnnouncementController : ControllerBase
     }
 
     var announcement = _mapper.Map<Announcement>(announcementDto);
+    announcement.CreatedAt = DateTime.UtcNow;
     await _context.Announcements.AddAsync(announcement);
     await _context.SaveChangesAsync();
 

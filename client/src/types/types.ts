@@ -54,7 +54,9 @@ export type EventBaseType = {
   type: string;
   approvalStatus: ApprovalStatusEnum;
   eventDate: string;
-  club: ClubBaseType;
+  club: ClubBaseType & {
+    clubRole?: ClubRoleEnum;
+  };
   userApprovalStatus: ApprovalStatusEnum;
 };
 
@@ -70,8 +72,14 @@ export type ClubBaseType = {
   tag: string;
 };
 
+type ClubUserApprovalStatusType = {
+  clubJoinApprovalStatus: ApprovalStatusEnum;
+  clubRole: ClubRoleEnum;
+};
+
 export type ClubType = ClubBaseType & {
   advisor: UserBaseType;
+  user?: ClubUserApprovalStatusType;
   users: UserBaseType[];
   events: EventBaseType[];
   announcements: AnnouncementType[];

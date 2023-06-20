@@ -9,12 +9,13 @@ import { getAllStudentsFetcher } from 'src/fetch/userFetchers';
 import { UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 
-const index = () => {
+const Index = () => {
   const [loading, setLoading] = useState(false);
   const [allStudents, setAllStudents] = useState<UserType[]>([]);
 
   const getAllStudents = useCallback(async () => {
     try {
+      setLoading(true);
       const allUsersResponse = await getAllStudentsFetcher();
 
       if (allUsersResponse.status) {
@@ -35,7 +36,7 @@ const index = () => {
       <Stack gap="20px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
-            Tüm Kullanıcılar
+            Tüm Öğrenciler
           </Typography>
         </Stack>
         <Stack
@@ -70,4 +71,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

@@ -52,8 +52,7 @@ for (const path of Object.keys(pages)) {
 routes.push({
   path: '*',
   Element: <ErrorPage />,
-  // @ts-ignore
-  ErrorBoundary: ErrorPage,
+  ErrorBoundary: <ErrorPage />,
 });
 
 const router = createBrowserRouter(

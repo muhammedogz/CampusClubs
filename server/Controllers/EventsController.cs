@@ -174,6 +174,29 @@ public class EventsController : ControllerBase
     return Ok(new ApiResponse(true, "Joined event successfully", _mapper.Map<EventDTO>(eventModel)));
   }
 
+  [HttpPost("{eventId}/leave")]
+  public async Task<ActionResult<ApiResponse>> EventLeave(int eventId)
+  {
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var currentUser = await UserHelper.GetUserFromDb(_context, int.Parse(userId.ToString()));
+    if (currentUser == null)
+    {
+      return NotFound(new ApiResponse(false, "User not found", null));
+    }
+
+    var userEvent = await _context.UserEvents
+        .FirstOrDefaultAsync(ue => ue.UserId == currentUser.UserId && ue.EventId == eventId);
+    if (userEvent == null)
+    {
+      return BadRequest(new ApiResponse(false, "User has not joined the event", null));
+    }
+
+    _context.UserEvents.Remove(userEvent);
+    await _context.SaveChangesAsync();
+
+    return Ok(new ApiResponse(true, "Left event successfully", null));
+  }
+
   [HttpGet("{id}")]
   public async Task<ActionResult<ApiResponse>> GetEvent(int id)
   {
@@ -191,6 +214,18 @@ public class EventsController : ControllerBase
     var eventDTO = _mapper.Map<EventDTO>(eventModel);
 
     eventDTO.Users = await GetEventUsers(id, ApprovalStatus.Approved);
+    // Get the current user ID from the token
+    var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+    if (!string.IsNullOrEmpty(userId))
+    {
+      // Check the user role from the UserClubs table
+      var userEvent = eventModel.UserEvents.FirstOrDefault(uc => uc.UserId == int.Parse(userId));
+      if (userEvent != null)
+      {
+        eventDTO.UserApprovalStatus = userEvent.EventJoinApprovalStatus;
+        eventDTO.Club!.ClubRole = _context.UserClubs.FirstOrDefault(uc => uc.UserId == int.Parse(userId) && uc.ClubId == eventModel.ClubId && uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)?.ClubRole;
+      }
+    }
 
     return Ok(new ApiResponse(true, "Event retrieved successfully", eventDTO));
   }
@@ -216,9 +251,9 @@ public class EventsController : ControllerBase
     return Ok(new ApiResponse(true, "Pending users retrieved successfully", users));
   }
 
-  [HttpPost("/approval/{eventId}/user/{userId}")]
+  [HttpPost("approval/{eventId}/user/{userId}")]
   [Authorize]
-  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] ApprovalStatus status)
+  public async Task<ActionResult<ApiResponse>> UpdateUserApprovalStatus(int eventId, int userId, [FromBody] ApproveDTO approveDTO)
   {
     var userEvent = await _context.UserEvents.FirstOrDefaultAsync(ue => ue.EventId == eventId && ue.UserId == userId);
     if (userEvent == null)
@@ -238,7 +273,7 @@ public class EventsController : ControllerBase
       return BadRequest(authResponse);
     }
 
-    userEvent.EventJoinApprovalStatus = status;
+    userEvent.EventJoinApprovalStatus = approveDTO.Status;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "User approval status updated successfully", null));
@@ -268,7 +303,7 @@ public class EventsController : ControllerBase
 
   [HttpPatch("approval/{eventId}")]
   [Authorize]
-  public async Task<ActionResult<ApiResponse>> UpdateEventApprovalStatus(int eventId, [FromBody] ApprovalStatus status)
+  public async Task<ActionResult<ApiResponse>> UpdateEventApprovalStatus(int eventId, [FromBody] ApproveDTO approveDTO)
   {
     var eventModel = await _context.Events.
               Include(e => e.Club).
@@ -289,7 +324,7 @@ public class EventsController : ControllerBase
       return BadRequest(new ApiResponse(false, "You are not authorized to edit this event", null));
     }
 
-    eventModel.EventCreateApprovalStatus = status;
+    eventModel.EventCreateApprovalStatus = approveDTO.Status;
     await _context.SaveChangesAsync();
 
     return Ok(new ApiResponse(true, "Event approval status updated successfully", null));
@@ -310,10 +345,26 @@ public class EventsController : ControllerBase
     var userEvents = await _context.UserEvents
         .Where(ue => ue.EventId == eventId && ue.EventJoinApprovalStatus == approvalStatus)
         .Include(ue => ue.User)
-        .Include(ue => ue!.User!.Department)
+            .ThenInclude(u => u!.UserClubs) // Include the UserClubs table
+        .Include(ue => ue.User!.Department)
         .ToListAsync();
 
-    return _mapper.Map<List<UserSummaryDTO>>(userEvents.Select(ue => ue.User));
+    var userSummaries = userEvents.Select(ue => new UserSummaryDTO
+    {
+      UserId = ue.UserId,
+      FirstName = ue.User?.FirstName,
+      LastName = ue.User?.LastName,
+      Email = ue.User?.Email!,
+      Department = _mapper.Map<DepartmentDTO>(ue.User?.Department),
+      Image = ue.User?.Image,
+      ClubRole = ue.User?.UserClubs?.FirstOrDefault(uc => uc.ClubId == ue?.Event!.ClubId && uc.ClubJoinApprovalStatus == ApprovalStatus.Approved)?.ClubRole
+    });
+
+    return _mapper.Map<List<UserSummaryDTO>>(userSummaries.OrderBy(us => us.ClubRole == ClubRole.Admin ? 0 : us.ClubRole == ClubRole.Member ? 1 : 2));
   }
 
+  public class ApproveDTO
+  {
+    public ApprovalStatus Status { get; set; }
+  }
 }

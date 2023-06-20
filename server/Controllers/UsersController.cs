@@ -56,6 +56,31 @@ public class UsersController : ControllerBase
     return await GetUsersByRole(UserRole.Teacher, "Teachers users retrieved successfully");
   }
 
+  [HttpGet]
+  public async Task<ActionResult<ApiResponse>> GetAllUsers()
+  {
+    try
+    {
+      var users = await _context.Users
+          .OrderByDescending(u => u.UserRole == UserRole.Admin)
+          .ThenByDescending(u => u.UserRole == UserRole.Teacher)
+          .ThenBy(u => u.UserRole == UserRole.Student)
+          .ToListAsync();
+
+      if (!users.Any())
+      {
+        return NotFound(new ApiResponse(false, "No users found", new List<UserSummaryDTO>()));
+      }
+
+      return Ok(new ApiResponse(true, "Users retrieved successfully", _mapper.Map<List<UserSummaryDTO>>(users)));
+    }
+    catch (Exception)
+    {
+      return StatusCode(StatusCodes.Status500InternalServerError,
+          new ApiResponse(false, "An error occurred while retrieving users", null));
+    }
+  }
+
   [HttpGet("{id}")]
   public async Task<ActionResult<ApiResponse>> GetUser(int id)
   {

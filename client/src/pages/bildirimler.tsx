@@ -19,6 +19,10 @@ import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
 import { considerJoinClubFetcher } from 'src/fetch/clubFetchers';
 import {
+  considerCreateEventFetcher,
+  considerJoinEventFetcher,
+} from 'src/fetch/eventFetchers';
+import {
   NotificationType,
   getNotificationFetcher,
 } from 'src/fetch/userFetchers';
@@ -171,14 +175,13 @@ const Notifications = () => {
     try {
       setLoading(true);
       const notificationResponse = await getNotificationFetcher();
-      console.log(notificationResponse);
       if (notificationResponse.status) {
         const response = notificationResponse.data;
         setNotifications(response);
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 
@@ -194,6 +197,48 @@ const Notifications = () => {
           userId,
         });
 
+        if (requestResponse.status) {
+          navigate(0);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [navigate]
+  );
+
+  const considerJoinEventRequest = useCallback(
+    async (
+      { leftId: userId, rightId: eventId }: OnClickParamType,
+      status: ApprovalStatusEnum
+    ) => {
+      try {
+        const requestResponse = await considerJoinEventFetcher({
+          approveStatus: status,
+          eventId,
+          userId,
+        });
+        if (requestResponse.status) {
+          navigate(0);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [navigate]
+  );
+
+  const considerCreateEventRequest = useCallback(
+    async (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      { leftId: clubId, rightId: eventId }: OnClickParamType,
+      status: ApprovalStatusEnum
+    ) => {
+      try {
+        const requestResponse = await considerCreateEventFetcher({
+          approveStatus: status,
+          eventId,
+        });
         if (requestResponse.status) {
           navigate(0);
         }
@@ -335,10 +380,73 @@ const Notifications = () => {
                         name: item.event.name,
                         image: item.event.image,
                         type: 'join event',
+                        link: `${Routes.EVENT}/${item.event.eventId}`,
+                      }}
+                      onClickApprove={async () => {
+                        await considerJoinEventRequest(
+                          {
+                            leftId: item.user.userId.toString(),
+                            rightId: item.event.eventId.toString(),
+                          },
+                          ApprovalStatusEnum.APPROVED
+                        );
+                      }}
+                      onClickDecline={async () => {
+                        await considerJoinEventRequest(
+                          {
+                            leftId: item.user.userId.toString(),
+                            rightId: item.event.eventId.toString(),
+                          },
+                          ApprovalStatusEnum.DECLINED
+                        );
+                      }}
+                    />
+                    <Divider />
+                  </>
+                ))}
+              </Stack>
+            )}
+            {notifications.eventCreateRequest.length > 0 && (
+              <Stack gap="20px">
+                <Typography variant="h5" color="primary" textAlign="center">
+                  Etkinlik Oluşturma İstekleri
+                </Typography>
+                {notifications.eventCreateRequest.map((item) => (
+                  <>
+                    <NotificationItem
+                      key={item.event.eventId + item.club.clubId}
+                      leftItem={{
+                        id: item.club.clubId.toString(),
+                        name: item.club.name,
+                        image: item.club.image,
+                        type: 'create event',
+                        link: `${Routes.CLUB}/${item.club.clubId}`,
+                      }}
+                      rightItem={{
+                        id: item.event.eventId.toString(),
+                        name: item.event.name,
+                        image: item.event.image,
+                        type: 'create event',
                         link: `${Routes.CLUB}/${item.event.eventId}`,
                       }}
-                      onClickApprove={() => console.log('id')}
-                      onClickDecline={() => console.log('id')}
+                      onClickApprove={async () => {
+                        await considerCreateEventRequest(
+                          {
+                            leftId: item.club.clubId.toString(),
+                            rightId: item.event.eventId.toString(),
+                          },
+                          ApprovalStatusEnum.APPROVED
+                        );
+                      }}
+                      onClickDecline={async () => {
+                        await considerCreateEventRequest(
+                          {
+                            leftId: item.club.clubId.toString(),
+                            rightId: item.event.eventId.toString(),
+                          },
+                          ApprovalStatusEnum.DECLINED
+                        );
+                      }}
                     />
                     <Divider />
                   </>

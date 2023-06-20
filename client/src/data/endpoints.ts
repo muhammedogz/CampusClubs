@@ -5,10 +5,12 @@ export enum Endpoints {
   EVENTS = '/events',
   CLUBS = '/clubs',
   AUTH = '/auth/auth',
+  AUTH_TOKEN = '/auth/token',
   SIGNUP = '/auth/register',
   FILEUPLOAD = '/fileupload',
   DEPARTMENT = '/department',
   NOTIFICATION = '/notification',
+  ANNOUNCEMENT = '/announcement',
 }
 
 export const getApiEndpoint = (endpoint: Endpoints) => {

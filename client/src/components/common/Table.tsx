@@ -194,12 +194,14 @@ type UyeColumnType = {
   image: string;
   name: string;
   bolum: string;
+  role: string;
 };
 
 export const userColumns: Column<UyeColumnType>[] = [
   { header: ' ', accessor: 'image', align: 'center' },
   { header: 'Üye Adı', accessor: 'name' },
   { header: 'Bölüm', accessor: 'bolum' },
+  { header: 'Rol', accessor: 'role' },
 ];
 
 export const eventColumns: Column<EventBaseType>[] = [

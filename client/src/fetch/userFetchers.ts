@@ -8,6 +8,14 @@ import {
   UserType,
 } from 'src/types/types';
 
+export const getAllUsersFetcher = async () => {
+  const { data } = await axios.get<ApiResponseType<UserType[]>>(
+    getApiEndpoint(Endpoints.USERS)
+  );
+
+  return data;
+};
+
 export const getAllStudentsFetcher = async () => {
   const { data } = await axios.get<ApiResponseType<UserType[]>>(
     getApiEndpoint(Endpoints.USERS_STUDENTS)
@@ -54,3 +62,21 @@ export const getNotificationFetcher = async () => {
 
   return data;
 };
+
+export type UserUpdateDTO = {
+  userName?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  departmentId?: number;
+  image?: string;
+}
+
+export const updateUserFetcher = async (userId: number, user: UserUpdateDTO) => {
+  const { data } = await axios.put<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.USERS)}/${userId}`,
+    user
+  );
+
+  return data;
+}

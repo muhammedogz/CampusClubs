@@ -25,7 +25,6 @@ const ContentLayout = ({
   loadingMiddleLeft,
   loadingMiddleRight,
 }: ContentLayoutProps) => {
-  console.log(upperBackgroundImage);
 
   return (
     <Stack gap="20px">

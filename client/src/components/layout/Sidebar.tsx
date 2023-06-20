@@ -1,11 +1,13 @@
-import { NotificationAddTwoTone } from '@mui/icons-material';
+import {
+  AdminPanelSettings,
+  NotificationAddTwoTone,
+} from '@mui/icons-material';
 import ContactsSharpIcon from '@mui/icons-material/ContactsSharp';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
-import SettingsIcon from '@mui/icons-material/Settings';
 import SupervisedUserCircleSharpIcon from '@mui/icons-material/SupervisedUserCircleSharp';
 import {
   Badge,
@@ -27,13 +29,13 @@ import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import { Routes } from 'src/data/routes';
 import { getNotificationFetcher } from 'src/fetch/userFetchers';
+import { UserRoleEnum } from 'src/types/types';
 import { getLocalImage } from 'src/utils/imageUtils';
 import {
   StorageKeyEnum,
   getLocalStorageItem,
   removeLocalStorageItem,
 } from 'src/utils/storageUtils';
-import { isUserLoggedIn } from 'src/utils/utils';
 
 const SidebarHeader = () => {
   const isMobile = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -167,7 +169,6 @@ export const Sidebar = () => {
   const getNotifications = useCallback(async () => {
     try {
       const notificationResponse = await getNotificationFetcher();
-      console.log(notificationResponse);
       if (notificationResponse.status) {
         const response = notificationResponse.data;
         setNotificationCount(
@@ -177,7 +178,7 @@ export const Sidebar = () => {
         );
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 
@@ -185,7 +186,7 @@ export const Sidebar = () => {
     if (userLoggedIn) {
       getNotifications();
     }
-  }, [getNotifications]);
+  }, [getNotifications, userLoggedIn]);
 
   return (
     <Stack
@@ -254,6 +255,13 @@ export const Sidebar = () => {
                       Profilim
                     </SidebarMenuItem>
                   </Link>
+                  {user.userRole === UserRoleEnum.ADMIN && (
+                    <Link to={Routes.ADMIN_PANEL}>
+                      <SidebarMenuItem icon={<AdminPanelSettings />}>
+                        Admin İşlemleri
+                      </SidebarMenuItem>
+                    </Link>
+                  )}
                   <Link to={Routes.NOTIFICATION}>
                     <SidebarMenuItem icon={<NotificationAddTwoTone />}>
                       <Stack flexDirection="row" alignItems="center" gap="20px">

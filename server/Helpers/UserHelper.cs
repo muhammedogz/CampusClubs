@@ -38,6 +38,17 @@ public class UserHelper
       return new ApiResponse(false, "User not found", null);
     }
 
+    var user = await context.Users.FindAsync(int.Parse(userId));
+    if (user == null)
+    {
+      return new ApiResponse(false, "User not found", null);
+    }
+
+    if (user.UserRole == UserRole.Admin)
+    {
+      return null;
+    }
+
     var userClub = await context.UserClubs
         .FirstOrDefaultAsync(uc => uc.UserId.ToString() == userId && uc.ClubId == clubId);
 

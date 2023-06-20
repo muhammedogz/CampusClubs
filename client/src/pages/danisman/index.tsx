@@ -9,12 +9,13 @@ import { getAllTeachersFetcher } from 'src/fetch/userFetchers';
 import { UserType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
 
-const index = () => {
+const Index = () => {
   const [loading, setLoading] = useState(false);
   const [allTeachers, setAllTeachers] = useState<UserType[]>([]);
 
   const getAllTeachers = useCallback(async () => {
     try {
+      setLoading(true);
       const allUsersResponse = await getAllTeachersFetcher();
 
       if (allUsersResponse.status) {
@@ -71,4 +72,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

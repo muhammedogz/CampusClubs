@@ -1,7 +1,8 @@
 import { CircularProgress, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingUserInfo from 'src/Loading/LoadingUserInfo';
+import CCButton from 'src/components/common/CCButton';
 import Image from 'src/components/common/Image';
 import { Link } from 'src/components/common/Link';
 import Table, {
@@ -10,18 +11,123 @@ import Table, {
   userColumns,
 } from 'src/components/common/Table';
 import ContentLayout from 'src/components/layout/ContentLayout';
+import { Layout } from 'src/components/layout/Layout';
+import AnnouncementCreateModal from 'src/components/modals/AnnouncementCreateModal';
+import EventCreateModal from 'src/components/modals/EventCreateModal';
+import ClubUpdateModal from 'src/components/modals/UpdateClubModal';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
-import { getClubFromIdFetcher } from 'src/fetch/clubFetchers';
+import {
+  getClubFromIdFetcher,
+  joinClubFetcher,
+  leaveClubFetcher,
+} from 'src/fetch/clubFetchers';
 import Slides from 'src/slides/Slides';
-import { ClubType } from 'src/types/types';
+import { ApprovalStatusEnum, ClubRoleEnum, ClubType } from 'src/types/types';
 import { getRemoteImage } from 'src/utils/imageUtils';
-import { formatDate } from 'src/utils/utils';
-import { Layout } from '../../components/layout/Layout';
+import { formatDate, isUserLoggedIn } from 'src/utils/utils';
 
 type CommonProps = {
   club: ClubType;
   loading: boolean;
+};
+
+const KulupActionButton = ({ club }: CommonProps) => {
+  const [loadingJoin, setLoadingJoin] = useState(false);
+  const [loadingLeave, setLoadingLeave] = useState(false);
+  const [openUpdateClubDialog, setOpenUpdateClubDialog] = useState(false);
+  const isUserApproved =
+    club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.APPROVED;
+  const isUserClubAdmin = club.user?.clubRole === ClubRoleEnum.ADMIN;
+  const isLoggedIn = isUserLoggedIn();
+
+  const navigate = useNavigate();
+
+  const handleJoinClub = useCallback(async () => {
+    try {
+      setLoadingJoin(true);
+      const joinResponse = await joinClubFetcher(club.clubId.toString());
+      if (joinResponse.status) {
+        navigate(0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [club.clubId, navigate]);
+
+  const handleLeaveClub = useCallback(async () => {
+    try {
+      setLoadingLeave(true);
+      const leaveResponse = await leaveClubFetcher(club.clubId.toString());
+      if (leaveResponse.status) {
+        navigate(0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [club.clubId, navigate]);
+
+  if (isLoggedIn) {
+    if (isUserApproved && isUserClubAdmin) {
+      return (
+        <Stack>
+          <ClubUpdateModal
+            open={openUpdateClubDialog}
+            onClose={() => navigate(0)}
+            club={club}
+          />
+          <CCButton
+            onClick={() => setOpenUpdateClubDialog(true)}
+            variant="contained"
+          >
+            Kulübü Düzenle
+          </CCButton>
+        </Stack>
+      );
+    } else if (isUserApproved) {
+      return (
+        <Stack>
+          <CCButton
+            loading={loadingLeave}
+            onClick={handleLeaveClub}
+            variant="contained"
+          >
+            Kulüpten Ayrıl
+          </CCButton>
+        </Stack>
+      );
+    } else if (
+      club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.DECLINED
+    ) {
+      return (
+        <Stack>
+          <CCButton disabled>Üyelik başvurunuz reddedildi</CCButton>
+        </Stack>
+      );
+    } else if (
+      club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.PENDING
+    ) {
+      return (
+        <Stack>
+          <CCButton disabled>Üyelik başvurunuz onay bekliyor</CCButton>
+        </Stack>
+      );
+    } else {
+      return (
+        <Stack>
+          <CCButton
+            onClick={handleJoinClub}
+            loading={loadingJoin}
+            variant="contained"
+          >
+            Kulübe başvur
+          </CCButton>
+        </Stack>
+      );
+    }
+  }
+
+  return null;
 };
 
 const KulupInfo = ({ club, loading }: CommonProps) => {
@@ -30,32 +136,35 @@ const KulupInfo = ({ club, loading }: CommonProps) => {
   }
 
   return (
-    <Stack
-      id="upper-content-left"
-      justifyContent="center"
-      alignItems="center"
-      flexDirection={{ xs: 'column', sm: 'row' }}
-      gap="30px"
-    >
-      <Image
-        width="150px"
-        height="150px"
-        src={getRemoteImage(club.image)}
-        sx={{
-          borderRadius: '20px',
-          boxShadow:
-            'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
-        }}
-      />
-      <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
-        <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
-          {club.name}
-        </Typography>
-        <Typography variant="h6" color="secondary">
-          @{club.clubId}
-        </Typography>
-        <Typography variant="h6">{club.description}</Typography>
+    <Stack gap="30px">
+      <Stack
+        id="upper-content-left"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        gap="30px"
+      >
+        <Image
+          width="150px"
+          height="150px"
+          src={getRemoteImage(club.image)}
+          sx={{
+            borderRadius: '20px',
+            boxShadow:
+              'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
+          }}
+        />
+        <Stack maxWidth="400px" pt={{ xs: '0px', sm: '55px' }}>
+          <Typography variant="h4" fontSize={30} color="main" fontWeight={600}>
+            {club.name}
+          </Typography>
+          <Typography variant="h6" color="secondary">
+            @{club.clubId}
+          </Typography>
+          <Typography variant="h6">{club.description}</Typography>
+        </Stack>
       </Stack>
+      <KulupActionButton club={club} loading={loading} />
     </Stack>
   );
 };
@@ -112,42 +221,86 @@ const KulupOtherInfo = ({ club, loading }: CommonProps) => {
 
 const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
   const [index, setIndex] = useState(0);
-
+  const [openCreateEventDialog, setOpenCreateEventDialog] = useState(false);
+  const [openCreateAnnouncementDialog, setOpenCreateAnnouncementDialog] =
+    useState(false);
   const events = club.events;
   const announcements = club.announcements;
 
+  const isUserApprovedClubAdmin =
+    club.user?.clubRole === ClubRoleEnum.ADMIN &&
+    club.user.clubJoinApprovalStatus === ApprovalStatusEnum.APPROVED;
+  const navigate = useNavigate();
+
   return (
-    <Stack id="middle-content-left" gap={2}>
-      <Stack alignItems="center" alignSelf="flex-start">
-        <Tabs value={index} onChange={(e, value) => setIndex(value)}>
-          <Tab label="Etkinlikler" value={0} />
-          <Tab label="Duyurular" value={1} />
-        </Tabs>
+    <>
+      <EventCreateModal
+        open={openCreateEventDialog}
+        onClose={() => navigate(0)}
+        club={club}
+      />
+      <AnnouncementCreateModal
+        open={openCreateAnnouncementDialog}
+        onClose={() => navigate(0)}
+        club={club}
+      />
+      <Stack id="middle-content-left" gap={2}>
+        <Stack alignItems="center" alignSelf="flex-start">
+          <Tabs value={index} onChange={(e, value) => setIndex(value)}>
+            <Tab label="Etkinlikler" value={0} />
+            <Tab label="Duyurular" value={1} />
+          </Tabs>
+        </Stack>
+        <Slides index={index}>
+          <Stack gap="20px">
+            {isUserApprovedClubAdmin && (
+              <Stack px="100px">
+                <CCButton
+                  onClick={() => setOpenCreateEventDialog(true)}
+                  variant="contained"
+                >
+                  Etkinlik Oluştur
+                </CCButton>
+              </Stack>
+            )}
+            <Table
+              loading={loading}
+              fullWidth
+              title="Etkinlikler"
+              data={events.map((event) => ({
+                ...event,
+                image: getRemoteImage(event.image),
+                eventDate: formatDate(event.eventDate),
+                href: `${Routes.EVENT}/${event.eventId}`,
+              }))}
+              columns={eventColumns}
+            />
+          </Stack>
+          <Stack gap="20px">
+            {isUserApprovedClubAdmin && (
+              <Stack px="100px">
+                <CCButton
+                  onClick={() => setOpenCreateAnnouncementDialog(true)}
+                  variant="contained"
+                >
+                  Duyuru oluştur
+                </CCButton>
+              </Stack>
+            )}
+            <Table
+              loading={loading}
+              fullWidth
+              title="Duyurular"
+              data={announcements.map((announcement) => ({
+                ...announcement,
+                date: formatDate(announcement.date),
+              }))}
+              columns={announcementColumns}
+            />
+          </Stack>
+        </Slides>
       </Stack>
-      <Slides index={index}>
-        <Table
-          loading={loading}
-          fullWidth
-          title="Etkinlikler"
-          data={events.map((event) => ({
-            ...event,
-            eventDate: formatDate(event.eventDate),
-            href: `${Routes.EVENT}/${event.eventId}`,
-          }))}
-          columns={eventColumns}
-        />
-        <Table
-          loading={loading}
-          fullWidth
-          title="Duyurular"
-          data={announcements.map((announcement) => ({
-            ...announcement,
-            date: formatDate(announcement.date),
-          }))}
-          columns={announcementColumns}
-        />
-      </Slides>
-    </Stack>
+    </>
   );
 };
 
@@ -162,6 +315,7 @@ const KulupUyeler = ({ club, loading }: CommonProps) => {
           bolum: user.department.name,
           image: getRemoteImage(user.image),
           name: user.firstName + ' ' + user.lastName,
+          role: user.clubRole === ClubRoleEnum.ADMIN ? 'Yönetici' : 'Üye',
           href: `${Routes.USER}/${user.userId}`,
         }))}
       />
@@ -183,9 +337,9 @@ const Kulup = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     getClubInfo();

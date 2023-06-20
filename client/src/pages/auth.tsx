@@ -40,7 +40,6 @@ const Auth = () => {
     });
 
     if (authResponse.message === 'kullanici-bulundu') {
-      console.log('authResponse', authResponse);
       const data = authResponse.data as AuthExistingResponseType;
       updateLocalStorageItem(StorageKeyEnum.USER_STORAGE, {
         token: data.token as string,

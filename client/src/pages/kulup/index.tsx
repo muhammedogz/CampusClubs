@@ -7,20 +7,22 @@ import { Layout } from 'src/components/layout/Layout';
 import { Routes } from 'src/data/routes';
 import { getAllClubsFetcher } from 'src/fetch/clubFetchers';
 import { ClubType } from 'src/types/types';
+import { getRemoteImage } from 'src/utils/imageUtils';
 
-const index = () => {
+const Index = () => {
   const [clubs, setClubs] = useState<ClubType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const getAllClubs = useCallback(async () => {
     try {
+      setLoading(true);
       const clubsRespone = await getAllClubsFetcher();
       if (clubsRespone.status) {
         setClubs(clubsRespone.data);
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, []);
 
@@ -56,7 +58,7 @@ const index = () => {
                 <CampusClubCard
                   key={club.name + club.description}
                   link={`${Routes.CLUB}/${club.clubId}`}
-                  image={club.image}
+                  image={getRemoteImage(club.image)}
                   title={club.name}
                   description={club.description}
                 />
@@ -69,4 +71,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
