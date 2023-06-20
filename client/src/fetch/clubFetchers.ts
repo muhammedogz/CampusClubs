@@ -141,3 +141,11 @@ export const removeUserFromClubFetcher = async (
 
   return data;
 };
+
+export const removeClubFetcher = async (clubId: number) => {
+  const { data } = await axios.delete<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}`
+  );
+
+  return data;
+};

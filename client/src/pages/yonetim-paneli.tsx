@@ -16,7 +16,7 @@ import ClubCreateModal from 'src/components/modals/ClubCreateModal';
 import RemoveUserClubModal from 'src/components/modals/RemoveUserClubModal';
 import ClubUpdateModal from 'src/components/modals/UpdateClubModal';
 import { Routes } from 'src/data/routes';
-import { getAllClubsFetcher } from 'src/fetch/clubFetchers';
+import { getAllClubsFetcher, removeClubFetcher } from 'src/fetch/clubFetchers';
 import { ClubType, UserRoleEnum } from 'src/types/types';
 import { StorageKeyEnum, getLocalStorageItem } from 'src/utils/storageUtils';
 import { generateRoute } from 'src/utils/urlUtils';
@@ -184,6 +184,64 @@ const AllClubsRemoveUser = ({ clubs, loading }: CommonProps) => {
   );
 };
 
+const RemoveClub = ({ clubs, loading }: CommonProps) => {
+  const [loadingRemoveClub, setLoadingRemoveClub] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleRemoveClub = useCallback(
+    async (clubId: number) => {
+      try {
+        setLoadingRemoveClub(true);
+        const response = await removeClubFetcher(clubId);
+        if (response.status) {
+          navigate(0);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [navigate]
+  );
+
+  return (
+    <Stack>
+      {loading ? (
+        <Stack>
+          <CircularProgress
+            size={50}
+            sx={{
+              color: '#78ee11',
+            }}
+          />
+        </Stack>
+      ) : (
+        <Stack>
+          {clubs.map((club) => (
+            <Stack key={club.name + club.description}>
+              <ImageNameStack
+                data={{
+                  image: club.image,
+                  name: club.name,
+                  id: club.clubId,
+                }}
+              />
+              <CCButton
+                loading={loadingRemoveClub}
+                onClick={() => {
+                  handleRemoveClub(club.clubId);
+                }}
+              >
+                Bu kulübü sil
+              </CCButton>
+            </Stack>
+          ))}
+        </Stack>
+      )}
+    </Stack>
+  );
+};
+
 const Panel = () => {
   const [openCreateClubDialog, setOpenCreateClubDialog] = useState(false);
   const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
@@ -274,6 +332,19 @@ const Panel = () => {
             </AccordionSummary>
             <AccordionDetails>
               <AllClubsRemoveUser clubs={clubs} loading={loading} />
+            </AccordionDetails>
+          </Accordion>
+        </Stack>
+        <Stack>
+          <Accordion>
+            <AccordionSummary
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+              <Typography>Kulüp sil</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <RemoveClub clubs={clubs} loading={loading} />
             </AccordionDetails>
           </Accordion>
         </Stack>
