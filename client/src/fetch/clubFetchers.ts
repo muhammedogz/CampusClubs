@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { Endpoints, getApiEndpoint } from 'src/data/endpoints';
-import { ApiResponseType, ApprovalStatusEnum, ClubRoleEnum, ClubType } from 'src/types/types';
+import {
+  ApiResponseType,
+  ApprovalStatusEnum,
+  ClubRoleEnum,
+  ClubType,
+} from 'src/types/types';
 
 export const getAllClubsFetcher = async () => {
   const { data } = await axios.get<ApiResponseType<ClubType[]>>(
@@ -24,7 +29,7 @@ type ApprovalJoinClubFuncType = {
   approveStatus: ApprovalStatusEnum;
 };
 
-export const  considerJoinClubFetcher = async ({
+export const considerJoinClubFetcher = async ({
   clubId,
   userId,
   approveStatus,
@@ -79,7 +84,7 @@ export type CreateClubPayload = {
   image?: string;
   tag?: string;
   advisorId: number;
-}
+};
 
 export const createClubFetcher = async (club: CreateClubPayload) => {
   const { data } = await axios.post<ApiResponseType<null>>(
@@ -88,15 +93,14 @@ export const createClubFetcher = async (club: CreateClubPayload) => {
   );
 
   return data;
-}
-
+};
 
 export type UpdateClubPayload = {
   name?: string;
   description?: string;
   image?: string;
   tag?: string;
-}
+};
 
 export const updateClubFetcher = async (
   clubId: number,
@@ -110,7 +114,6 @@ export const updateClubFetcher = async (
   return data;
 };
 
-
 export interface UserToAddPayload {
   userId: number;
   role: ClubRoleEnum;
@@ -123,6 +126,17 @@ export const addUserToClubFetcher = async (
   const { data } = await axios.post<ApiResponseType<null>>(
     `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}/users`,
     user
+  );
+
+  return data;
+};
+
+export const removeUserFromClubFetcher = async (
+  clubId: number,
+  userId: number
+) => {
+  const { data } = await axios.delete<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.CLUBS)}/${clubId}/users/${userId}`
   );
 
   return data;
