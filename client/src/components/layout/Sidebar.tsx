@@ -234,13 +234,13 @@ export const Sidebar = () => {
                     <SidebarMenuItem>Tüm Etkinlikler</SidebarMenuItem>
                   </Link>
                 </SubMenu>
-                <SubMenu label="Kullanicilar" icon={<ContactsSharpIcon />}>
+                <SubMenu label="Öğrenciler" icon={<ContactsSharpIcon />}>
                   <Link to={Routes.USER}>
-                    <SidebarMenuItem>Tüm Kullanicilar</SidebarMenuItem>
+                    <SidebarMenuItem>Tüm Öğrenciler</SidebarMenuItem>
                   </Link>
                 </SubMenu>
                 <SubMenu
-                  label="Danismanlar"
+                  label="Danışmanlar"
                   icon={<SupervisedUserCircleSharpIcon />}
                 >
                   <Link to={Routes.ADVISOR}>
