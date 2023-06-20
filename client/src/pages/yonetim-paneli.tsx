@@ -15,6 +15,7 @@ import AddUserClubModal from 'src/components/modals/AddUserClubModal';
 import ClubCreateModal from 'src/components/modals/ClubCreateModal';
 import RemoveEventModal from 'src/components/modals/RemoveEventModal';
 import RemoveUserClubModal from 'src/components/modals/RemoveUserClubModal';
+import RemoveUserModal from 'src/components/modals/RemoveUserModal';
 import ClubUpdateModal from 'src/components/modals/UpdateClubModal';
 import { Routes } from 'src/data/routes';
 import { getAllClubsFetcher, removeClubFetcher } from 'src/fetch/clubFetchers';
@@ -246,6 +247,7 @@ const RemoveClub = ({ clubs, loading }: CommonProps) => {
 const Panel = () => {
   const [openCreateClubDialog, setOpenCreateClubDialog] = useState(false);
   const [openRemoveEventDialog, setOpenRemoveEventDialog] = useState(false);
+  const [openRemoveUserDialog, setOpenRemoveUserDialog] = useState(false);
 
   const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
   const userLoggedIn = !!user?.firstName;
@@ -289,85 +291,118 @@ const Panel = () => {
             Yönetim Paneli
           </Typography>
         </Stack>
-        <Stack>
+        <Stack
+          gap="20px"
+          justifyContent="center"
+          alignItems="center"
+          sx={{
+            backgroundColor: '#ec68689d',
+            p: '50px',
+            borderRadius: '10px',
+            boxShadow: '0px 0px 10px 0px #000000',
+            '& > *': {
+              minWidth: { xs: '300px', md: '700px' },
+            },
+          }}
+        >
           <Stack>
+            <Stack>
+              <CCButton
+                onClick={() => setOpenCreateClubDialog(true)}
+                variant="contained"
+              >
+                Kulüp Oluştur
+              </CCButton>
+            </Stack>
+          </Stack>
+          <Stack>
+            <Accordion>
+              <AccordionSummary
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography>Kulüpleri düzenle</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <AllClubsEdit clubs={clubs} loading={loading} />
+              </AccordionDetails>
+            </Accordion>
+          </Stack>
+          <Stack>
+            <Accordion>
+              <AccordionSummary
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography>Kulüplere kullanıcı ekkle</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <AllClubsAddUser clubs={clubs} loading={loading} />
+              </AccordionDetails>
+            </Accordion>
+          </Stack>
+          <Stack>
+            <Accordion>
+              <AccordionSummary
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography>Kulüplerden Kullanıcı Çıkar</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <AllClubsRemoveUser clubs={clubs} loading={loading} />
+              </AccordionDetails>
+            </Accordion>
+          </Stack>
+          <Stack>
+            <Accordion>
+              <AccordionSummary
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography>Kulüp sil</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <RemoveClub clubs={clubs} loading={loading} />
+              </AccordionDetails>
+            </Accordion>
+          </Stack>
+          <Stack>
+            {openRemoveEventDialog && (
+              <RemoveEventModal
+                onClose={() => {
+                  navigate(0);
+                }}
+                open={openRemoveEventDialog}
+              />
+            )}
             <CCButton
-              onClick={() => setOpenCreateClubDialog(true)}
               variant="contained"
+              onClick={() => {
+                setOpenRemoveEventDialog(true);
+              }}
             >
-              Kulüp Oluştur
+              Etkinlik Sil
             </CCButton>
           </Stack>
-        </Stack>
-        <Stack>
-          <Accordion>
-            <AccordionSummary
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <Typography>Kulüpleri düzenle</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <AllClubsEdit clubs={clubs} loading={loading} />
-            </AccordionDetails>
-          </Accordion>
-        </Stack>
-        <Stack>
-          <Accordion>
-            <AccordionSummary
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <Typography>Kulüplere kullanıcı ekkle</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <AllClubsAddUser clubs={clubs} loading={loading} />
-            </AccordionDetails>
-          </Accordion>
-        </Stack>
-        <Stack>
-          <Accordion>
-            <AccordionSummary
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <Typography>Kulüplerden Kullanıcı Çıkar</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <AllClubsRemoveUser clubs={clubs} loading={loading} />
-            </AccordionDetails>
-          </Accordion>
-        </Stack>
-        <Stack>
-          <Accordion>
-            <AccordionSummary
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <Typography>Kulüp sil</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <RemoveClub clubs={clubs} loading={loading} />
-            </AccordionDetails>
-          </Accordion>
-        </Stack>
-        <Stack>
-          {openRemoveEventDialog && (
-            <RemoveEventModal
-              onClose={() => {
-                navigate(0);
+          <Stack>
+            {openRemoveUserDialog && (
+              <RemoveUserModal
+                onClose={() => {
+                  navigate(0);
+                }}
+                open={openRemoveUserDialog}
+              />
+            )}
+            <CCButton
+              variant="contained"
+              onClick={() => {
+                setOpenRemoveUserDialog(true);
               }}
-              open={openRemoveEventDialog}
-            />
-          )}
-          <CCButton
-            variant="contained"
-            onClick={() => {
-              setOpenRemoveEventDialog(true);
-            }}
-          >
-            Etkinlik Sil
-          </CCButton>
+            >
+              Üye Sil
+            </CCButton>
+          </Stack>
         </Stack>
       </Stack>
     </Layout>

@@ -80,3 +80,11 @@ export const updateUserFetcher = async (userId: number, user: UserUpdateDTO) => 
 
   return data;
 }
+
+export const removeUserFetcher = async (userId: number) => {
+  const { data } = await axios.delete<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.USERS)}/${userId}`
+  );
+
+  return data;
+};
