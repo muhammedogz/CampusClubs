@@ -13,6 +13,7 @@ import ImageNameStack from 'src/components/common/ImageNameStack';
 import { Layout } from 'src/components/layout/Layout';
 import AddUserClubModal from 'src/components/modals/AddUserClubModal';
 import ClubCreateModal from 'src/components/modals/ClubCreateModal';
+import RemoveEventModal from 'src/components/modals/RemoveEventModal';
 import RemoveUserClubModal from 'src/components/modals/RemoveUserClubModal';
 import ClubUpdateModal from 'src/components/modals/UpdateClubModal';
 import { Routes } from 'src/data/routes';
@@ -244,6 +245,8 @@ const RemoveClub = ({ clubs, loading }: CommonProps) => {
 
 const Panel = () => {
   const [openCreateClubDialog, setOpenCreateClubDialog] = useState(false);
+  const [openRemoveEventDialog, setOpenRemoveEventDialog] = useState(false);
+
   const user = getLocalStorageItem(StorageKeyEnum.USER_STORAGE)?.user;
   const userLoggedIn = !!user?.firstName;
 
@@ -347,6 +350,24 @@ const Panel = () => {
               <RemoveClub clubs={clubs} loading={loading} />
             </AccordionDetails>
           </Accordion>
+        </Stack>
+        <Stack>
+          {openRemoveEventDialog && (
+            <RemoveEventModal
+              onClose={() => {
+                navigate(0);
+              }}
+              open={openRemoveEventDialog}
+            />
+          )}
+          <CCButton
+            variant="contained"
+            onClick={() => {
+              setOpenRemoveEventDialog(true);
+            }}
+          >
+            Etkinlik Sil
+          </CCButton>
         </Stack>
       </Stack>
     </Layout>

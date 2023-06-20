@@ -118,3 +118,11 @@ export const updateEventFetcher = async (
 
   return data;
 };
+
+export const removeEventFetcher = async (eventId: string) => {
+  const { data } = await axios.delete<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.EVENTS)}/${eventId}`
+  );
+
+  return data;
+};
