@@ -14,6 +14,7 @@ import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
 import AnnouncementCreateModal from 'src/components/modals/AnnouncementCreateModal';
 import EventCreateModal from 'src/components/modals/EventCreateModal';
+import RemoveUserClubModal from 'src/components/modals/RemoveUserClubModal';
 import ClubUpdateModal from 'src/components/modals/UpdateClubModal';
 import { emptyClubData } from 'src/data/emptyData';
 import { Routes } from 'src/data/routes';
@@ -305,8 +306,33 @@ const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
 };
 
 const KulupUyeler = ({ club, loading }: CommonProps) => {
+  const [openRemoveUserDialog, setOpenRemoveUserDialog] = useState(false);
+  const navigate = useNavigate();
+  const isUserApproved =
+    club.user?.clubJoinApprovalStatus === ApprovalStatusEnum.APPROVED;
+  const isUserClubAdmin = club.user?.clubRole === ClubRoleEnum.ADMIN;
+  const isLoggedIn = isUserLoggedIn();
+
   return (
-    <Stack id="middle-content-right">
+    <Stack id="middle-content-right" gap="20px">
+      {isUserApproved && isUserClubAdmin && isLoggedIn && (
+        <Stack>
+          {openRemoveUserDialog && (
+            <RemoveUserClubModal
+              filterAdmin
+              open={openRemoveUserDialog}
+              onClose={() => navigate(0)}
+              clubId={club.clubId}
+            />
+          )}
+          <CCButton
+            onClick={() => setOpenRemoveUserDialog(true)}
+            variant="contained"
+          >
+            Kulüp Üyelerini Çıkar
+          </CCButton>
+        </Stack>
+      )}
       <Table
         loading={loading}
         title="Katılımcılar"

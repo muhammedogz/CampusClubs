@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Stack } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import CampusClubCard, {
   CampusClubCardLoading,
 } from 'src/components/cards/CampusClubCard';
@@ -16,12 +16,14 @@ type UserRemoveModalProps = {
   open: boolean;
   onClose: () => void;
   clubId: number;
+  filterAdmin?: boolean;
 };
 
 const RemoveUserClubModal = ({
   open,
   onClose,
   clubId,
+  filterAdmin = false,
 }: UserRemoveModalProps) => {
   const [loading, setLoading] = useState(false);
   const [club, setClub] = useState<ClubType>(emptyClubData);
@@ -58,6 +60,14 @@ const RemoveUserClubModal = ({
     }
   };
 
+  const clubUsers = useMemo(() => {
+    if (filterAdmin) {
+      return club.users.filter((user) => user.clubRole === ClubRoleEnum.MEMBER);
+    } else {
+      return club.users;
+    }
+  }, [club.users, filterAdmin]);
+
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
       <DialogTitle variant="h5" gutterBottom>
@@ -74,7 +84,7 @@ const RemoveUserClubModal = ({
             </Stack>
           ) : (
             <Stack alignItems="center" justifyContent="center" gap="20px">
-              {club.users.map((user) => (
+              {clubUsers.map((user) => (
                 <Stack key={user.firstName + user.lastName}>
                   <CampusClubCard
                     image={getRemoteImage(user.image)}
