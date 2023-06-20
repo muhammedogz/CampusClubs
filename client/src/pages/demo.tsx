@@ -71,7 +71,7 @@ const Demo = () => {
       <Stack gap="40px" pt="60px">
         <Stack>
           <Typography variant="h3" color="primary" textAlign="center">
-            Tüm Kullanıcıalr
+            Tüm Kullanıcılar
           </Typography>
           <Typography color="primary" textAlign="center">
             Bu sayfadan, demo olarak tüm kullanıcıları giriş yapmak için
