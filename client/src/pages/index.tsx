@@ -41,7 +41,7 @@ const Home = () => {
               </Typography>
             </Button>
           </Link>
-          <Link to={Routes.CLUB}>
+          <Link to={Routes.EVENT}>
             <Button variant="contained" color="secondary">
               <Typography component="h2" gutterBottom>
                 Tüm Etkinlikler
