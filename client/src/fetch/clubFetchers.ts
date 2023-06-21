@@ -149,3 +149,11 @@ export const removeClubFetcher = async (clubId: number) => {
 
   return data;
 };
+
+export const deleteAnnouncementFetcher = async (announcementId: number) => {
+  const { data } = await axios.delete<ApiResponseType<null>>(
+    `${getApiEndpoint(Endpoints.ANNOUNCEMENT)}/${announcementId}`
+  );
+
+  return data;
+};

@@ -14,6 +14,7 @@ import ContentLayout from 'src/components/layout/ContentLayout';
 import { Layout } from 'src/components/layout/Layout';
 import AnnouncementCreateModal from 'src/components/modals/AnnouncementCreateModal';
 import EventCreateModal from 'src/components/modals/EventCreateModal';
+import RemoveAnnouncementModal from 'src/components/modals/RemoveAnnouncementModal';
 import RemoveEventModal from 'src/components/modals/RemoveEventModal';
 import RemoveUserClubModal from 'src/components/modals/RemoveUserClubModal';
 import ClubUpdateModal from 'src/components/modals/UpdateClubModal';
@@ -227,6 +228,8 @@ const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
   const [openRemoveEventDialog, setOpenRemoveEventDialog] = useState(false);
   const [openCreateAnnouncementDialog, setOpenCreateAnnouncementDialog] =
     useState(false);
+  const [openRemoveAnnouncementDialog, setOpenRemoveAnnouncementDialog] =
+    useState(false);
   const events = club.events;
   const announcements = club.announcements;
 
@@ -249,6 +252,11 @@ const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
       />
       <AnnouncementCreateModal
         open={openCreateAnnouncementDialog}
+        onClose={() => navigate(0)}
+        club={club}
+      />
+      <RemoveAnnouncementModal
+        open={openRemoveAnnouncementDialog}
         onClose={() => navigate(0)}
         club={club}
       />
@@ -302,6 +310,16 @@ const KulupEtkinlikDuyuru = ({ club, loading }: CommonProps) => {
                   variant="contained"
                 >
                   Duyuru oluştur
+                </CCButton>
+              </Stack>
+            )}
+            {isUserApprovedClubAdmin && (
+              <Stack px="100px">
+                <CCButton
+                  onClick={() => setOpenRemoveAnnouncementDialog(true)}
+                  variant="contained"
+                >
+                  Duyuruyu sil
                 </CCButton>
               </Stack>
             )}
