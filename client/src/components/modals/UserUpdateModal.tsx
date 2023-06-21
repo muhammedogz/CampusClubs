@@ -168,7 +168,7 @@ const UserUpdateModal = ({ user, open, onClose }: UserUpdateModalProps) => {
                   type="submit"
                   style={{ marginTop: '1rem' }}
                 >
-                  Update
+                  Güncelle
                 </CCButton>
                 <CCButton
                   onClick={onClose}
@@ -176,7 +176,7 @@ const UserUpdateModal = ({ user, open, onClose }: UserUpdateModalProps) => {
                   color="warning"
                   style={{ marginTop: '1rem' }}
                 >
-                  Cancel
+                  İptal
                 </CCButton>
               </Stack>
             </Stack>
