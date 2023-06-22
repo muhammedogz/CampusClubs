@@ -28,7 +28,7 @@ const Home = () => {
               CampusClubs'a hoş geldiniz
             </Typography>
             <Typography variant="body1">
-              CampusClubs ile kulüpleri inceleybilir, etkinliklere katılabilir
+              CampusClubs ile kulüpleri inceleyebilir, etkinliklere katılabilir
               ve üniversite hayatınızı daha keyifli hale getirebilirsiniz.
             </Typography>
           </Stack>
