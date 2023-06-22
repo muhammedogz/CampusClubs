@@ -334,7 +334,7 @@ const Panel = () => {
                 aria-controls="panel2a-content"
                 id="panel2a-header"
               >
-                <Typography>Kulüplere kullanıcı ekkle</Typography>
+                <Typography>Kulüplere kullanıcı ekle</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <AllClubsAddUser clubs={clubs} loading={loading} />
